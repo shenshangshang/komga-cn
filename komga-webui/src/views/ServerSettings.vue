@@ -35,6 +35,19 @@
           class="mt-4"
         />
         <v-text-field
+          v-model="form.prefetchPages"
+          @input="$v.form.prefetchPages.$touch()"
+          @blur="$v.form.prefetchPages.$touch()"
+          :error-messages="prefetchPagesErrors"
+          label="Prefetch Pages"
+          hint="Number of pages to preload during reading"
+          persistent-hint
+          type="number"
+          min="0"
+          max="10"
+          class="mt-4"
+        />
+        <v-text-field
           v-model="form.rememberMeDurationDays"
           @input="$v.form.rememberMeDurationDays.$touch()"
           @blur="$v.form.rememberMeDurationDays.$touch()"
@@ -44,6 +57,19 @@
           persistent-hint
           type="number"
           min="1"
+          class="mt-4"
+        />
+        <v-text-field
+          v-model="form.prefetchPages"
+          @input="$v.form.prefetchPages.$touch()"
+          @blur="$v.form.prefetchPages.$touch()"
+          :error-messages="prefetchPagesErrors"
+          label="Prefetch Pages"
+          hint="Number of pages to preload during reading"
+          persistent-hint
+          type="number"
+          min="0"
+          max="10"
           class="mt-4"
         />
         <v-checkbox
@@ -68,6 +94,19 @@
           type="number"
           min="1"
           max="65535"
+          class="mt-4"
+        />
+        <v-text-field
+          v-model="form.prefetchPages"
+          @input="$v.form.prefetchPages.$touch()"
+          @blur="$v.form.prefetchPages.$touch()"
+          :error-messages="prefetchPagesErrors"
+          label="Prefetch Pages"
+          hint="Number of pages to preload during reading"
+          persistent-hint
+          type="number"
+          min="0"
+          max="10"
           class="mt-4"
         >
           <template v-slot:append v-if="!!existingSettings.serverPort?.configurationSource">
@@ -126,6 +165,19 @@
           type="number"
           min="1"
           max="65535"
+          class="mt-4"
+        />
+        <v-text-field
+          v-model="form.prefetchPages"
+          @input="$v.form.prefetchPages.$touch()"
+          @blur="$v.form.prefetchPages.$touch()"
+          :error-messages="prefetchPagesErrors"
+          label="Prefetch Pages"
+          hint="Number of pages to preload during reading"
+          persistent-hint
+          type="number"
+          min="0"
+          max="10"
           class="mt-4"
         />
 
@@ -214,6 +266,7 @@ export default Vue.extend({
       renewRememberMeKey: false,
       thumbnailSize: ThumbnailSizeDto.DEFAULT,
       taskPoolSize: 1,
+      prefetchPages: 3,
       serverPort: 25600,
       serverContextPath: '',
       koboProxy: false,
@@ -251,6 +304,10 @@ export default Vue.extend({
         maxValue: maxValue(65535),
       },
       kepubifyPath: {},
+      prefetchPages: {
+        minValue: minValue(0),
+        integer,
+      },
     },
   },
   mounted() {
@@ -271,10 +328,59 @@ export default Vue.extend({
       return errors
     },
     taskPoolSizeErrors(): string[] {
+    prefetchPagesErrors(): string[] {
       const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
+      const errors = [] as string[]
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
       if (!this.$v.form?.taskPoolSize?.$dirty) return errors
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
       !this.$v?.form?.taskPoolSize?.minValue && errors.push(this.$t('validation.one_or_more').toString())
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
       !this.$v?.form?.taskPoolSize?.required && errors.push(this.$t('common.required').toString())
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
+      return errors
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
+      return errors
+    },
+    },
+    prefetchPagesErrors(): string[] {
+      const errors = [] as string[]
+      if (!this.$v.form?.prefetchPages?.$dirty) return errors
+      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
+      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
       return errors
     },
     serverPortErrors(): string[] {

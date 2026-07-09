@@ -11,6 +11,7 @@ data class SettingsDto(
   val koboProxy: Boolean,
   val koboPort: Int?,
   val kepubifyPath: SettingMultiSource<String?>,
+  val prefetchPages: Int,
 )
 
 data class SettingMultiSource<T>(

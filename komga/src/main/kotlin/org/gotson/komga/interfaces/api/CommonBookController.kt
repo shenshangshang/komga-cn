@@ -1,4 +1,5 @@
 package org.gotson.komga.interfaces.api
+import org.gotson.komga.domain.service.PagePrefetchService
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
@@ -64,6 +65,7 @@ private val FONT_EXTENSIONS = listOf("otf", "woff", "woff2", "eot", "ttf", "svg"
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class CommonBookController(
+  private val pagePrefetchService: PagePrefetchService,
   private val mediaRepository: MediaRepository,
   private val bookRepository: BookRepository,
   private val bookDtoRepository: BookDtoRepository,
@@ -183,7 +185,7 @@ class CommonBookController(
           else -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid conversion format: $convertTo")
         }
 
-      val pageContent = bookLifecycle.getBookPage(book, pageNumber, convertFormat)
+      val pageContent = pagePrefetchService.getPageWithPrefetch(book, pageNumber, convertFormat)
 
       ResponseEntity
         .ok()

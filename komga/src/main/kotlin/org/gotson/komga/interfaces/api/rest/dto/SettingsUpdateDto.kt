@@ -51,4 +51,8 @@ class SettingsUpdateDto {
     by Delegates.observable(null) { prop, _, _ ->
       isSet[prop.name] = true
     }
+
+  @get:Positive
+  @get:Max(10)
+  var prefetchPages: Int? = null
 }

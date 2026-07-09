@@ -21,7 +21,7 @@ plugins {
   id("org.springframework.boot") version libs.versions.springboot.get()
   alias(libs.plugins.gradleGitProperties)
   id("nu.studer.jooq") version "10.1"
-  id("org.flywaydb.flyway") version "11.7.2"
+  id("org.flywaydb.flyway") version "11.1.0"
   id("com.github.johnrengelman.processes") version "0.5.0"
   id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
   id("com.google.devtools.ksp") version "2.2.0-2.0.2"
@@ -69,6 +69,7 @@ dependencies {
   kapt("org.springframework.boot:spring-boot-configuration-processor:${libs.versions.springboot.get()}")
 
   implementation("org.flywaydb:flyway-core")
+  implementation("org.flywaydb:flyway-mysql")
 
   api("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
@@ -118,6 +119,7 @@ dependencies {
   implementation("com.github.ben-manes.caffeine:caffeine")
 
   implementation("org.xerial:sqlite-jdbc:${libs.versions.sqliteJdbc.get()}")
+  implementation("com.mysql:mysql-connector-j")
   jooqGenerator("org.xerial:sqlite-jdbc:${libs.versions.sqliteJdbc.get()}")
 
   if (version.toString().endsWith(".0.0")) {

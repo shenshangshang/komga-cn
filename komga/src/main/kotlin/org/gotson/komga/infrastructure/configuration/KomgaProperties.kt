@@ -1,31 +1,18 @@
 package org.gotson.komga.infrastructure.configuration
 
-import jakarta.annotation.PostConstruct
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.convert.DurationUnit
 import org.springframework.stereotype.Component
 import org.springframework.validation.annotation.Validated
-import org.sqlite.SQLiteConfig.JournalMode
 import java.time.Duration
 import java.time.temporal.ChronoUnit
-import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
 
 @Component
 @ConfigurationProperties(prefix = "komga")
 @Validated
 class KomgaProperties {
-  @PostConstruct
-  private fun makeDirs() {
-    try {
-      Path(database.file).parent.createDirectories()
-      Path(tasksDb.file).parent.createDirectories()
-    } catch (_: Exception) {
-    }
-  }
-
   var findDuplicatePages: Boolean = true
 
   @Positive
@@ -52,13 +39,19 @@ class KomgaProperties {
 
   val fonts = Fonts()
 
+  var prefetch = Prefetch()
+
   class Cors {
     var allowedOrigins: List<String> = emptyList()
   }
 
   class Database {
     @get:NotBlank
-    var file: String = ""
+    var url: String = ""
+
+    var username: String = ""
+
+    var password: String = ""
 
     @get:Positive
     var batchChunkSize: Int = 1000
@@ -67,14 +60,10 @@ class KomgaProperties {
     var poolSize: Int? = null
 
     @get:Positive
-    var maxPoolSize: Int = 1
-
-    var journalMode: JournalMode? = JournalMode.WAL
+    var maxPoolSize: Int = 8
 
     @DurationUnit(ChronoUnit.SECONDS)
     var busyTimeout: Duration? = null
-
-    var pragmas: Map<String, String> = emptyMap()
 
     var checkLocalFilesystem: Boolean = true
   }
@@ -102,6 +91,11 @@ class KomgaProperties {
 
       var preserveOriginal: Boolean = true
     }
+  }
+
+  class Prefetch {
+    @get:Positive
+    var pages: Int = 3
   }
 
   class Kobo {

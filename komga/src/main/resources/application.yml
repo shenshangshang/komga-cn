@@ -16,14 +16,20 @@ logging:
 
 komga:
   database:
-    file: \${komga.config-dir}/database.sqlite
+    url: jdbc:mysql://192.168.5.125:3306/komga?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: wzy20001229
   lucene:
     data-directory: \${komga.config-dir}/lucene
   fonts:
     data-directory: \${komga.config-dir}/fonts
   config-dir: \${user.home}/.komga
+  prefetch:
+    pages: 3
   tasks-db:
-    file: \${komga.config-dir}/tasks.sqlite
+    url: jdbc:mysql://192.168.5.125:3306/komga_tasks?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: wzy20001229
 
 spring:
   flyway:

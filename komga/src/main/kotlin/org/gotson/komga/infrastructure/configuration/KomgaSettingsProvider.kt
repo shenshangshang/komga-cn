@@ -112,6 +112,13 @@ class KomgaSettingsProvider(
       field = value
       eventPublisher.publishEvent(SettingChangedEvent.KepubifyPath)
     }
+
+  var prefetchPages: Int =
+    serverSettingsDao.getSettingByKey(Settings.PREFETCH_PAGES.name, Int::class.java) ?: 3
+    set(value) {
+      serverSettingsDao.saveSetting(Settings.PREFETCH_PAGES.name, value)
+      field = value
+    }
 }
 
 private enum class Settings {
@@ -126,4 +133,5 @@ private enum class Settings {
   KOBO_PROXY,
   KOBO_PORT,
   KEPUBIFY_PATH,
+  PREFETCH_PAGES,
 }

@@ -29,7 +29,7 @@ class KomgaJooqConfiguration {
 
   @Bean("dslContextRO")
   fun mainDslContextRO(
-    @Qualifier("sqliteDataSourceRO") dataSource: DataSource,
+    @Qualifier("mysqlDataSourceRO") dataSource: DataSource,
     transactionProvider: ObjectProvider<TransactionProvider?>,
     executeListenerProviders: ObjectProvider<ExecuteListenerProvider?>,
   ): DSLContext = createDslContext(dataSource, transactionProvider, executeListenerProviders)
@@ -54,7 +54,7 @@ class KomgaJooqConfiguration {
     executeListenerProviders: ObjectProvider<ExecuteListenerProvider?>,
   ) = DefaultDSLContext(
     DefaultConfiguration().also { configuration ->
-      configuration.set(SQLDialect.SQLITE)
+      configuration.set(SQLDialect.MYSQL)
       configuration.set(DataSourceConnectionProvider(TransactionAwareDataSourceProxy(dataSource)))
       transactionProvider.ifAvailable { newTransactionProvider: TransactionProvider? -> configuration.set(newTransactionProvider) }
       configuration.set(*executeListenerProviders.orderedStream().toList().toTypedArray())

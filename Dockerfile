@@ -4,13 +4,10 @@ LABEL maintainer="shenshangshang"
 LABEL description="Komga-CN with MySQL 8.4 support and page prefetch feature"
 
 RUN apk add --no-cache ttf-dejavu wget
-RUN addgroup -S komga && adduser -S komga -G komga
-RUN mkdir -p /config /data && chown -R komga:komga /config /data
+RUN mkdir -p /config /data
 
-COPY komga/build/libs/komga-1.25.0.jar /app/komga.jar
-RUN chown komga:komga /app/komga.jar
+COPY komga/build/libs/komga-1.26.0.jar /app/komga.jar
 
-USER komga
 WORKDIR /app
 EXPOSE 25600
 

@@ -1,15 +1,24 @@
 html {
     overflow-y: auto !important;
 }
-
-.link-none {
-    text-decoration: none;
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
-
-.link-underline {
-    text-decoration: none;
+.link-none { text-decoration: none; }
+.link-underline { text-decoration: none; }
+.link-underline:hover { text-decoration: underline; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--v-contrast-light-2-base);
+    border-radius: 5px; border: 2px solid transparent;
+    background-clip: content-box;
 }
-
-.link-underline:hover {
-    text-decoration: underline;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--v-primary-base);
+    border-radius: 5px; border: 2px solid transparent;
+    background-clip: content-box;
 }
+.v-card { transition: box-shadow 0.25s ease, transform 0.25s ease !important; }

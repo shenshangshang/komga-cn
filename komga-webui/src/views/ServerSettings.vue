@@ -39,8 +39,8 @@
           @input="$v.form.prefetchPages.$touch()"
           @blur="$v.form.prefetchPages.$touch()"
           :error-messages="prefetchPagesErrors"
-          label="Prefetch Pages"
-          hint="Number of pages to preload during reading"
+          :label="$t('server_settings.label_prefetch_pages')"
+          :hint="$t('server_settings.hint_prefetch_pages')"
           persistent-hint
           type="number"
           min="0"
@@ -57,19 +57,6 @@
           persistent-hint
           type="number"
           min="1"
-          class="mt-4"
-        />
-        <v-text-field
-          v-model="form.prefetchPages"
-          @input="$v.form.prefetchPages.$touch()"
-          @blur="$v.form.prefetchPages.$touch()"
-          :error-messages="prefetchPagesErrors"
-          label="Prefetch Pages"
-          hint="Number of pages to preload during reading"
-          persistent-hint
-          type="number"
-          min="0"
-          max="10"
           class="mt-4"
         />
         <v-checkbox
@@ -94,19 +81,6 @@
           type="number"
           min="1"
           max="65535"
-          class="mt-4"
-        />
-        <v-text-field
-          v-model="form.prefetchPages"
-          @input="$v.form.prefetchPages.$touch()"
-          @blur="$v.form.prefetchPages.$touch()"
-          :error-messages="prefetchPagesErrors"
-          label="Prefetch Pages"
-          hint="Number of pages to preload during reading"
-          persistent-hint
-          type="number"
-          min="0"
-          max="10"
           class="mt-4"
         >
           <template v-slot:append v-if="!!existingSettings.serverPort?.configurationSource">
@@ -165,19 +139,6 @@
           type="number"
           min="1"
           max="65535"
-          class="mt-4"
-        />
-        <v-text-field
-          v-model="form.prefetchPages"
-          @input="$v.form.prefetchPages.$touch()"
-          @blur="$v.form.prefetchPages.$touch()"
-          :error-messages="prefetchPagesErrors"
-          label="Prefetch Pages"
-          hint="Number of pages to preload during reading"
-          persistent-hint
-          type="number"
-          min="0"
-          max="10"
           class="mt-4"
         />
 
@@ -249,7 +210,7 @@
 <script lang="ts">
 import {SettingsDto, ThumbnailSizeDto} from '@/types/komga-settings'
 import Vue from 'vue'
-import {helpers, maxValue, minValue, required} from 'vuelidate/lib/validators'
+import {helpers, integer, maxValue, minValue, required} from 'vuelidate/lib/validators'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import FileBrowserDialog from '@/components/dialogs/FileBrowserDialog.vue'
 
@@ -328,53 +289,11 @@ export default Vue.extend({
       return errors
     },
     taskPoolSizeErrors(): string[] {
-    prefetchPagesErrors(): string[] {
       const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
-      return errors
-    },
-      const errors = [] as string[]
-    prefetchPagesErrors(): string[] {
-      const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
-      return errors
-    },
       if (!this.$v.form?.taskPoolSize?.$dirty) return errors
-    prefetchPagesErrors(): string[] {
-      const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
-      return errors
-    },
       !this.$v?.form?.taskPoolSize?.minValue && errors.push(this.$t('validation.one_or_more').toString())
-    prefetchPagesErrors(): string[] {
-      const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
-      return errors
-    },
       !this.$v?.form?.taskPoolSize?.required && errors.push(this.$t('common.required').toString())
-    prefetchPagesErrors(): string[] {
-      const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
       return errors
-    },
-      return errors
-    prefetchPagesErrors(): string[] {
-      const errors = [] as string[]
-      if (!this.$v.form?.prefetchPages?.$dirty) return errors
-      !this.$v?.form?.prefetchPages?.minValue && errors.push(this.$t('validation.min_value', {value: 0}).toString())
-      !this.$v?.form?.prefetchPages?.integer && errors.push(this.$t('validation.integer').toString())
-      return errors
-    },
     },
     prefetchPagesErrors(): string[] {
       const errors = [] as string[]
@@ -435,6 +354,8 @@ export default Vue.extend({
       }
       if (this.$v.form?.taskPoolSize?.$dirty)
         this.$_.merge(newSettings, {taskPoolSize: this.form.taskPoolSize})
+      if (this.$v.form?.prefetchPages?.$dirty)
+        this.$_.merge(newSettings, {prefetchPages: this.form.prefetchPages})
       if (this.$v.form?.serverPort?.$dirty)
         this.$_.merge(newSettings, {serverPort: this.form.serverPort})
       if (this.$v.form?.serverContextPath?.$dirty)

@@ -1078,6 +1078,8 @@
     "label_server_context_path": "基本网址",
     "label_server_port": "服务器端口",
     "label_task_pool_size": "任务线程",
+    "label_prefetch_pages": "页面预加载数量",
+    "hint_prefetch_pages": "阅读时预加载的页面数（0 为禁用）",
     "label_thumbnail_size": "缩略图尺寸",
     "requires_restart": "需要重启才能生效",
     "server_settings": "服务器设置"

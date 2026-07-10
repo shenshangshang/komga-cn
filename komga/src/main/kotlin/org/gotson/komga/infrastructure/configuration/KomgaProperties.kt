@@ -1,5 +1,7 @@
 package org.gotson.komga.infrastructure.configuration
 
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -94,7 +96,8 @@ class KomgaProperties {
   }
 
   class Prefetch {
-    @get:Positive
+    @get:Min(0)
+    @get:Max(10)
     var pages: Int = 3
   }
 

@@ -1,3 +1,10 @@
+/**
+ * Komga 通用书籍 API 控制器。
+ *
+ * Komga-CN 修改说明：集成 PagePrefetchService 实现页面预加载缓存。
+ * - getBookPageInternal: 通过预加载服务读取，缓存命中 <5ms
+ * - getBookPageRawInternal: 保持直读模式（用于 PDF 等场景）
+ */
 package org.gotson.komga.interfaces.api
 import org.gotson.komga.domain.service.PagePrefetchService
 

@@ -9,6 +9,7 @@ export interface SettingsDto {
   koboProxy: boolean,
   koboPort?: number,
   kepubifyPath: SettingMultiSource<string>,
+  prefetchPages: number,
 }
 
 export interface SettingMultiSource<T> {
@@ -29,6 +30,7 @@ export interface SettingsUpdateDto {
   koboProxy?: boolean,
   koboPort?: number,
   kepubifyPath?: string,
+  prefetchPages?: number,
 }
 
 export enum ThumbnailSizeDto {

@@ -522,3 +522,15 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.v-navigation-drawer {
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+}
+.v-app-bar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+.v-list-item--active {
+  color: var(--v-primary-base) !important;
+}
+</style>

@@ -1078,6 +1078,8 @@
     "label_server_context_path": "Base URL",
     "label_server_port": "Server Port",
     "label_task_pool_size": "Task threads",
+    "label_prefetch_pages": "Page prefetch count",
+    "hint_prefetch_pages": "Number of pages to preload while reading (0 to disable)",
     "label_thumbnail_size": "Thumbnails size",
     "requires_restart": "Requires restart to take effect",
     "server_settings": "Server Settings"

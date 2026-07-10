@@ -460,12 +460,21 @@ export default Vue.extend({
 
 .unread {
   border-left: 25px solid transparent;
-  border-right: 25px solid orange;
+  border-right: 25px solid var(--v-accent-base);
   border-bottom: 25px solid transparent;
   height: 0;
   width: 0;
   position: absolute;
   right: 0;
   z-index: 2;
+}
+
+.v-card:hover .v-image__image {
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
+}
+
+.v-image__image {
+  transition: transform 0.3s ease;
 }
 </style>

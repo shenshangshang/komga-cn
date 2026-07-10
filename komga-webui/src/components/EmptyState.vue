@@ -38,5 +38,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-
+.v-avatar {
+  border-radius: 24px !important;
+}
 </style>

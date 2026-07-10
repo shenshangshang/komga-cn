@@ -1,6 +1,7 @@
 package org.gotson.komga.interfaces.api.rest.dto
 
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import kotlin.properties.Delegates
@@ -52,7 +53,7 @@ class SettingsUpdateDto {
       isSet[prop.name] = true
     }
 
-  @get:Positive
+  @get:Min(0)
   @get:Max(10)
   var prefetchPages: Int? = null
 }

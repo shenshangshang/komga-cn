@@ -6,7 +6,7 @@
  * - getBookPageRawInternal: 保持直读模式（用于 PDF 等场景）
  */
 package org.gotson.komga.interfaces.api
-import org.gotson.komga.domain.service.PagePrefetchService
+import org.gotson.komga.domain.service.PagePrefetchLifecycle
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
@@ -72,7 +72,7 @@ private val FONT_EXTENSIONS = listOf("otf", "woff", "woff2", "eot", "ttf", "svg"
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class CommonBookController(
-  private val pagePrefetchService: PagePrefetchService,
+  private val pagePrefetchService: PagePrefetchLifecycle,
   private val mediaRepository: MediaRepository,
   private val bookRepository: BookRepository,
   private val bookDtoRepository: BookDtoRepository,

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 private val logger = KotlinLogging.logger {}
 
 @Service
-class PagePrefetchService(
+class PagePrefetchLifecycle(
   private val pagePrefetchCache: PagePrefetchCache,
   private val mediaRepository: MediaRepository,
   private val bookLifecycle: BookLifecycle,

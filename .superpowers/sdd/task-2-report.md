@@ -146,3 +146,13 @@ Exact verification commands:
 - `./gradlew :komga:ktlintMainSourceSetCheck :komga:compileKotlin --no-daemon` — `BUILD SUCCESSFUL`.
 - With `KOMGA_DATABASE_*` and `KOMGA_TASKS_DB_*` pointing to the default disposable container: `./gradlew :komga:test --tests "*BookImporterTest" --no-daemon` — 24 tests, `BUILD SUCCESSFUL`.
 - With the same variables pointing to the explicit-Unicode disposable container: `./gradlew :komga:test --tests "*BookImporterTest" --rerun-tasks --no-daemon` — 24 tests, `BUILD SUCCESSFUL`; `--rerun-tasks` ensured the second datasource configuration was exercised rather than accepted as Gradle up-to-date.
+
+## Final full gate and timezone matrix (2026-07-13)
+
+The earlier failures above remain the mechanical history of the remediation. The final gate is green at clean commit `042f2d735d063a126597b53e0b28a193667a7650`.
+
+- UTC JVM with UTC MySQL, exact command `./gradlew clean test build --no-daemon`: 897 tests, `BUILD SUCCESSFUL in 3m 11s`, `40 actionable tasks: 40 executed`. Raw log: `/root/komga-task2-full-gate-042f2d73-utc.log`.
+- Asia/Shanghai JVM with UTC MySQL and production-shape datasource URLs containing neither `serverTimezone` nor `connectionTimeZone`, exact command `./gradlew :komga:test --tests '*LibraryDaoTest' --no-daemon`: `BUILD SUCCESSFUL in 20s`, `21 actionable tasks: 1 executed, 20 up-to-date`. Raw log: `/root/komga-task2-timezone-matrix-local.log`.
+- Resource scan command `git grep -nEi 'serverTimezone|connectionTimeZone|user\.timezone|TZ=' -- ':(glob)**/src/main/resources/**' ':(glob)**/src/test/resources/**' ':Dockerfile'` returned no matches. No application resource or container definition forces a timezone.
+
+Conclusion: Task 2's exact full gate and the non-UTC-JVM/UTC-MySQL production-shape timezone case are both green without datasource timezone overrides.

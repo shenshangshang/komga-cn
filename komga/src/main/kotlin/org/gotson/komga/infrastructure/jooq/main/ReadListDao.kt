@@ -79,6 +79,10 @@ class ReadListDao(
         .and(b.LIBRARY_ID.inOrNoCondition(belongsToLibraryIds))
         .and(b.LIBRARY_ID.inOrNoCondition(filterOnLibraryIds))
         .and(restrictions.toCondition())
+    val itemConditions =
+      searchCondition
+        .and(b.LIBRARY_ID.inOrNoCondition(filterOnLibraryIds))
+        .and(restrictions.toCondition())
 
     val queryIds =
       if (belongsToLibraryIds == null && filterOnLibraryIds == null && !restrictions.isRestricted)
@@ -111,7 +115,7 @@ class ReadListDao(
     val items =
       dslRO
         .selectBase(restrictions.isRestricted)
-        .where(conditions)
+        .where(itemConditions)
         .apply { if (queryIds != null) and(rl.ID.`in`(queryIds)) }
         .orderBy(orderBy)
         .apply { if (pageable.isPaged) limit(pageable.pageSize).offset(pageable.offset) }

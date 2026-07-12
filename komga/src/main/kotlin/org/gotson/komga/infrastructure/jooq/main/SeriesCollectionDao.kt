@@ -76,6 +76,10 @@ class SeriesCollectionDao(
         .and(s.LIBRARY_ID.inOrNoCondition(belongsToLibraryIds))
         .and(s.LIBRARY_ID.inOrNoCondition(filterOnLibraryIds))
         .and(restrictions.toCondition())
+    val itemConditions =
+      searchCondition
+        .and(s.LIBRARY_ID.inOrNoCondition(filterOnLibraryIds))
+        .and(restrictions.toCondition())
 
     val queryIds =
       if (belongsToLibraryIds == null && filterOnLibraryIds == null && !restrictions.isRestricted)
@@ -109,7 +113,7 @@ class SeriesCollectionDao(
     val items =
       dslRO
         .selectBase(restrictions.isRestricted)
-        .where(conditions)
+        .where(itemConditions)
         .apply { if (queryIds != null) and(c.ID.`in`(queryIds)) }
         .orderBy(orderBy)
         .apply { if (pageable.isPaged) limit(pageable.pageSize).offset(pageable.offset) }

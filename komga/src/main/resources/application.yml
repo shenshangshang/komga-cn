@@ -16,9 +16,9 @@ logging:
 
 komga:
   database:
-    url: ${KOMGA_DATABASE_URL:}
-    username: ${KOMGA_DATABASE_USERNAME:}
-    password: ${KOMGA_DATABASE_PASSWORD:}
+    url: \${KOMGA_DATABASE_URL:}
+    username: \${KOMGA_DATABASE_USERNAME:}
+    password: \${KOMGA_DATABASE_PASSWORD:}
   lucene:
     data-directory: \${komga.config-dir}/lucene
   fonts:
@@ -27,9 +27,9 @@ komga:
   prefetch:
     pages: 3
   tasks-db:
-    url: ${KOMGA_TASKS_DB_URL:}
-    username: ${KOMGA_TASKS_DB_USERNAME:}
-    password: ${KOMGA_TASKS_DB_PASSWORD:}
+    url: \${KOMGA_TASKS_DB_URL:}
+    username: \${KOMGA_TASKS_DB_USERNAME:}
+    password: \${KOMGA_TASKS_DB_PASSWORD:}
 
 spring:
   flyway:

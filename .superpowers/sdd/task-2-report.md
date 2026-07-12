@@ -65,3 +65,17 @@ Status changed to **BLOCKED** after executing the previously unreachable test su
 1. Tests require isolated MySQL schemas/containers with migration lifecycle; current test configuration points at shared schemas and is destructive/non-repeatable. Implementing safe ephemeral schema provisioning is larger than a narrow baseline correction and requires infrastructure authority/configuration.
 2. Official dependency audit contains unpatched critical/high reader-chain vulnerabilities. Replacing/forking the reader dependency requires a compatibility/security project, not an unreviewed baseline pin change.
 3. Therefore the exact Gradle gate cannot honestly be reported green, and Task 2 must not advance.
+
+## Isolated MySQL re-run
+
+An ephemeral `mysql:8.4` container was started with `/var/lib/mysql` on tmpfs, dedicated `komga` and `komga_tasks` schemas, and loopback-only port 33306. Spring's supported `KOMGA_DATABASE_*` and `KOMGA_TASKS_DB_*` environment bindings pointed the exact Gradle command at it. The container was removed after the run; no volume remained and the shared MySQL server was never contacted or modified.
+
+The exact command reached tests and failed: 475 executed, 54 failed. This disproves the earlier shared-database-only hypothesis and identifies incomplete MySQL porting in the fork:
+
+- `NamingConventionTest`: `PagePrefetchService` violates the project's domain naming architecture rule.
+- `DataSourcesConfigurationTest.MemoryMode/WalMode`: tests still require removed `sqliteDataSourceRO` beans.
+- DAO/domain assertions expose MySQL timestamp precision and sort/metadata semantic differences.
+- Fresh-schema tests leak API keys, collections, and read lists between cases; cleanup ordering/coverage is incomplete.
+- Subsequent Spring contexts hit the failure threshold and account for many cascade failures.
+
+The enhanced smoke test was also run against a fresh `shenshangshang/komga-cn:1.26.0` container with tmpfs `/config` for 240 seconds. The process remained running and completed index bootstrap, but `/actuator/health` repeatedly reset the connection and never returned UP. The script correctly failed and retained the last curl diagnostic; container logs were collected before removal. This published image is therefore not a reproducible healthy runtime baseline in the current environment.

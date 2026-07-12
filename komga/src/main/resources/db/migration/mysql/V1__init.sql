@@ -540,6 +540,7 @@ CREATE TABLE `USER_API_KEY` (
   `API_KEY` VARCHAR(255) NOT NULL,
   `COMMENT` TEXT NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `uk__user_api_key__api_key` (`API_KEY`),
   FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -603,4 +604,3 @@ CREATE INDEX `idx__sync_point_book_removed_status__sync_point_id` ON `SYNC_POINT
 CREATE INDEX `idx__sync_point_book__sync_point_id` ON `SYNC_POINT_BOOK` (`SYNC_POINT_ID`);
 CREATE INDEX `idx__sync_point_readlist__sync_point_id` ON `SYNC_POINT_READLIST` (`SYNC_POINT_ID`);
 CREATE INDEX `idx__sync_point_readlist_book__sync_point_id_readlist_id` ON `SYNC_POINT_READLIST_BOOK` (`SYNC_POINT_ID`, `READLIST_ID`);
-

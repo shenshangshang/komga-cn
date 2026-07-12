@@ -103,3 +103,9 @@ A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 333
 The root cause was `SeriesMetadata.copy`: although its API accepted a `titleSort` argument, construction ignored that argument and unconditionally derived pinyin from `title`. A pure domain regression first failed with 13 tests executed and one intended failure. The minimal fix passes the explicit argument through. `SeriesMetadataTest` then passed (13 tests), and the complete `SeriesSearchTest` passed against MySQL 8.4 (31 tests), including all title and title-sort operators.
 
 Commits: `dedc3a16` (RED copy regression), `abe32a15` (minimal production fix).
+
+## MySQL API-key uniqueness remediation (2026-07-13)
+
+On the isolated MySQL 8.4 schema, the API-key/user/read-list/collection controller batch passed, but left one anonymous failed-authentication audit row; it has no user foreign-key value and is intentionally not removed by user lifecycle deletion. The wider module run exposed a distinct production schema defect: `KomgaUserLifecycleTest` generated the same API key repeatedly, yet MySQL accepted every row because `USER_API_KEY.API_KEY` lacked the uniqueness constraint required by the lifecycle retry contract.
+
+The existing lifecycle test was the RED regression (`expected null` but received a second key). The bootstrap schema now declares a unique key, and migration `V3__user_api_key_unique.sql` applies it to existing databases. The focused lifecycle suite then passed on MySQL 8.4. No foreign keys were disabled and no assertions were relaxed.

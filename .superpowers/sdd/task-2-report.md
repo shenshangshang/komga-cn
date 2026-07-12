@@ -95,3 +95,11 @@ A separate `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 
 - The remaining `SeriesSearchTest` title-sort equality failure was reproduced independently. Explicit case folding in the condition and removing the SQLite-only title-sort collation did not change the empty result, so those unproven changes were discarded. The failure therefore remains open for the next query/state-visibility investigation.
 
 Commits: `229cb499` (page hash grouping), `e0a29bec` (collection/read-list library filtering).
+
+## Series title-sort copy remediation (2026-07-13)
+
+A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 33309, and isolated `komga`/`komga_tasks` schemas. MySQL general logging captured the complete failing data path. The test inserted `TITLE_SORT='1'` and `'2'`; after calling `SeriesMetadata.copy(titleSort = "Series 1/2")`, the generated updates still wrote `'1'` and `'2'`. The generated search SQL correctly bound `lower(TITLE_SORT) = lower('seRIES 1')`, so its empty result reflected the stored data rather than a collation or query defect.
+
+The root cause was `SeriesMetadata.copy`: although its API accepted a `titleSort` argument, construction ignored that argument and unconditionally derived pinyin from `title`. A pure domain regression first failed with 13 tests executed and one intended failure. The minimal fix passes the explicit argument through. `SeriesMetadataTest` then passed (13 tests), and the complete `SeriesSearchTest` passed against MySQL 8.4 (31 tests), including all title and title-sort operators.
+
+Commits: `dedc3a16` (RED copy regression), `abe32a15` (minimal production fix).

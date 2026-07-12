@@ -120,3 +120,4 @@ A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 333
 - The tasks schema retained second-precision timestamps. A batch of equal-priority tasks therefore tied on `LAST_MODIFIED_DATE`, and `takeFirst` selected `book8` instead of the first submitted `book1`. Tasks migration `V2` upgrades both audit timestamps to microsecond precision. Complete `TasksDaoTest` passed; the adjacent `TaskProcessorTest` was already green, so no unsupported locking or uniqueness change was made.
 
 Commits: `e5e2e4f4` (fresh API-key migration), `06647a2d` (collection ordering), `2ab36426` (empty-set lifecycle defaults), `337f8949` (task timestamp precision), `cc1aee79` (read-list ordering).
+Final neighboring verification selected the five lifecycle/DAO classes plus `TasksDaoTest` and `TaskProcessorTest` in one fresh-schema run: 92 tests, `BUILD SUCCESSFUL`. The container was removed afterward.

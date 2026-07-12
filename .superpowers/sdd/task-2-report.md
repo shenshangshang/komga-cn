@@ -79,3 +79,9 @@ The exact command reached tests and failed: 475 executed, 54 failed. This dispro
 - Subsequent Spring contexts hit the failure threshold and account for many cascade failures.
 
 The enhanced smoke test was also run against a fresh `shenshangshang/komga-cn:1.26.0` container with tmpfs `/config` for 240 seconds. The process remained running and completed index bootstrap, but `/actuator/health` repeatedly reset the connection and never returned UP. The script correctly failed and retained the last curl diagnostic; container logs were collected before removal. This published image is therefore not a reproducible healthy runtime baseline in the current environment.
+
+## MySQL temporal precision remediation (2026-07-13)
+
+A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 33307, and dedicated `komga`/`komga_tasks` schemas. The initial jOOQ cluster ran 178 tests with 12 failures. Eight update persistence tests showed the same production defect: MySQL `DATETIME` truncated audit timestamps to seconds, so rapid updates could retain the same `LAST_MODIFIED_DATE`.
+
+The MySQL bootstrap schema now uses `DATETIME(6)` and `CURRENT_TIMESTAMP(6)`. Migration `V2__datetime_microsecond_precision.sql` upgrades every existing temporal column without dropping nullability or defaults. The focused rerun covered BookDao, BookMetadataAggregationDao, KomgaUserDao, LibraryDao, ReadListDao, ReadProgressDao, SeriesDao, SeriesMetadataDao, and SeriesSearch: 75 tests ran and all eight temporal update assertions passed. Two independent filtering/search failures remain for the next semantics cluster; assertions were not relaxed.

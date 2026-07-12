@@ -16,9 +16,9 @@ logging:
 
 komga:
   database:
-    url: jdbc:mysql://192.168.5.125:3306/komga?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: wzy20001229
+    url: ${KOMGA_DATABASE_URL:}
+    username: ${KOMGA_DATABASE_USERNAME:}
+    password: ${KOMGA_DATABASE_PASSWORD:}
   lucene:
     data-directory: \${komga.config-dir}/lucene
   fonts:
@@ -27,9 +27,9 @@ komga:
   prefetch:
     pages: 3
   tasks-db:
-    url: jdbc:mysql://192.168.5.125:3306/komga_tasks?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: wzy20001229
+    url: ${KOMGA_TASKS_DB_URL:}
+    username: ${KOMGA_TASKS_DB_USERNAME:}
+    password: ${KOMGA_TASKS_DB_PASSWORD:}
 
 spring:
   flyway:

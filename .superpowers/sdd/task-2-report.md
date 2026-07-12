@@ -46,3 +46,22 @@ Preflight confirmed a clean feature worktree before Task 2. Implementation is PO
 2. Web type-checking OOM is masked by a zero command exit.
 3. Dependency CVE audit is incomplete due to registry capability.
 4. Existing HTML sinks, root container execution, reader lifecycle, and prefetch concurrency need focused follow-up tests.
+
+## Re-review remediation (2026-07-12)
+
+Status changed to **BLOCKED** after executing the previously unreachable test suite.
+
+- Generated project-native ktlint baselines with `./gradlew ktlintGenerateBaseline`; this adds only `config/ktlint/baseline.xml` and `komga/config/ktlint/baseline.xml`, with no broad source formatting.
+- Fixed a source/test API compatibility defect by defaulting `BookAnalyzer.analyze(..., adPagesDetector)` to `false`. `./gradlew :komga:compileTestKotlin` then exited 0.
+- Exact `./gradlew clean test build` advanced through lint and compilation but failed after 898 tests: 50 failures. Representative signatures are duplicate background task execution and `DataIntegrityViolationException` deleting `USER` while `AUTHENTICATION_ACTIVITY` references it. Logs show all test contexts using shared `komga`/`komga_tasks` MySQL schemas. Destructively resetting a shared database is unsafe and is not an acceptable build implementation.
+- During root-cause analysis, `komga/src/main/resources/application.yml` was found to contain a literal MySQL endpoint/password. It was replaced with `KOMGA_DATABASE_*` and `KOMGA_TASKS_DB_*` environment placeholders. No replacement credential was written.
+- Frontend hard gate: `NODE_OPTIONS=--max-old-space-size=8192 npm run build` completed type checking and emitted `DONE Build complete`, exit 0 in 183.7s. The package build command now invokes Node with the same 8192 MiB heap so `npm run build` is self-contained.
+- Official registry audit: `npm audit --registry=https://registry.npmjs.org --omit=dev --audit-level=high` completed and reported 23 vulnerabilities (2 critical, 3 high, 12 moderate, 6 low). The critical `form-data` chain and high `pdfjs-dist` chain are transitive through the reader fork and have no published fix in this graph. The lockfile resolves the GitHub dependency immutably to commit `3ebc8cddc83f1249d12135717f87b0ab1e9a9888`, despite the package manifest's branch label.
+- Route script now validates a readable regular baseline, rejects zero extraction, and reports count collapse before diff. Smoke script validates positive attempts, bounds every curl, retains last health diagnostics, and requires Komga app plus asset markers.
+- Dockerfile now creates and runs as `komga`, with `/app`, `/config`, and `/data` owned by that account. Runtime rebuild/smoke remains pending because the mandatory source build cannot produce a fully verified artifact.
+
+### Blocking conditions
+
+1. Tests require isolated MySQL schemas/containers with migration lifecycle; current test configuration points at shared schemas and is destructive/non-repeatable. Implementing safe ephemeral schema provisioning is larger than a narrow baseline correction and requires infrastructure authority/configuration.
+2. Official dependency audit contains unpatched critical/high reader-chain vulnerabilities. Replacing/forking the reader dependency requires a compatibility/security project, not an unreviewed baseline pin change.
+3. Therefore the exact Gradle gate cannot honestly be reported green, and Task 2 must not advance.

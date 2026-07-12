@@ -65,7 +65,7 @@ class BookAnalyzer(
   fun analyze(
     book: Book,
     analyzeDimensions: Boolean,
-    adPagesDetector: Boolean,
+    adPagesDetector: Boolean = false,
   ): Media {
     logger.info { "Trying to analyze book: $book" }
     return try {

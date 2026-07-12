@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baseline version="1.0">
+    <file name="src/main/kotlin/org/gotson/komga/Application.kt">
+        <error line="3" column="1" source="standard:import-ordering" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/model/MediaProfile.kt">
+        <error line="7" column="7" source="standard:trailing-comma-on-declaration-site" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/service/BookAnalyzer.kt">
+        <error line="13" column="1" source="standard:no-wildcard-imports" />
+        <error line="105" column="29" source="standard:function-signature" />
+        <error line="105" column="52" source="standard:function-signature" />
+        <error line="105" column="64" source="standard:function-signature" />
+        <error line="105" column="84" source="standard:function-signature" />
+        <error line="116" column="18" source="standard:multiline-expression-wrapping" />
+        <error line="117" column="1" source="standard:indent" />
+        <error line="117" column="25" source="standard:multiline-expression-wrapping" />
+        <error line="117" column="41" source="standard:chain-method-continuation" />
+        <error line="118" column="1" source="standard:indent" />
+        <error line="119" column="1" source="standard:indent" />
+        <error line="120" column="1" source="standard:indent" />
+        <error line="121" column="1" source="standard:indent" />
+        <error line="122" column="1" source="standard:indent" />
+        <error line="123" column="1" source="standard:indent" />
+        <error line="125" column="1" source="standard:indent" />
+        <error line="127" column="1" source="standard:indent" />
+        <error line="128" column="1" source="standard:indent" />
+        <error line="129" column="1" source="standard:indent" />
+        <error line="130" column="1" source="standard:indent" />
+        <error line="131" column="1" source="standard:indent" />
+        <error line="132" column="1" source="standard:indent" />
+        <error line="138" column="1" source="standard:indent" />
+        <error line="139" column="1" source="standard:indent" />
+        <error line="143" column="1" source="standard:indent" />
+        <error line="145" column="1" source="standard:indent" />
+        <error line="147" column="1" source="standard:indent" />
+        <error line="191" column="25" source="standard:multiline-expression-wrapping" />
+        <error line="192" column="1" source="standard:indent" />
+        <error line="193" column="1" source="standard:indent" />
+        <error line="194" column="1" source="standard:indent" />
+        <error line="195" column="1" source="standard:indent" />
+        <error line="268" column="33" source="standard:multiline-expression-wrapping" />
+        <error line="269" column="1" source="standard:indent" />
+        <error line="270" column="1" source="standard:indent" />
+        <error line="271" column="1" source="standard:indent" />
+        <error line="272" column="1" source="standard:indent" />
+        <error line="399" column="9" source="standard:property-naming" />
+        <error line="435" column="11" source="standard:property-naming" />
+        <error line="437" column="81" source="standard:string-template" />
+        <error line="459" column="11" source="standard:if-else-wrapping" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/service/BookConverter.kt">
+        <error line="125" column="26" source="standard:multiline-expression-wrapping" />
+        <error line="126" column="1" source="standard:indent" />
+        <error line="127" column="1" source="standard:indent" />
+        <error line="128" column="1" source="standard:indent" />
+        <error line="128" column="69" source="standard:trailing-comma-on-call-site" />
+        <error line="129" column="1" source="standard:indent" />
+        <error line="134" column="1" source="standard:indent" />
+        <error line="137" column="1" source="standard:indent" />
+        <error line="142" column="1" source="standard:indent" />
+        <error line="147" column="1" source="standard:indent" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/service/BookLifecycle.kt">
+        <error line="86" column="17" source="standard:multiline-expression-wrapping" />
+        <error line="87" column="1" source="standard:indent" />
+        <error line="88" column="1" source="standard:indent" />
+        <error line="89" column="1" source="standard:indent" />
+        <error line="89" column="69" source="standard:trailing-comma-on-call-site" />
+        <error line="90" column="1" source="standard:indent" />
+        <error line="488" column="1" source="standard:indent" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/service/BookPageEditor.kt">
+        <error line="127" column="24" source="standard:multiline-expression-wrapping" />
+        <error line="128" column="1" source="standard:indent" />
+        <error line="129" column="1" source="standard:indent" />
+        <error line="130" column="1" source="standard:indent" />
+        <error line="130" column="69" source="standard:trailing-comma-on-call-site" />
+        <error line="131" column="1" source="standard:indent" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/domain/service/PagePrefetchService.kt">
+        <error line="3" column="1" source="standard:import-ordering" />
+        <error line="22" column="27" source="standard:function-signature" />
+        <error line="22" column="39" source="standard:function-signature" />
+        <error line="22" column="56" source="standard:function-signature" />
+        <error line="22" column="81" source="standard:function-signature" />
+        <error line="36" column="23" source="standard:function-signature" />
+        <error line="36" column="35" source="standard:function-signature" />
+        <error line="36" column="53" source="standard:function-signature" />
+        <error line="36" column="78" source="standard:function-signature" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/infrastructure/cache/PagePrefetchCache.kt">
+        <error line="17" column="11" source="standard:function-signature" />
+        <error line="17" column="27" source="standard:function-signature" />
+        <error line="17" column="42" source="standard:function-signature" />
+        <error line="17" column="57" source="standard:no-trailing-spaces" />
+        <error line="17" column="57" source="standard:function-signature" />
+        <error line="20" column="11" source="standard:function-signature" />
+        <error line="20" column="27" source="standard:function-signature" />
+        <error line="20" column="44" source="standard:function-signature" />
+        <error line="20" column="59" source="standard:function-signature" />
+        <error line="24" column="16" source="standard:function-signature" />
+        <error line="24" column="32" source="standard:function-signature" />
+        <error line="24" column="49" source="standard:function-signature" />
+        <error line="24" column="64" source="standard:function-signature" />
+        <error line="28" column="19" source="standard:function-signature" />
+        <error line="28" column="35" source="standard:function-signature" />
+        <error line="28" column="44" source="standard:function-signature" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/infrastructure/image/QrCodeDetector.kt">
+        <error line="3" column="1" source="standard:import-ordering" />
+        <error line="21" column="1" source="standard:no-empty-first-line-in-class-body" />
+        <error line="22" column="33" source="standard:multiline-expression-wrapping" />
+        <error line="31" column="34" source="standard:trailing-comma-on-call-site" />
+        <error line="37" column="40" source="standard:trailing-comma-on-call-site" />
+        <error line="86" column="27" source="standard:function-signature" />
+        <error line="86" column="49" source="standard:function-signature" />
+        <error line="86" column="69" source="standard:function-signature" />
+        <error line="102" column="28" source="standard:function-signature" />
+        <error line="102" column="50" source="standard:function-signature" />
+        <error line="102" column="63" source="standard:function-signature" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/infrastructure/mediacontainer/epub/EpubExtractor.kt">
+        <error line="81" column="20" source="standard:chain-method-continuation" />
+        <error line="81" column="51" source="standard:chain-method-continuation" />
+        <error line="90" column="19" source="standard:chain-method-continuation" />
+        <error line="107" column="26" source="standard:multiline-expression-wrapping" />
+        <error line="368" column="1" source="standard:indent" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/infrastructure/mediacontainer/mobi/MobiExtractor.kt">
+        <error line="13" column="1" source="standard:no-consecutive-blank-lines" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/infrastructure/util/NaturalSortComparator.kt">
+        <error line="12" column="1" source="standard:no-empty-first-line-in-class-body" />
+        <error line="22" column="24" source="standard:function-signature" />
+        <error line="22" column="37" source="standard:function-signature" />
+        <error line="22" column="48" source="standard:function-signature" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/interfaces/api/CommonBookController.kt">
+        <error line="9" column="1" source="standard:import-ordering" />
+        <error line="108" column="6" source="standard:function-signature" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/interfaces/api/kosync/KoreaderSyncController.kt">
+        <error line="81" column="19" source="standard:multiline-expression-wrapping" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/interfaces/api/rest/SeriesController.kt">
+        <error line="829" column="23" source="standard:chain-method-continuation" />
+        <error line="833" column="35" source="standard:chain-method-continuation" />
+        <error line="838" column="11" source="standard:chain-method-continuation" />
+        <error line="864" column="23" source="standard:chain-method-continuation" />
+        <error line="868" column="35" source="standard:chain-method-continuation" />
+        <error line="873" column="11" source="standard:chain-method-continuation" />
+    </file>
+    <file name="src/main/kotlin/org/gotson/komga/interfaces/apprunner/IndexRebuildRunner.kt">
+        <error line="19" column="1" source="standard:no-empty-first-line-in-class-body" />
+    </file>
+</baseline>

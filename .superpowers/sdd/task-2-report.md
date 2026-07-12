@@ -121,3 +121,15 @@ A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 333
 
 Commits: `e5e2e4f4` (fresh API-key migration), `06647a2d` (collection ordering), `2ab36426` (empty-set lifecycle defaults), `337f8949` (task timestamp precision), `cc1aee79` (read-list ordering).
 Final neighboring verification selected the five lifecycle/DAO classes plus `TasksDaoTest` and `TaskProcessorTest` in one fresh-schema run: 92 tests, `BUILD SUCCESSFUL`. The container was removed afterward.
+
+## Per-Spring-context MySQL test isolation (2026-07-13)
+
+The exact gate's later controller failures were cross-context pollution, not a controller assertion defect. The original SQLite test profile used `${random.uuid}` in both database file names; Spring resolves that value once per Environment, so cached contexts share their own database while distinct contexts get distinct files. The MySQL fork replaced those URLs with fixed `komga` and `komga_tasks` schemas, causing otherwise independent Spring contexts to migrate and mutate the same tables. The representative failure was `LibraryControllerTest` inserting `LIBRARY.ID=1` into residue from another context.
+
+Alternatives were rejected as follows: a per-worker schema still shares state across multiple contexts in one Gradle worker; a central FK-aware cleaner would need to encode every FK and asynchronous lifecycle boundary; context teardown alone cannot prevent concurrently live contexts from sharing a schema. The test-only EnvironmentPostProcessor restores the SQLite lifecycle model: each newly created test Environment derives paired `komga_test_<uuid>` and `komga_tasks_test_<uuid>` schema URLs, preserves connection options, and enables MySQL's `createDatabaseIfNotExist`. Spring's context cache continues to reuse the same Environment/schema. Foreign keys and production migrations remain enabled, and no assertions, IDs, or business code changed.
+
+TDD evidence:
+
+- RED: `./gradlew :komga:compileTestKotlin --no-daemon` failed because the new allocation regression referenced the missing `MySqlTestSchemaUrls` (`6f335fed`).
+- GREEN: `./gradlew :komga:test --tests '*MySqlTestSchemaUrlsTest' --no-daemon` passed both URL/allocation tests.
+- Integration: a fresh `mysql:8.4` container used tmpfs `/var/lib/mysql`, loopback port 33311, and no pre-created application schemas. `LibraryControllerTest`, `SeriesControllerTest`, and `ReadListControllerTest` ran together in 53 seconds with `BUILD SUCCESSFUL`; the previously failing Library nested suites all reported zero failures. `SHOW DATABASES` confirmed multiple context-specific schemas. The container is disposable and no shared database was contacted.

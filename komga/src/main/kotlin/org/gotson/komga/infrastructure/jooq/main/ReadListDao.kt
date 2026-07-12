@@ -111,6 +111,7 @@ class ReadListDao(
         else
           it.toSortField(sorts)
       }
+        .ifEmpty { listOf(rl.CREATED_DATE.asc(), rl.ID.asc()) }
 
     val items =
       dslRO

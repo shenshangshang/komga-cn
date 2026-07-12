@@ -85,3 +85,13 @@ The enhanced smoke test was also run against a fresh `shenshangshang/komga-cn:1.
 A fresh `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 33307, and dedicated `komga`/`komga_tasks` schemas. The initial jOOQ cluster ran 178 tests with 12 failures. Eight update persistence tests showed the same production defect: MySQL `DATETIME` truncated audit timestamps to seconds, so rapid updates could retain the same `LAST_MODIFIED_DATE`.
 
 The MySQL bootstrap schema now uses `DATETIME(6)` and `CURRENT_TIMESTAMP(6)`. Migration `V2__datetime_microsecond_precision.sql` upgrades every existing temporal column without dropping nullability or defaults. The focused rerun covered BookDao, BookMetadataAggregationDao, KomgaUserDao, LibraryDao, ReadListDao, ReadProgressDao, SeriesDao, SeriesMetadataDao, and SeriesSearch: 75 tests ran and all eight temporal update assertions passed. Two independent filtering/search failures remain for the next semantics cluster; assertions were not relaxed.
+
+## MySQL query semantics remediation (2026-07-13)
+
+A separate `mysql:8.4` container used tmpfs for `/var/lib/mysql`, loopback port 33308, and dedicated `komga`/`komga_tasks` schemas. No shared database was contacted.
+
+- `PageHashDao.findAllUnknown` selected `FILE_SIZE` while grouping only by `FILE_HASH`; MySQL `ONLY_FULL_GROUP_BY` rejected the generated SQL. Grouping now preserves the domain key pair (`FILE_HASH`, `FILE_SIZE`). The complete `PageHashDaoTest` cluster passed.
+- `ReadListDao.findAll` and `SeriesCollectionDao.findAll` correctly used `belongsToLibraryIds` to select parent entities, but then reused that predicate while fetching parent rows. This conflated parent membership with returned-member filtering for cross-library lists and collections. Parent selection remains in the ID subquery; member projection now uses only `filterOnLibraryIds` and content restrictions. Both exact cross-library regression methods passed without changing assertions.
+- The remaining `SeriesSearchTest` title-sort equality failure was reproduced independently. Explicit case folding in the condition and removing the SQLite-only title-sort collation did not change the empty result, so those unproven changes were discarded. The failure therefore remains open for the next query/state-visibility investigation.
+
+Commits: `229cb499` (page hash grouping), `e0a29bec` (collection/read-list library filtering).

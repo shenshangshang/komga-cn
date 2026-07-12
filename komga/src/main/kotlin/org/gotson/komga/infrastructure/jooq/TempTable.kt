@@ -21,7 +21,7 @@ class TempTable private constructor(
   private var created = false
 
   fun create() {
-    dslContext.execute("CREATE TEMPORARY TABLE $name (STRING varchar(768) NOT NULL);")
+    dslContext.execute("CREATE TEMPORARY TABLE $name (STRING varchar(768) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL);")
     created = true
   }
 

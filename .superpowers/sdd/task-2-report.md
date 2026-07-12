@@ -135,3 +135,14 @@ TDD evidence:
 - Integration: a fresh `mysql:8.4` container used tmpfs `/var/lib/mysql`, loopback port 33311, and no pre-created application schemas. `LibraryControllerTest`, `SeriesControllerTest`, and `ReadListControllerTest` ran together in 53 seconds with `BUILD SUCCESSFUL`; the previously failing Library nested suites all reported zero failures. `SHOW DATABASES` confirmed multiple context-specific schemas. The container is disposable and no shared database was contacted.
 
 The first exact-gate attempt after this change reached `ktlintTestSourceSetCheck` and failed only on multiline formatting in the new post-processor. Formatting was corrected solely in that new file. Focused `:komga:ktlintTestSourceSetCheck` then passed in 12 seconds, and the URL regression plus all three controller classes passed together again against the tmpfs MySQL container in 53 seconds. No unrelated file was formatted; the parent exact gate was intentionally left for the final gate runner.
+## MySQL temporary-table collation remediation (2026-07-13)
+
+`TempTable` is used by 15 DAOs for `IN`/`NOT IN` comparisons against `ID`, `BOOK_ID`, `SERIES_ID`, and `URL`. On a fresh MySQL 8.4 schema whose database default was explicitly `utf8mb4_unicode_ci`, `information_schema.COLUMNS` showed all 49 relevant target-column instances were `utf8mb4_0900_ai_ci` (`BOOK_ID` 14, `ID` 14, `SERIES_ID` 14, `URL` 7). MySQL therefore compared the temporary column's inherited/explicit Unicode collation against the 0900 table columns and raised `Illegal mix of collations`. `@@collation_database` was rejected as a source because it was `utf8mb4_unicode_ci` while the actual target columns were 0900.
+
+The temporary `STRING` column now explicitly uses `CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`, matching every enumerated comparison target without changing DAO APIs or query expressions. Verification used two disposable `mysql:8.4` containers with tmpfs `/var/lib/mysql`: one with MySQL defaults on loopback port 33313, and one started with `--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci` on loopback port 33312. No shared database was contacted.
+
+Exact verification commands:
+
+- `./gradlew :komga:ktlintMainSourceSetCheck :komga:compileKotlin --no-daemon` — `BUILD SUCCESSFUL`.
+- With `KOMGA_DATABASE_*` and `KOMGA_TASKS_DB_*` pointing to the default disposable container: `./gradlew :komga:test --tests "*BookImporterTest" --no-daemon` — 24 tests, `BUILD SUCCESSFUL`.
+- With the same variables pointing to the explicit-Unicode disposable container: `./gradlew :komga:test --tests "*BookImporterTest" --rerun-tasks --no-daemon` — 24 tests, `BUILD SUCCESSFUL`; `--rerun-tasks` ensured the second datasource configuration was exercised rather than accepted as Gradle up-to-date.

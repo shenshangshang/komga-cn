@@ -103,13 +103,13 @@ class SeriesCollectionDao(
         dslRO.fetchCount(c, searchCondition)
 
     val orderBy =
-      pageable.sort.mapNotNull {
-        if (it.property == "relevance" && !collectionIds.isNullOrEmpty())
-          c.ID.sortByValues(collectionIds, it.isAscending)
-        else
-          it.toSortField(sorts)
-      }
-        .ifEmpty { listOf(c.CREATED_DATE.asc(), c.ID.asc()) }
+      pageable.sort
+        .mapNotNull {
+          if (it.property == "relevance" && !collectionIds.isNullOrEmpty())
+            c.ID.sortByValues(collectionIds, it.isAscending)
+          else
+            it.toSortField(sorts)
+        }.ifEmpty { listOf(c.CREATED_DATE.asc(), c.ID.asc()) }
 
     val items =
       dslRO

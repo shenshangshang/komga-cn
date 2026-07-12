@@ -105,13 +105,13 @@ class ReadListDao(
         dslRO.fetchCount(rl, searchCondition)
 
     val orderBy =
-      pageable.sort.mapNotNull {
-        if (it.property == "relevance" && !readListIds.isNullOrEmpty())
-          rl.ID.sortByValues(readListIds, it.isAscending)
-        else
-          it.toSortField(sorts)
-      }
-        .ifEmpty { listOf(rl.CREATED_DATE.asc(), rl.ID.asc()) }
+      pageable.sort
+        .mapNotNull {
+          if (it.property == "relevance" && !readListIds.isNullOrEmpty())
+            rl.ID.sortByValues(readListIds, it.isAscending)
+          else
+            it.toSortField(sorts)
+        }.ifEmpty { listOf(rl.CREATED_DATE.asc(), rl.ID.asc()) }
 
     val items =
       dslRO

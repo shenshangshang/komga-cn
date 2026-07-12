@@ -2,11 +2,11 @@ package org.gotson.komga.domain.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.gotson.komga.domain.model.Book
-import org.gotson.komga.infrastructure.image.ImageType
-import org.gotson.komga.domain.persistence.MediaRepository
 import org.gotson.komga.domain.model.TypedBytes
+import org.gotson.komga.domain.persistence.MediaRepository
 import org.gotson.komga.infrastructure.cache.PagePrefetchCache
 import org.gotson.komga.infrastructure.configuration.KomgaSettingsProvider
+import org.gotson.komga.infrastructure.image.ImageType
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
@@ -19,7 +19,11 @@ class PagePrefetchLifecycle(
   private val bookLifecycle: BookLifecycle,
   private val komgaSettingsProvider: KomgaSettingsProvider,
 ) {
-  fun getPageWithPrefetch(book: Book, pageNumber: Int, convertFormat: ImageType?): TypedBytes {
+  fun getPageWithPrefetch(
+    book: Book,
+    pageNumber: Int,
+    convertFormat: ImageType?,
+  ): TypedBytes {
     val bookId = book.id
     val cached = pagePrefetchCache.get(bookId, pageNumber)
     if (cached != null) {
@@ -33,7 +37,11 @@ class PagePrefetchLifecycle(
   }
 
   @Async
-  fun triggerPrefetch(book: Book, currentPage: Int, convertFormat: ImageType?) {
+  fun triggerPrefetch(
+    book: Book,
+    currentPage: Int,
+    convertFormat: ImageType?,
+  ) {
     val prefetchCount = komgaSettingsProvider.prefetchPages
     if (prefetchCount <= 0) return
     val media = mediaRepository.findById(book.id)

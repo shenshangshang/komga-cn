@@ -109,6 +109,7 @@ class SeriesCollectionDao(
         else
           it.toSortField(sorts)
       }
+        .ifEmpty { listOf(c.CREATED_DATE.asc(), c.ID.asc()) }
 
     val items =
       dslRO

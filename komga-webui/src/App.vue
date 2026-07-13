@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <router-view/>
+    <a class="skip-link" href="#main-content" @click="focusMainContent">{{ $t('common.skip_to_content') }}</a>
+    <router-view id="main-content" tabindex="-1"/>
   </v-app>
 </template>
 <script lang="ts">
@@ -49,6 +50,9 @@ export default Vue.extend({
     },
   },
   methods: {
+    focusMainContent() {
+      this.$nextTick(() => document.getElementById('main-content')?.focus())
+    },
     systemThemeChange() {
       if (this.$store.state.persistedState.theme === Theme.SYSTEM) {
         this.changeTheme(this.$store.state.persistedState.theme)
@@ -100,5 +104,6 @@ export default Vue.extend({
 })
 </script>
 <style>
+@import "styles/design-tokens.css";
 @import "styles/global.css";
 </style>

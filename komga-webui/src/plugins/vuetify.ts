@@ -1,8 +1,6 @@
 import '@mdi/font/css/materialdesignicons.css'
-import 'typeface-roboto/index.css'
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
-import colors from 'vuetify/lib/util/colors'
 
 import {Touch} from 'vuetify/lib/directives'
 import i18n from '@/i18n'
@@ -34,22 +32,30 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        base: '#ffffff',
-        primary: '#1565C0',
-        secondary: '#FFB300',
-        accent: '#E53935',
-        'contrast-1': '#F5F7FA',
-        'contrast-light-2': colors.grey.darken2,
-        'diff': colors.green.lighten4,
+        base: '#FFFFFF',
+        primary: '#245FCC',
+        secondary: '#087F78',
+        accent: '#D9574E',
+        success: '#087F78',
+        warning: '#A65D00',
+        error: '#C62828',
+        info: '#245FCC',
+        'contrast-1': '#EEF2F6',
+        'contrast-light-2': '#5A6878',
+        'diff': '#D7F0ED',
       },
       dark: {
-        base: '#121212',
-        primary: '#64B5F6',
-        secondary: '#FFB300',
-        accent: '#E53935',
-        'contrast-1': '#1E1E1E',
-        'contrast-light-2': colors.grey.lighten2,
-        'diff': colors.green.darken4,
+        base: '#1A212B',
+        primary: '#79A7FF',
+        secondary: '#62CEC5',
+        accent: '#FF8B80',
+        success: '#62CEC5',
+        warning: '#F2B55F',
+        error: '#FF8585',
+        info: '#79A7FF',
+        'contrast-1': '#242E3A',
+        'contrast-light-2': '#B5C0CC',
+        'diff': '#203D3B',
       },
     },
   },

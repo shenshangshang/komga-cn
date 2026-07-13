@@ -156,3 +156,15 @@ The earlier failures above remain the mechanical history of the remediation. The
 - Resource scan command `git grep -nEi 'serverTimezone|connectionTimeZone|user\.timezone|TZ=' -- ':(glob)**/src/main/resources/**' ':(glob)**/src/test/resources/**' ':Dockerfile'` returned no matches. No application resource or container definition forces a timezone.
 
 Conclusion: Task 2's exact full gate and the non-UTC-JVM/UTC-MySQL production-shape timezone case are both green without datasource timezone overrides.
+
+## Runtime candidate closure (2026-07-13)
+
+Status: **GREEN_WITH_RECORDED_GAPS** at source commit `1bd4fe9a18f0c8dc62aad3433a4b1da095c00b91`; the application version remains `1.26.0`.
+
+- `NODE_OPTIONS=--max-old-space-size=8192 npm run build` completed TypeScript checking and emitted `DONE Build complete` in 140.875 seconds. `pageLoader.spec.ts` passed 4/4 tests. Logs: `/root/komga-task2-runtime-web-build.log`, `/root/komga-task2-runtime-pageloader.log`.
+- The deployable JAR was built through the project-native `:komga:prepareThymeLeaf :komga:bootJar` chain; the archive contains `BOOT-INF/classes/public/index.html` and `js/app.*`. Direct `bootJar` alone was rejected after runtime evidence showed it omitted the SPA and returned HTTP 500 at `/`. Log: `/root/komga-task2-runtime-bootjar-with-spa.log`.
+- Candidate image `komga-cn:task2-runtime` has ID `sha256:3632667cd388548622dbcacf0af0f8fb8ee3223f944d64ec51ffe3547c5efa70`. Image and runtime user are both `komga` (`uid=100`, `gid=101`). Disposable named volumes inherited `/config` and `/data` ownership; write probes passed. Raw evidence: `/root/komga-task2-runtime-image.txt`, `/root/komga-task2-runtime-permissions.log`.
+- Runtime used a fresh `mysql:8.4` container with tmpfs `/var/lib/mysql`, isolated network, dedicated `komga` and `komga_tasks` schemas, and task-local credentials. `scripts/smoke-komga.sh` passed: health `UP`, root Komga SPA markers present, unauthenticated `/api/v1/users/me=401`; Docker health was `healthy`. Logs: `/root/komga-task2-runtime-smoke.log`, `/root/komga-task2-runtime-health.json`, `/root/komga-task2-runtime-container.log`.
+- A separate fresh tmpfs MySQL 8.4 instance on loopback ran `ReadProgressDaoTest`, `BookLifecycleTest`, and `CommonBookControllerTest`: 31 tests, 0 failures/errors, `BUILD SUCCESSFUL`. Log: `/root/komga-task2-runtime-focused-gradle.log`.
+- No `PagePrefetchCache` or `PagePrefetchLifecycle` test source exists in this worktree, so bound/eviction/lifecycle behavior remains an explicit coverage gap. No defect was proven by the executed tests, so no production code or speculative test-only contract was added in this closure.
+- All task containers, networks, and volumes were removed. The candidate image is intentionally retained as the requested artifact.

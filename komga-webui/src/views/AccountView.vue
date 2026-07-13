@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row align="center">
       <v-col cols="12" md="8" lg="6" xl="4">
         <span class="text-capitalize">{{ $t('common.email') }}</span>

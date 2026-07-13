@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-row>
       <v-col v-if="tasksCount">
         <v-card>

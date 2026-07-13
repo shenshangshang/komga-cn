@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row>
       <v-col cols="auto">
-        <span class="font-weight-black text-h6">{{ $t('ui_settings.general') }}</span>
+        <h1 class="font-weight-black text-h6">{{ $t('ui_settings.general') }}</h1>
 
         <v-radio-group
           v-model="form.seriesGroups"

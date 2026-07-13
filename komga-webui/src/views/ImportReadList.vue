@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-alert type="info" text class="body-2" dismissible>
       <div v-html="$t('data_import.comicrack_preambule_html')"/>
     </v-alert>

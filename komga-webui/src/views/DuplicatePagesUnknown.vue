@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-alert type="warning" dismissible text class="body-2">
       <div>{{ $t('duplicate_pages.info') }}</div>
     </v-alert>

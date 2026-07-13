@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <!-- 加载进度条 -->
     <v-row v-if="loading || processingStats || processingCharts || processingDimensions">
       <v-col cols="12">

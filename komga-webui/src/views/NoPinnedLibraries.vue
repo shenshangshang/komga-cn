@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-6">
+  <div class="pa-6 k-view-shell k-state-page">
     <empty-state
       :title="$t('no_libraries_pinned.title')"
       :sub-title="$t('no_libraries_pinned.subtitle')"

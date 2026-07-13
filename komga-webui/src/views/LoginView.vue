@@ -1,13 +1,14 @@
 <template>
-  <div class="ma-3">
-    <v-container style="max-width: 550px">
+  <main class="login-page">
+    <v-container class="login-card">
       <v-row align="center" justify="center" class="ma-3">
         <v-img src="../assets/logo.svg"
+               alt="Komga"
                :max-width="logoWidth"
         />
       </v-row>
 
-      <form novalidate @submit.prevent="performLogin">
+      <form novalidate :aria-label="$t('login.login')" @submit.prevent="performLogin">
         <v-row justify="center" v-if="unclaimed">
           <v-col
             class="text-body-1 mt-2"
@@ -132,7 +133,7 @@
       >{{ $t('common.close') }}
       </v-btn>
     </v-snackbar>
-  </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -340,5 +341,35 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.login-page {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  padding: var(--k-space-4);
+  background: var(--k-surface-page);
+}
+
+.login-card {
+  width: min(100%, 34rem);
+  padding: var(--k-space-8);
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-sheet);
+  background: var(--k-surface-card);
+  box-shadow: var(--k-shadow-floating);
+}
+
+@media (max-width: 599px) {
+  .login-page {
+    padding: 0;
+    place-items: stretch;
+  }
+
+  .login-card {
+    padding: var(--k-space-6) var(--k-space-4);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
 
 </style>

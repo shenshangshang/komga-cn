@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row>
-      <v-col><span class="text-h5">{{ $t('server.server_management.section_title') }}</span></v-col>
+      <v-col><h2 class="text-h5">{{ $t('server.server_management.section_title') }}</h2></v-col>
     </v-row>
     <v-row>
       <v-col cols="auto">

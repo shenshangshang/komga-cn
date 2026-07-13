@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="k-view-shell k-state-page ma-0">
     <empty-state :title="$t('page_not_found.page_not_found')"
                  :sub-title="$t('page_not_found.page_does_not_exist')"
                  icon="mdi-help-circle"

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row>
       <v-col cols="auto">
         <v-checkbox

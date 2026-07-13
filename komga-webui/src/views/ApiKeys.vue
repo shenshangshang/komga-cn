@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row>
       <v-col cols="12" md="10" lg="8" xl="4">
         <api-key-table/>

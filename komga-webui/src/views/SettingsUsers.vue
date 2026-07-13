@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page">
     <v-row>
-      <v-col class="text-h5">{{ $t('users.users') }}</v-col>
+      <v-col><h1 class="text-h5">{{ $t('users.users') }}</h1></v-col>
     </v-row>
     <v-row>
       <v-col cols="12" md="10" lg="8" xl="4">

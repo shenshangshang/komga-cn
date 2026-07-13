@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-alert type="info" text class="body-2" dismissible>
       <div>{{ $t('book_import.info_part1') }}</div>
       <div class="mt-2">{{ $t('book_import.info_part2') }}</div>

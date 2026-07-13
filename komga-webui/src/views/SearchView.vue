@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="k-view-shell">
     <toolbar-sticky v-if="showToolbar">
       <v-toolbar-title>
         <span>{{ $t('search.search_results_for', {name: $route.query.q}) }}</span>

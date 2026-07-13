@@ -1,7 +1,9 @@
 <template>
-  <div class="fill-height">
+  <div class="app-shell fill-height">
     <v-app-bar
       app
+      color="base"
+      class="app-shell__bar"
     >
       <v-badge
         dot
@@ -9,19 +11,49 @@
         offset-y="20"
         :value="drawerVisible ? 0 : $store.state.booksToCheck + $store.getters.getUnreadAnnouncementsCount()"
         :color="$store.state.booksToCheck ? 'accent' : 'info'"
-        class="ms-n3"
+        :class="{'ms-n3': !isMobile}"
       >
-        <v-app-bar-nav-icon @click.stop="toggleDrawer"/>
+        <v-app-bar-nav-icon
+          class="k-touch-target"
+          :aria-label="$t(navigationToggleLabel)"
+          @click.stop="toggleDrawer"
+        />
       </v-badge>
 
-      <search-box class="flex-fill"/>
+      <router-link
+        v-if="!isMobile"
+        :to="{name: 'home'}"
+        class="app-shell__wordmark link-none"
+        aria-label="Komga"
+      >
+        Komga
+      </router-link>
+
+      <search-box class="app-shell__search flex-fill"/>
 
     </v-app-bar>
 
-    <v-navigation-drawer app v-model="drawerVisible" :right="$vuetify.rtl">
-      <v-list-item @click="$router.push({name: 'home'})" inactive class="pb-2">
+    <v-navigation-drawer
+      app
+      v-model="drawerVisible"
+      :right="$vuetify.rtl"
+      :permanent="!isMobile"
+      :temporary="isMobile"
+      :mini-variant="!isMobile && navigationCollapsed"
+      :width="300"
+      :mini-variant-width="80"
+      :mobile-breakpoint="0"
+      class="app-shell__drawer"
+      :aria-label="$t('shell.primary_navigation')"
+    >
+      <v-list-item
+        inactive
+        class="app-shell__brand pb-2"
+        aria-label="Komga"
+        @click="$router.push({name: 'home'})"
+      >
         <v-list-item-avatar>
-          <v-img src="../assets/logo.svg"/>
+          <v-img src="../assets/logo.svg" alt=""/>
         </v-list-item-avatar>
 
         <v-list-item-content>
@@ -29,6 +61,17 @@
             Komga
           </v-list-item-title>
         </v-list-item-content>
+
+        <v-list-item-action v-if="!isMobile" class="ma-0">
+          <v-btn
+            icon
+            class="k-touch-target"
+            :aria-label="$t(navigationCollapsed ? 'shell.expand_navigation' : 'shell.collapse_navigation')"
+            @click.stop.prevent="navigationCollapsed = !navigationCollapsed"
+          >
+            <v-icon>{{ collapseIcon }}</v-icon>
+          </v-btn>
+        </v-list-item-action>
 
         <v-tooltip left>
           <template v-slot:activator="{ on }">
@@ -57,7 +100,7 @@
       </v-slide-x-transition>
 
       <template v-if="!showReorder">
-        <v-list nav shaped dense>
+        <v-list nav dense class="app-shell__nav-list">
           <v-list-item :to="{name: 'dashboard'}">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
@@ -76,7 +119,12 @@
               <v-list-item-title>{{ $t('navigation.libraries') }}</v-list-item-title>
             </v-list-item-content>
             <v-list-item-action v-if="isAdmin" class="ma-0">
-              <v-btn icon @click.stop.capture.prevent="addLibrary">
+              <v-btn
+                icon
+                class="k-touch-target"
+                :aria-label="$t('dialog.edit_library.dialog_title_add')"
+                @click.stop.capture.prevent="addLibrary"
+              >
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -371,11 +419,41 @@
       </template>
     </v-navigation-drawer>
 
-    <v-main class="fill-height">
+    <v-main class="app-shell__main fill-height">
       <reusable-dialogs/>
       <toaster-notification/>
       <router-view/>
     </v-main>
+
+    <v-bottom-navigation
+      v-if="isMobile"
+      app
+      grow
+      color="primary"
+      class="app-shell__bottom-nav"
+      :aria-label="$t('shell.primary_navigation')"
+    >
+      <v-btn :to="{name: 'dashboard'}">
+        <span>{{ $t('navigation.home') }}</span>
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-btn :to="{name: 'libraries', params: {libraryId: LIBRARIES_ALL}}">
+        <span>{{ $t('navigation.libraries') }}</span>
+        <v-icon>mdi-book-multiple</v-icon>
+      </v-btn>
+      <v-btn :to="{name: 'reading-stats'}">
+        <span>{{ $t('reading_stats.title') }}</span>
+        <v-icon>mdi-chart-bar</v-icon>
+      </v-btn>
+      <v-btn :to="{name: 'account-me'}">
+        <span>{{ $t('account_settings.my_account') }}</span>
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
+      <v-btn v-if="isAdmin" :to="{name: 'settings-server'}">
+        <span>{{ $t('server.tab_title') }}</span>
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </div>
 </template>
 
@@ -406,7 +484,8 @@ export default Vue.extend({
   data: function () {
     return {
       LIBRARIES_ALL,
-      drawerVisible: this.$vuetify.breakpoint.lgAndUp,
+      drawerVisible: this.$vuetify.breakpoint.width >= 768,
+      navigationCollapsed: this.$vuetify.breakpoint.width >= 768 && this.$vuetify.breakpoint.width < 1024,
       locales: this.$i18n.availableLocales.map((x: any) => ({text: this.$i18n.t('common.locale_name', x), value: x})),
       expandSettings: false,
       expandDuplicatePages: false,
@@ -438,9 +517,35 @@ export default Vue.extend({
   watch: {
     $route(to, from) {
       this.checkRoute(to)
+      if (this.isMobile) this.drawerVisible = false
+      this.focusRouteHeading()
+    },
+    '$vuetify.breakpoint.width'(width, previousWidth) {
+      if (width < 768) {
+        this.drawerVisible = false
+        this.navigationCollapsed = false
+      } else {
+        this.drawerVisible = true
+        if (width < 1024) this.navigationCollapsed = true
+        else if (previousWidth < 1024) this.navigationCollapsed = false
+      }
     },
   },
   computed: {
+    isMobile(): boolean {
+      return this.$vuetify.breakpoint.width < 768
+    },
+    isTablet(): boolean {
+      return this.$vuetify.breakpoint.width >= 768 && this.$vuetify.breakpoint.width < 1024
+    },
+    collapseIcon(): string {
+      if (this.navigationCollapsed) return this.$vuetify.rtl ? 'mdi-chevron-left' : 'mdi-chevron-right'
+      return this.$vuetify.rtl ? 'mdi-chevron-right' : 'mdi-chevron-left'
+    },
+    navigationToggleLabel(): string {
+      if (this.isMobile) return this.drawerVisible ? 'shell.close_navigation' : 'shell.open_navigation'
+      return this.navigationCollapsed ? 'shell.expand_navigation' : 'shell.collapse_navigation'
+    },
     taskCount(): number {
       return this.$store.state.komgaSse.taskCount
     },
@@ -510,7 +615,17 @@ export default Vue.extend({
       else if (this.librariesPinned.some(it => it.id === to.params.libraryId)) this.expandUnpinned = false
     },
     toggleDrawer() {
-      this.drawerVisible = !this.drawerVisible
+      if (this.isMobile) this.drawerVisible = !this.drawerVisible
+      else this.navigationCollapsed = !this.navigationCollapsed
+    },
+    focusRouteHeading() {
+      this.$nextTick(() => {
+        const target = document.querySelector<HTMLElement>('#main-content h1, #main-content [role="heading"][aria-level="1"], #main-content .text-h4') || document.getElementById('main-content')
+        if (target) {
+          target.setAttribute('tabindex', '-1')
+          target.focus()
+        }
+      })
     },
     logout() {
       this.$store.dispatch('logout')
@@ -524,13 +639,78 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.v-navigation-drawer {
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+.app-shell__drawer {
+  border-inline-end: 1px solid var(--k-border) !important;
+  box-shadow: none !important;
 }
-.v-app-bar {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+
+.app-shell__bar {
+  border-block-end: 1px solid var(--k-border) !important;
+  box-shadow: var(--k-shadow-floating) !important;
+  z-index: var(--k-z-navigation) !important;
 }
+
+.app-shell__wordmark {
+  margin-inline: var(--k-space-3) var(--k-space-6);
+  color: var(--k-text-primary);
+  font-size: var(--k-font-size-section);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-shell__search {
+  min-width: 0;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.app-shell__brand {
+  min-height: 4.5rem;
+  border-block-end: 1px solid var(--k-border);
+}
+
+.app-shell__nav-list ::v-deep .v-list-item {
+  min-height: var(--k-target-min);
+  margin: var(--k-space-1) var(--k-space-2);
+  border-radius: var(--k-radius-control);
+}
+
+.app-shell__main {
+  min-width: 0;
+  background: var(--k-surface-page);
+}
+
+.app-shell__bottom-nav {
+  min-height: calc(4rem + env(safe-area-inset-bottom));
+  padding-block-end: env(safe-area-inset-bottom);
+  border-block-start: 1px solid var(--k-border);
+  box-shadow: var(--k-shadow-floating) !important;
+  z-index: var(--k-z-navigation) !important;
+}
+
+.app-shell__bottom-nav ::v-deep .v-btn {
+  min-width: var(--k-target-min) !important;
+  min-height: var(--k-target-min) !important;
+  padding-inline: var(--k-space-1) !important;
+  font-size: 0.6875rem !important;
+}
+
+.app-shell__bottom-nav ::v-deep .v-btn__content > span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .v-list-item--active {
-  color: var(--v-primary-base) !important;
+  background: var(--k-surface-muted);
+  color: var(--k-primary) !important;
+  font-weight: 700;
+}
+
+@media (max-width: 47.9375rem) {
+  .app-shell__bar {
+    padding-inline: var(--k-space-1) !important;
+  }
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <div>
     <v-autocomplete
+      class="app-search"
       v-model="selectedItem"
       :placeholder="$t('search.search')"
+      :aria-label="$t('search.search')"
       :no-data-text="$t('searchbox.no_results')"
       :loading="loading"
       :items="results"
@@ -13,8 +15,6 @@
       no-filter
       return-object
       prepend-inner-icon="mdi-magnify"
-      append-outer-icon="mdi-filter-cog-outline"
-      @click:append-outer="openSmartFilterDialog"
       item-text="id"
       auto-select-first
       :search-input.sync="search"
@@ -23,6 +23,17 @@
       @blur="clear"
       ref="searchbox"
     >
+      <template v-slot:append-outer>
+        <v-btn
+          icon
+          class="k-touch-target app-search__filter"
+          :aria-label="$t('filter.smart_filter')"
+          @click="openSmartFilterDialog"
+        >
+          <v-icon>mdi-filter-cog-outline</v-icon>
+        </v-btn>
+      </template>
+
       <template v-slot:selection>
       </template>
 
@@ -43,8 +54,7 @@
                  contain
           >
                 <span v-if="data.item.booksUnreadCount !== 0"
-                      class="white--text pa-0 px-1 text-caption"
-                      :style="{background: 'orange', position: 'absolute', right: 0}"
+                      class="search-result__unread-count pa-0 px-1 text-caption"
                 >
                   {{ data.item.booksUnreadCount }}
                 </span>
@@ -299,12 +309,38 @@ export default Vue.extend({
 <style scoped>
 .unread {
   border-left: 15px solid transparent;
-  border-right: 15px solid orange;
+  border-right: 15px solid var(--k-accent-progress);
   border-bottom: 15px solid transparent;
   height: 0;
   width: 0;
   position: absolute;
   right: 0;
   z-index: 2;
+}
+
+.search-result__unread-count {
+  position: absolute;
+  inset-inline-end: 0;
+  border: 1px solid var(--k-accent-progress);
+  background: var(--k-surface-card);
+  color: var(--k-text-primary);
+  font-weight: 700;
+}
+
+.app-search ::v-deep .v-input__slot {
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-control) !important;
+  background: var(--k-surface-card) !important;
+  box-shadow: none !important;
+  transition: border-color var(--k-motion-fast) var(--k-ease-standard), box-shadow var(--k-motion-fast) var(--k-ease-standard);
+}
+
+.app-search:focus-within ::v-deep .v-input__slot {
+  border-color: var(--k-focus);
+  box-shadow: 0 0 0 var(--k-focus-width) color-mix(in srgb, var(--k-focus) 24%, transparent) !important;
+}
+
+.app-search__filter {
+  margin-block-start: calc(-1 * var(--k-space-1));
 }
 </style>

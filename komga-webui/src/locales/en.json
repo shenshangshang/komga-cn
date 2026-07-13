@@ -1046,6 +1046,13 @@
     "no_results": "No results",
     "search_all": "Search all…"
   },
+  "shell": {
+    "collapse_navigation": "Collapse navigation",
+    "close_navigation": "Close navigation",
+    "expand_navigation": "Expand navigation",
+    "open_navigation": "Open navigation",
+    "primary_navigation": "Primary navigation"
+  },
   "server": {
     "server_management": {
       "button_cancel_all_tasks": "Cancel all tasks",

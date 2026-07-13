@@ -968,6 +968,13 @@
     "no_results": "無结果",
     "search_all": "搜尋全部…"
   },
+  "shell": {
+    "collapse_navigation": "收合導覽列",
+    "close_navigation": "關閉導覽列",
+    "expand_navigation": "展開導覽列",
+    "open_navigation": "開啟導覽列",
+    "primary_navigation": "主要導覽"
+  },
   "server": {
     "server_management": {
       "button_cancel_all_tasks": "取消所有任務",

@@ -1046,6 +1046,13 @@
     "no_results": "无结果",
     "search_all": "搜索全部…"
   },
+  "shell": {
+    "collapse_navigation": "收起导航栏",
+    "close_navigation": "关闭导航栏",
+    "expand_navigation": "展开导航栏",
+    "open_navigation": "打开导航栏",
+    "primary_navigation": "主导航"
+  },
   "server": {
     "server_management": {
       "button_cancel_all_tasks": "取消所有任务",

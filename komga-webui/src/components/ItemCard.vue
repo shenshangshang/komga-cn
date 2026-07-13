@@ -151,7 +151,7 @@
               </router-link>
             </v-card-subtitle>
           </template>
-          <v-card-text class="px-2 pt-0 font-weight-light" v-html="body">
+          <v-card-text class="px-2 pt-0 font-weight-light" v-html="sanitizeRichHtml(body)">
           </v-card-text>
         </template>
       </v-card>
@@ -167,6 +167,7 @@ import {getReadProgress, getReadProgressPercentage} from '@/functions/book-progr
 import {ReadStatus} from '@/types/enum-books'
 import {createItem, Item, ItemContext, ItemTitle, ItemTypes} from '@/types/items'
 import Vue from 'vue'
+import {sanitizeRichHtml} from '@/functions/sanitize-html'
 import {RawLocation} from 'vue-router'
 import ReadListActionsMenu from '@/components/menus/ReadListActionsMenu.vue'
 import {BookDto} from '@/types/komga-books'
@@ -194,6 +195,7 @@ import {CLIENT_SETTING} from '@/types/komga-clientsettings'
 
 export default Vue.extend({
   name: 'ItemCard',
+  data: () => ({sanitizeRichHtml}),
   components: {OneShotActionsMenu, BookActionsMenu, SeriesActionsMenu, CollectionActionsMenu, ReadListActionsMenu},
   props: {
     item: {

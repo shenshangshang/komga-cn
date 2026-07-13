@@ -44,7 +44,7 @@
 
       <v-row>
         <v-col cols="12">
-          <div v-html="marked(release.description)"></div>
+          <div v-html="sanitizeRichHtml(marked(release.description))"></div>
         </v-col>
       </v-row>
       <v-divider class="my-8" v-if="index != $store.state.releases.length - 1"/>
@@ -55,11 +55,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import {marked} from 'marked'
+import {sanitizeRichHtml} from '@/functions/sanitize-html'
 
 export default Vue.extend({
   name: 'UpdatesView',
   data: () => ({
     marked,
+    sanitizeRichHtml,
   }),
   computed: {
     latest(): ReleaseDto | undefined {

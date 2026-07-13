@@ -40,7 +40,7 @@
 
       <v-row>
         <v-col cols="12">
-          <div v-html="item.content_html"></div>
+          <div v-html="sanitizeRichHtml(item.content_html)"></div>
         </v-col>
       </v-row>
       <v-divider class="my-8" v-if="index != $store.state.announcements.items.length - 1"/>
@@ -71,9 +71,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import {ItemDto} from '@/types/json-feed'
+import {sanitizeRichHtml} from '@/functions/sanitize-html'
 
 export default Vue.extend({
   name: 'AnnouncementsView',
+  data: () => ({sanitizeRichHtml}),
   mounted() {
     this.loadData()
   },

@@ -9,7 +9,7 @@
         <v-container fluid>
           <v-row>
             <v-col v-if="body && !bodyHtml">{{ body }}</v-col>
-            <v-col v-if="bodyHtml" v-html="bodyHtml"/>
+            <v-col v-if="bodyHtml" v-html="sanitizeRichHtml(bodyHtml)"/>
           </v-row>
 
           <v-row v-if="confirmText">
@@ -45,9 +45,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {sanitizeRichHtml} from '@/functions/sanitize-html'
 
 export default Vue.extend({
   name: 'ConfirmationDialog',
+  data: () => ({sanitizeRichHtml}),
   data: () => {
     return {
       modal: false,

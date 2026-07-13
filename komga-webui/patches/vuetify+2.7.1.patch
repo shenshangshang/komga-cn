@@ -1,0 +1,31 @@
+diff --git a/node_modules/vuetify/lib/components/VDatePicker/VDatePickerTitle.js b/node_modules/vuetify/lib/components/VDatePicker/VDatePickerTitle.js
+index d989938..56a3b84 100644
+--- a/node_modules/vuetify/lib/components/VDatePicker/VDatePickerTitle.js
++++ b/node_modules/vuetify/lib/components/VDatePicker/VDatePickerTitle.js
+@@ -62,11 +62,8 @@ export default mixins(PickerButton
+           name: this.computedTransition
+         }
+       }, [this.$createElement('div', {
+-        domProps: {
+-          innerHTML: this.date || '&nbsp;'
+-        },
+         key: this.value
+-      })]);
++      }, [this.date || '\u00a0'])]);
+     },
+ 
+     genTitleDate() {
+diff --git a/node_modules/vuetify/lib/util/helpers.js b/node_modules/vuetify/lib/util/helpers.js
+index 9508c86..d858f3c 100644
+--- a/node_modules/vuetify/lib/util/helpers.js
++++ b/node_modules/vuetify/lib/util/helpers.js
+@@ -399,7 +399,8 @@ export function camelizeObjectKeys(obj) {
+   }, {});
+ }
+ export function mergeDeep(source = {}, target = {}) {
+-  for (const key in target) {
++  for (const key of Object.keys(target)) {
++    if (['__proto__', 'prototype', 'constructor'].includes(key)) continue;
+     const sourceProperty = source[key];
+     const targetProperty = target[key]; // Only continue deep merging if
+     // both properties are objects

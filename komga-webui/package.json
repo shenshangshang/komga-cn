@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --port 8081",
     "build": "node --max-old-space-size=8192 ./node_modules/@vue/cli-service/bin/vue-cli-service.js build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint --mode production"
+    "lint": "vue-cli-service lint --mode production",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@d-i-t-a/reader": "github:gotson/R2D2BC#fork",
@@ -71,6 +72,7 @@
     "eslint-plugin-vue": "^7.0.0",
     "jest": "^27.0.5",
     "jest-canvas-mock": "^2.5.2",
+    "patch-package": "^8.0.1",
     "sass": "^1.32.13",
     "sass-loader": "^10.2.0",
     "ts-jest": "^27.0.4",

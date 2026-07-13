@@ -7,7 +7,7 @@
     <form novalidate>
       <v-card>
         <v-toolbar class="hidden-sm-and-up">
-          <v-btn icon @click="dialogCancel">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.cancel')" @click="dialogCancel">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
@@ -307,7 +307,7 @@
                                     @change="form.alternateTitlesLock = true"
                       >
                         <template v-slot:append-outer>
-                          <v-icon @click="form.alternateTitles.splice(i, 1)">mdi-delete</v-icon>
+                    <v-btn icon class="k-touch-target" :aria-label="$t('menu.delete')" @click="form.alternateTitles.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -321,6 +321,8 @@
                       elevation="2"
                       fab
                       small
+                      class="k-touch-target"
+                      :aria-label="$t('common.add')"
                       bottom
                       right
                       color="primary"
@@ -444,7 +446,7 @@
                                     @change="form.linksLock = true"
                       >
                         <template v-slot:append-outer>
-                          <v-icon @click="form.links.splice(i, 1)">mdi-delete</v-icon>
+                    <v-btn icon class="k-touch-target" :aria-label="$t('menu.delete')" @click="form.links.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -458,6 +460,8 @@
                       elevation="2"
                       fab
                       small
+                      class="k-touch-target"
+                      :aria-label="$t('common.add')"
                       bottom
                       right
                       color="primary"

@@ -6,7 +6,7 @@
           <v-list-item-title class="text-uppercase">{{ $t('common.reorder') }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-action class="ma-0">
-          <v-btn icon @click.stop.capture.prevent="dismiss">
+          <v-btn icon class="k-touch-target" :aria-label="$t('common.close')" @click.stop.capture.prevent="dismiss">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-list-item-action>
@@ -34,10 +34,10 @@
             <v-list-item-title class="handle">{{ l.name }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-icon>
-            <v-btn icon v-if="!l.unpinned" @click.stop.capture.prevent="unpin(l.id)" x-small>
+            <v-btn icon class="k-touch-target" :aria-label="$t('menu.unpin')" v-if="!l.unpinned" @click.stop.capture.prevent="unpin(l.id)" x-small>
               <v-icon>mdi-pin</v-icon>
             </v-btn>
-            <v-btn icon v-if="l.unpinned" @click.stop.capture.prevent="pin(l.id)" x-small>
+            <v-btn icon class="k-touch-target" :aria-label="$t('menu.pin')" v-if="l.unpinned" @click.stop.capture.prevent="pin(l.id)" x-small>
               <v-icon>mdi-pin-off</v-icon>
             </v-btn>
           </v-list-item-icon>
@@ -121,6 +121,6 @@ export default Vue.extend({
 
 .ghost {
   opacity: 0.5;
-  background: #c8ebfb;
+  background: var(--k-surface-muted);
 }
 </style>

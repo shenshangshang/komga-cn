@@ -3,7 +3,7 @@
     <v-card-title class="pa-0 pb-4">
       <span class="text-h6">{{ $t('filter.smart_filter') }}</span>
       <v-spacer />
-      <v-btn icon small @click="clear">
+      <v-btn icon small class="k-touch-target" :aria-label="$t('common.clear')" @click="clear">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
@@ -92,9 +92,9 @@ export default Vue.extend({
 
 <style scoped>
 code {
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-family: 'Courier New', monospace;
+  background-color: var(--k-surface-muted);
+  padding: var(--k-space-1) var(--k-space-2);
+  border-radius: var(--k-radius-control);
+  font-family: ui-monospace, "Cascadia Mono", monospace;
 }
 </style>

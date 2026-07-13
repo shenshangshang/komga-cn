@@ -40,7 +40,7 @@
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon @click="editRestrictions(u)" :disabled="u.roles.includes(UserRoles.ADMIN)"
+                <v-btn icon class="k-touch-target" :aria-label="$t('settings_user.edit_restrictions')" @click="editRestrictions(u)" :disabled="u.roles.includes(UserRoles.ADMIN)"
                        v-on="on">
                   <v-icon>mdi-book-lock</v-icon>
                 </v-btn>
@@ -52,7 +52,7 @@
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon @click="changeUserPassword(u)" v-on="on">
+                <v-btn icon class="k-touch-target" :aria-label="$t('settings_user.change_password')" @click="changeUserPassword(u)" v-on="on">
                   <v-icon>mdi-lock-reset</v-icon>
                 </v-btn>
               </template>
@@ -63,7 +63,7 @@
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon @click="editUser(u)" :disabled="u.id === me.id" v-on="on">
+                <v-btn icon class="k-touch-target" :aria-label="$t('settings_user.edit_user')" @click="editUser(u)" :disabled="u.id === me.id" v-on="on">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
@@ -72,7 +72,7 @@
           </v-list-item-action>
 
           <v-list-item-action>
-            <v-btn icon @click="promptDeleteUser(u)"
+            <v-btn icon class="k-touch-target" :aria-label="$t('common.delete')" @click="promptDeleteUser(u)"
                    :disabled="u.id === me.id"
             >
               <v-icon>mdi-delete</v-icon>
@@ -88,6 +88,7 @@
            :right="!$vuetify.rtl"
            :left="$vuetify.rtl"
            class="mx-6"
+           :aria-label="$t('dialog.add_user.dialog_title')"
            small
            :to="{name: 'settings-users-add'}">
       <v-icon>mdi-plus</v-icon>

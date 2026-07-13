@@ -209,6 +209,8 @@
     "title": "{name}收藏"
   },
   "common": {
+    "add": "新增",
+    "copy": "複製",
     "age": "年齡",
     "all_libraries": "所有書庫",
     "all_of": "全部",
@@ -273,6 +275,7 @@
     "reorder": "重新排序",
     "required": "必填",
     "reset_filters": "重設篩選器",
+    "refresh": "重新整理",
     "roles": "角色",
     "save_changes": "保存變更",
     "series": "系列 | 系列",
@@ -870,6 +873,10 @@
     },
     "title": "歷史紀錄"
   },
+  "horizontal_scroller": {
+    "next": "向前捲動",
+    "previous": "向後捲動"
+  },
   "home": {
     "theme": "主題",
     "translation": "語言"
@@ -916,6 +923,11 @@
     "scan_library_files_deep": "深度掃描書庫檔案",
     "select_all": "選擇所有",
     "unpin": "解除釘選"
+  },
+  "item_card": {
+    "deselect": "取消選取項目",
+    "progress": "閱讀進度",
+    "select": "選取項目"
   },
   "metrics": {
     "library_books": "每個書庫的書籍數",

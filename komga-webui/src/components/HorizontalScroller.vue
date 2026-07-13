@@ -5,11 +5,15 @@
     </div>
     <div :style="'position: absolute; top: 0;' + ($vuetify.rtl ? 'left: 0' : 'right: 0')">
       <v-btn icon
+             class="k-touch-target"
+             :aria-label="$t('horizontal_scroller.previous')"
              :disabled="!canScrollBackward"
              @click="doScroll('backward')">
         <rtl-icon icon="mdi-chevron-left" rtl="mdi-chevron-right"/>
       </v-btn>
       <v-btn icon
+             class="k-touch-target"
+             :aria-label="$t('horizontal_scroller.next')"
              :disabled="!canScrollForward"
              @click="doScroll('forward')">
         <rtl-icon icon="mdi-chevron-right" rtl="mdi-chevron-left"/>
@@ -119,6 +123,6 @@ export default Vue.extend({
 }
 
 .content {
-  flex: 0 0 auto
+  flex: 0 0 auto;
 }
 </style>

@@ -14,7 +14,8 @@
         top
         right
         icon
-        :style="'z-index: 10; background: ' + $vuetify.theme.currentTheme.base"
+        class="k-touch-target filter-drawer__clear"
+        :aria-label="$t('common.reset_filters')"
         elevation="2"
         @click="clear"
         color="primary"
@@ -74,5 +75,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-
+.filter-drawer__clear {
+  z-index: var(--k-z-sticky);
+  background: var(--k-surface-card);
+}
 </style>

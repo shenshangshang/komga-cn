@@ -1,7 +1,7 @@
 <template>
   <v-scroll-y-transition hide-on-leave>
     <toolbar-sticky v-if="value.length > 0" :elevation="5" color="base">
-      <v-btn icon @click="unselectAll">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.deselect_all')" @click="unselectAll">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-close</v-icon>
@@ -10,7 +10,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="selectAll" v-if="showSelectAll">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.select_all')" @click="selectAll" v-if="showSelectAll">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-select-all</v-icon>
@@ -25,7 +25,7 @@
 
       <v-spacer/>
 
-      <v-btn icon @click="markRead" v-if="kind === 'books' || kind === 'series'">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.mark_read')" @click="markRead" v-if="kind === 'books' || kind === 'series'">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-bookmark-check</v-icon>
@@ -34,7 +34,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="markUnread" v-if="kind === 'books' || kind === 'series'">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.mark_unread')" @click="markUnread" v-if="kind === 'books' || kind === 'series'">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-bookmark-remove</v-icon>
@@ -43,7 +43,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="addToCollection" v-if="isAdmin && (kind === 'series' || (kind === 'books' && oneshots))">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.add_to_collection')" @click="addToCollection" v-if="isAdmin && (kind === 'series' || (kind === 'books' && oneshots))">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-playlist-plus</v-icon>
@@ -52,7 +52,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="addToReadList" v-if="isAdmin && (kind === 'books' || kind === 'series')">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.add_to_readlist')" @click="addToReadList" v-if="isAdmin && (kind === 'books' || kind === 'series')">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-book-plus-multiple</v-icon>
@@ -61,7 +61,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="bulkEdit" v-if="isAdmin && kind === 'books'">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.bulk_edit_metadata')" @click="bulkEdit" v-if="isAdmin && kind === 'books'">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-table-edit</v-icon>
@@ -70,7 +70,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="edit" v-if="isAdmin && (kind === 'books' || kind === 'series')">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.edit_metadata')" @click="edit" v-if="isAdmin && (kind === 'books' || kind === 'series')">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-pencil</v-icon>
@@ -79,7 +79,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="doDelete" v-if="isAdmin">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.delete')" @click="doDelete" v-if="isAdmin">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-delete</v-icon>

@@ -6,20 +6,26 @@
       :disabled="(f.values && f.values.length === 0) && !f.search"
     >
       <v-expansion-panel-header class="text-uppercase ps-1">
-        <v-icon
+        <v-btn
+          v-if="groupAllOfActive(key)"
+          icon
+          class="k-touch-target mx-0"
           color="secondary"
-          style="max-width: 24px"
-          class="mx-0"
+          :aria-label="$t('common.any_of')"
           @click.stop="clickFilterMode(key, false)"
-        >{{ groupAllOfActive(key) ? 'mdi-filter-multiple' : '' }}
-        </v-icon>
-        <v-icon
+        >
+          <v-icon>mdi-filter-multiple</v-icon>
+        </v-btn>
+        <v-btn
+          v-if="groupActive(key)"
+          icon
+          class="k-touch-target me-2"
           color="secondary"
-          style="max-width: 24px"
-          class="me-2"
+          :aria-label="$t('common.reset_filters')"
           @click.stop="clear(key)"
-        >{{ groupActive(key) ? 'mdi-checkbox-marked' : '' }}
-        </v-icon>
+        >
+          <v-icon>mdi-checkbox-marked</v-icon>
+        </v-btn>
         {{ f.name }}
       </v-expansion-panel-header>
       <v-expansion-panel-content class="no-padding">
@@ -38,7 +44,7 @@
                         :value="filtersActiveMode[key]?.allOf">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn small icon :value="false" v-on="on" @click.stop="clickFilterMode(key, false)">
+                <v-btn small icon class="k-touch-target" :aria-label="$t('common.any_of')" :value="false" v-on="on" @click.stop="clickFilterMode(key, false)">
                   <v-icon small>mdi-filter-outline</v-icon>
                 </v-btn>
               </template>
@@ -47,7 +53,7 @@
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn small icon :value="true" v-on="on" @click.stop="clickFilterMode(key, true)">
+                <v-btn small icon class="k-touch-target" :aria-label="$t('common.all_of')" :value="true" v-on="on" @click.stop="clickFilterMode(key, true)">
                   <v-icon small>mdi-filter-multiple-outline</v-icon>
                 </v-btn>
               </template>

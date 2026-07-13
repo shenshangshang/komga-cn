@@ -217,6 +217,8 @@
     "title": "{name} collection"
   },
   "common": {
+    "add": "Add",
+    "copy": "Copy",
     "age": "Age",
     "all_libraries": "All Libraries",
     "all_of": "All of",
@@ -285,6 +287,7 @@
     "reorder": "Reorder",
     "required": "Required",
     "reset_filters": "Reset filters",
+    "refresh": "Refresh",
     "roles": "Roles",
     "save_changes": "Save changes",
     "series": "Series | Series",
@@ -948,6 +951,10 @@
     },
     "title": "History"
   },
+  "horizontal_scroller": {
+    "next": "Scroll forward",
+    "previous": "Scroll backward"
+  },
   "home": {
     "theme": "Theme",
     "translation": "Translation"
@@ -994,6 +1001,11 @@
     "scan_library_files_deep": "Scan library files (deep)",
     "select_all": "Select all",
     "unpin": "Unpin"
+  },
+  "item_card": {
+    "deselect": "Deselect item",
+    "progress": "Reading progress",
+    "select": "Select item"
   },
   "metrics": {
     "library_books": "Books per library",

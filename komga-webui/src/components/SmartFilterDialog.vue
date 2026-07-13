@@ -11,7 +11,7 @@
         <v-icon left>mdi-filter-variant</v-icon>
         {{ $t('filter.smart_filter') }}
         <v-spacer />
-        <v-btn icon @click="dialog = false">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.close')" @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -41,6 +41,8 @@
                   v-if="query.trim()"
                   icon
                   small
+                  class="k-touch-target"
+                  :aria-label="$t('common.clear')"
                   @click="query = ''"
                 >
                   <v-icon small>mdi-close</v-icon>
@@ -276,7 +278,7 @@
                     />
                   </v-col>
                   <v-col cols="1">
-                    <v-btn icon small @click="removeCondition(index)">
+            <v-btn icon small class="k-touch-target" :aria-label="$t('common.delete')" @click="removeCondition(index)">
                       <v-icon small>mdi-delete</v-icon>
                     </v-btn>
                   </v-col>
@@ -1562,4 +1564,3 @@ code {
   }
 }
 </style>
-

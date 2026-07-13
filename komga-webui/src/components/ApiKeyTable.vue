@@ -37,7 +37,7 @@
               <v-list-item-action>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn icon @click="promptSyncPointDelete(apiKey)" v-on="on">
+                    <v-btn icon class="k-touch-target" :aria-label="$t('account_settings.api_key.force_kobo_sync')" @click="promptSyncPointDelete(apiKey)" v-on="on">
                       <v-icon>mdi-book-refresh</v-icon>
                     </v-btn>
                   </template>
@@ -46,7 +46,7 @@
               </v-list-item-action>
 
               <v-list-item-action>
-                <v-btn icon @click="promptDeleteApiKey(apiKey)">
+                <v-btn icon class="k-touch-target" :aria-label="$t('dialog.delete_apikey.button_confirm')" @click="promptDeleteApiKey(apiKey)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -60,6 +60,7 @@
                :right="!$vuetify.rtl"
                :left="$vuetify.rtl"
                class="mx-6"
+               :aria-label="$t('account_settings.api_key.generate_api_key')"
                small
                @click="generateApiKey"
         >

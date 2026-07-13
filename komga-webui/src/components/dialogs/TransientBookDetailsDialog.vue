@@ -6,7 +6,7 @@
       <v-card>
         <v-card-title v-if="!rightBook">{{ $t('dialog.transient_book_details.title') }}</v-card-title>
         <v-card-title v-else>{{ $t('dialog.transient_book_details.title_comparison') }}</v-card-title>
-        <v-btn icon absolute top right @click="dialogClose">
+        <v-btn icon absolute top right class="k-touch-target" :aria-label="$t('common.close')" @click="dialogClose">
           <v-icon>mdi-close</v-icon>
         </v-btn>
 

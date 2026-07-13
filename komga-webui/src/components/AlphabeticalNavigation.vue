@@ -11,6 +11,8 @@
           text
           small
           icon
+          class="k-touch-target"
+          :aria-label="symbol"
           @click="clicked(symbol)"
           :color="selected === symbol ? 'secondary' : undefined"
           :disabled="groupCount && selected !== symbol ? getCount(symbol) === 0 : false"

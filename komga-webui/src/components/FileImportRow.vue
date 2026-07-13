@@ -26,11 +26,11 @@
     </td>
 
     <!--  Series picker  -->
-    <td @click="modalSeriesPicker = true" style="cursor: pointer">
-      <template v-if="selectedSeries">{{ selectedSeries.title }}</template>
-      <template v-else>
-        <div style="height: 2em" class="missing"></div>
-      </template>
+    <td>
+      <button type="button" class="file-import__series-picker" @click="modalSeriesPicker = true">
+        <template v-if="selectedSeries">{{ selectedSeries.title }}</template>
+        <template v-else>{{ $t('book_import.button_select_series') }}</template>
+      </button>
       <series-picker-dialog v-model="modalSeriesPicker" @update:series="pickedSeries" :include-oneshots="true"/>
     </td>
 
@@ -48,7 +48,7 @@
 
     <!--  Book details  -->
     <td class="px-1">
-      <v-btn icon elevation="1" :disabled="!bookAnalyzed" @click="modalBookDetails = true">
+      <v-btn icon class="k-touch-target" :aria-label="$t('dialog.transient_book_details.title')" elevation="1" :disabled="!bookAnalyzed" @click="modalBookDetails = true">
         <v-icon v-if="bookToUpgrade">mdi-file-compare</v-icon>
         <v-icon v-else>mdi-book-information-variant</v-icon>
       </v-btn>
@@ -63,6 +63,8 @@
     <!--  Book viewer  -->
     <td class="px-1">
       <v-btn icon
+             class="k-touch-target"
+             :aria-label="$t('dialog.transient_book_viewer.title')"
              elevation="1"
              @click="modalViewer = true"
              :disabled="!bookAnalyzed || bookAnalyzed.status !== MediaStatus.READY"
@@ -80,6 +82,8 @@
     <!--  Destination name chooser  -->
     <td class="px-1">
       <v-btn icon
+             class="k-touch-target"
+             :aria-label="$t('dialog.filename_chooser.title')"
              elevation="1"
              @click="modalNameChooser = true"
              :disabled="!bookAnalyzed || bookAnalyzed.status !== MediaStatus.READY"
@@ -287,6 +291,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.file-import__series-picker {
+  min-height: var(--k-target-min);
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--k-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+</style>
 
 <style scoped>
 .missing {

@@ -10,13 +10,14 @@
     multi-sort
     show-group-by
     class="elevation-1"
+    :aria-label="$t('users.authentication_activity')"
     :footer-props="{
         itemsPerPageOptions: [20, 50, 100]
       }"
   >
     <template v-slot:item.success="{ item }">
-      <v-icon v-if="item.success" color="success">mdi-check-circle</v-icon>
-      <v-icon v-else color="error">mdi-alert-circle</v-icon>
+      <v-icon v-if="item.success" color="success" role="img" :aria-label="$t('authentication_activity.success')">mdi-check-circle</v-icon>
+      <v-icon v-else color="error" role="img" :aria-label="$t('common.error')">mdi-alert-circle</v-icon>
     </template>
 
     <template v-slot:item.dateTime="{ item }">

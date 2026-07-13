@@ -94,6 +94,35 @@ body {
   transition: box-shadow var(--k-motion-standard) var(--k-ease-standard), transform var(--k-motion-standard) var(--k-ease-standard) !important;
 }
 
+.v-dialog > .v-card,
+.v-menu__content {
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-sheet) !important;
+  background: var(--k-surface-card);
+}
+
+.v-data-table {
+  overflow: hidden;
+  border: 1px solid var(--k-border);
+  border-radius: var(--k-radius-card);
+  background: var(--k-surface-card) !important;
+  box-shadow: none !important;
+}
+
+.v-data-table__wrapper {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.v-btn.v-btn--icon:not(.v-btn--fab) {
+  width: var(--k-target-min);
+  height: var(--k-target-min);
+}
+
+.v-input--is-disabled {
+  opacity: 0.72;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;

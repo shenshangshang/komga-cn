@@ -3,9 +3,18 @@
     <template v-slot:default="{ hover }">
       <v-card
         :width="width"
+        class="item-card-surface"
         @click="onClick"
-        :class="noLink ? 'no-link' : ''"
+        :class="{'no-link': noLink, 'item-card-surface--selected': selected}"
         :ripple="false"
+        :role="cardRole"
+        :tabindex="cardTabIndex"
+        :aria-label="displayTitle"
+        :aria-checked="preselect && onSelected ? selected.toString() : undefined"
+        @keydown.enter.prevent="onKeyboardActivate"
+        @keydown.space.prevent="onKeyboardActivate"
+        @focusin="focusWithin = true"
+        @focusout="onFocusOut"
       >
         <!--      Thumbnail-->
         <v-img
@@ -14,7 +23,7 @@
           aspect-ratio="0.7071"
           :contain="!isStretch"
           :position="isStretch ? stretchMode : undefined"
-          :class="shouldBlurPoster ? 'blur' : undefined"
+          :class="['item-card__cover', {'blur': shouldBlurPoster}]"
           @error="thumbnailError = true"
           @load="thumbnailError = false"
         >
@@ -23,8 +32,7 @@
 
           <!-- unread count for series -->
           <span v-else-if="unreadCount"
-                class="white--text pa-1 px-2 text-subtitle-2"
-                :style="{background: 'orange', position: 'absolute', right: 0}"
+                class="item-card__unread-count pa-1 px-2 text-subtitle-2"
           >
             {{ unreadCount }}
           </span>
@@ -32,21 +40,21 @@
           <!-- Thumbnail overlay -->
           <v-fade-transition>
             <v-overlay
-              v-if="hover || selected || preselect || actionMenuState"
+              v-if="showOverlay(hover)"
               absolute
-              :opacity="hover || actionMenuState ? 0.3 : 0"
-              :class="`${hover || actionMenuState ? 'item-border-darken' : selected ? 'item-border' : 'item-border-transparent'} overlay-full`"
+              :opacity="hover || focusWithin || actionMenuState ? 0.3 : 0"
+              :class="`${hover || focusWithin || actionMenuState ? 'item-border-darken' : selected ? 'item-border' : 'item-border-transparent'} overlay-full`"
             >
               <!-- Circle icon for selection (top left) -->
-              <v-icon v-if="onSelected"
+              <v-btn v-if="onSelected"
+                      icon
+                      class="item-card__select k-touch-target"
                       :color="selected ? 'secondary' : ''"
-                      :style="'position: absolute; top: 5px; ' + ($vuetify.rtl ? 'right' : 'left') + ': 10px'"
+                      :aria-label="$t(selected ? 'item_card.deselect' : 'item_card.select')"
                       @click.stop="selectItem"
               >
-                {{
-                  selected || (preselect && hover) ? 'mdi-checkbox-marked-circle' : 'mdi-checkbox-blank-circle-outline'
-                }}
-              </v-icon>
+                <v-icon>{{ selected || (preselect && hover) ? 'mdi-checkbox-marked-circle' : 'mdi-checkbox-blank-circle-outline' }}</v-icon>
+              </v-btn>
 
               <!-- FAB incognito reading (top right) -->
               <v-btn
@@ -54,6 +62,7 @@
                 fab
                 small
                 color="grey darken-3"
+                :aria-label="$t('browse_book.read_incognito')"
                 :style="'position: absolute; top: 5px; ' + ($vuetify.rtl ? 'left' : 'right') + ': 10px'"
                 :to="incognitoFabTo"
                 @click.native="$event.stopImmediatePropagation()"
@@ -67,6 +76,7 @@
                 fab
                 x-large
                 color="accent"
+                :aria-label="$t('browse_book.read_book')"
                 style="position: absolute; top: 50%; left: 50%; margin-left: -36px; margin-top: -36px"
                 :to="fabTo"
                 @click.native="$event.stopImmediatePropagation()"
@@ -77,6 +87,8 @@
               <!-- Pen icon for edition (bottom left) -->
               <v-btn icon
                      v-if="!selected && !preselect && onEdit"
+                     class="k-touch-target"
+                     :aria-label="$t('menu.edit')"
                      :style="'position: absolute; bottom: 5px; ' + ($vuetify.rtl ? 'right' : 'left' ) +': 5px'"
                      @click.stop="editItem"
               >
@@ -117,8 +129,9 @@
           <v-progress-linear
             v-if="isInProgress"
             :value="readProgressPercentage"
-            color="orange"
+            color="accent"
             height="6"
+            :aria-label="`${$t('item_card.progress')}: ${Math.round(readProgressPercentage)}%`"
             style="position: absolute; bottom: 0"
           />
         </v-img>
@@ -260,6 +273,7 @@ export default Vue.extend({
       actionMenuState: false,
       thumbnailError: false,
       thumbnailCacheBust: '',
+      focusWithin: false,
       coverBase64,
     }
   },
@@ -316,6 +330,21 @@ export default Vue.extend({
     },
     disableHover(): boolean {
       return !this.overlay
+    },
+    persistentActions(): boolean {
+      return this.$vuetify.breakpoint.smAndDown
+    },
+    displayTitle(): string {
+      const titles = Array.isArray(this.title) ? this.title : [this.title]
+      return titles.map(value => value.title).join(' – ')
+    },
+    cardRole(): string | undefined {
+      if (this.preselect && this.onSelected) return 'checkbox'
+      if (!this.noLink) return 'link'
+      return undefined
+    },
+    cardTabIndex(): number | undefined {
+      return (this.preselect && this.onSelected) || !this.noLink ? 0 : undefined
     },
     thumbnailUrl(): string {
       return this.computedItem.thumbnailUrl() + this.thumbnailCacheBust
@@ -388,6 +417,17 @@ export default Vue.extend({
     },
   },
   methods: {
+    showOverlay(hover: boolean): boolean {
+      return hover || this.focusWithin || this.persistentActions || this.selected || this.preselect || this.actionMenuState
+    },
+    onFocusOut(event: FocusEvent) {
+      const next = event.relatedTarget as Node | null
+      if (!next || !(event.currentTarget as HTMLElement).contains(next)) this.focusWithin = false
+    },
+    onKeyboardActivate(event: KeyboardEvent) {
+      if (this.preselect && this.onSelected !== undefined) this.selectItem(event as unknown as MouseEvent)
+      else if (!this.noLink) this.goto()
+    },
     thumbnailBookChanged(event: ThumbnailBookSseDto) {
       if (event.selected && (this.computedItem.type() === ItemTypes.BOOK && event.bookId === this.item.id)
         || (this.thumbnailError && this.computedItem.type() === ItemTypes.SERIES && event.seriesId === this.item.id)
@@ -434,8 +474,40 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-.blur > .v-image__image {
+<style scoped>
+.item-card-surface {
+  overflow: hidden;
+  border: 1px solid var(--k-border);
+  background: var(--k-surface-card);
+  box-shadow: none;
+}
+
+.item-card-surface:focus-within,
+.item-card-surface--selected {
+  border-color: var(--k-primary);
+}
+
+.item-card__cover {
+  aspect-ratio: var(--k-cover-aspect-ratio);
+  background: var(--k-surface-muted);
+}
+
+.item-card__unread-count {
+  position: absolute;
+  inset-inline-end: 0;
+  border: 1px solid var(--k-accent-progress);
+  background: var(--k-surface-card);
+  color: var(--k-text-primary);
+  font-weight: 700;
+}
+
+.item-card__select {
+  position: absolute;
+  inset-block-start: var(--k-space-1);
+  inset-inline-start: var(--k-space-2);
+}
+
+.blur ::v-deep .v-image__image {
   filter: blur(5px);
 }
 
@@ -444,7 +516,7 @@ export default Vue.extend({
 }
 
 .item-border {
-  border: 3px solid var(--v-secondary-base);
+  border: 3px solid var(--k-primary);
 }
 
 .item-border-transparent {
@@ -452,17 +524,17 @@ export default Vue.extend({
 }
 
 .item-border-darken {
-  border: 3px solid var(--v-secondary-darken2);
+  border: 3px solid var(--k-text-primary);
 }
 
-.overlay-full .v-overlay__content {
+.overlay-full ::v-deep .v-overlay__content {
   width: 100%;
   height: 100%;
 }
 
 .unread {
   border-left: 25px solid transparent;
-  border-right: 25px solid var(--v-accent-base);
+  border-right: 25px solid var(--k-accent-progress);
   border-bottom: 25px solid transparent;
   height: 0;
   width: 0;
@@ -471,12 +543,13 @@ export default Vue.extend({
   z-index: 2;
 }
 
-.v-card:hover .v-image__image {
-  transform: scale(1.03);
-  transition: transform 0.3s ease;
+.item-card-surface ::v-deep .v-image__image {
+  transition: transform var(--k-motion-standard) var(--k-ease-standard);
 }
 
-.v-image__image {
-  transition: transform 0.3s ease;
+@media (hover: hover) {
+  .item-card-surface:hover ::v-deep .v-image__image {
+    transform: scale(1.02);
+  }
 }
 </style>

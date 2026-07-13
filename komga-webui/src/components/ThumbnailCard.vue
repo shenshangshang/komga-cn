@@ -1,7 +1,8 @@
 <template>
-  <v-card>
+  <v-card class="thumbnail-card" outlined>
     <v-img
       :src="imageUrl"
+      class="thumbnail-card__cover"
       aspect-ratio="0.7071"
       contain/>
     <v-card-text style="height: 5rem">
@@ -15,6 +16,8 @@
           <v-icon
             class="v-btn--icon v-size--default px-2"
             :color="fileTooBig ? 'error' : ''"
+            role="img"
+            :aria-label="statusTooltip"
             v-bind="attrs"
             v-on="on">
             {{ statusIcon }}
@@ -27,6 +30,8 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="selected ? $t('thumbnail_card.tooltip_selected') : $t('thumbnail_card.tooltip_mark_as_selected')"
             :color="selected ? 'success' : ''"
             @click="onClickSelect"
             v-bind="attrs"
@@ -43,6 +48,8 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="toBeDeleted ? $t('thumbnail_card.tooltip_to_be_deleted') : $t('thumbnail_card.tooltip_delete')"
             :color="toBeDeleted ? 'error' : ''"
             @click="onClickDelete"
             v-bind="attrs"
@@ -74,6 +81,9 @@ import {getFileSize} from '@/functions/file'
 
 export default Vue.extend({
   name: 'ThumbnailCard',
+  data: () => ({
+    objectUrl: undefined as string | undefined,
+  }),
   props: {
     item: {
       required: true,
@@ -91,6 +101,17 @@ export default Vue.extend({
     toBeDeleted: {
       type: Boolean,
       required: true,
+    },
+  },
+  created() {
+    this.updateObjectUrl()
+  },
+  beforeDestroy() {
+    this.revokeObjectUrl()
+  },
+  watch: {
+    item() {
+      this.updateObjectUrl()
     },
   },
   computed: {
@@ -153,7 +174,7 @@ export default Vue.extend({
     },
     imageUrl(): string {
       if (this.item instanceof File) {
-        return URL.createObjectURL(this.item)
+        return this.objectUrl || ''
       } else if ('seriesId' in this.item) {
         return seriesThumbnailUrlByThumbnailId(this.item.seriesId, this.item.id)
       } else if ('bookId' in this.item) {
@@ -175,6 +196,14 @@ export default Vue.extend({
     },
   },
   methods: {
+    revokeObjectUrl() {
+      if (this.objectUrl) URL.revokeObjectURL(this.objectUrl)
+      this.objectUrl = undefined
+    },
+    updateObjectUrl() {
+      this.revokeObjectUrl()
+      if (this.item instanceof File) this.objectUrl = URL.createObjectURL(this.item)
+    },
     onClickSelect() {
       if (!this.selected) {
         this.$emit('on-select-thumbnail', this.item)
@@ -188,5 +217,14 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.thumbnail-card {
+  overflow: hidden;
+  border-color: var(--k-border);
+  background: var(--k-surface-card);
+}
 
+.thumbnail-card__cover {
+  aspect-ratio: var(--k-cover-aspect-ratio);
+  background: var(--k-surface-muted);
+}
 </style>

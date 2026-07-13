@@ -6,6 +6,7 @@
     :server-items-length="totalElements"
     :loading="loading"
     class="elevation-1"
+    :aria-label="$t('duplicate_pages.title')"
     :footer-props="{
         itemsPerPageOptions: [10, 20, 50]
       }"
@@ -25,6 +26,8 @@
     <template v-slot:item.delete="{ item }">
       <v-btn
         icon
+        class="k-touch-target"
+        :aria-label="$t('menu.delete')"
         color="error"
         @click="deleteMatch(item)"
       >
@@ -33,7 +36,7 @@
     </template>
 
     <template v-slot:footer.prepend>
-      <v-btn icon @click="loadData(hash)">
+      <v-btn icon class="k-touch-target" :aria-label="$t('common.refresh')" @click="loadData(hash)">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
     </template>
@@ -90,24 +93,24 @@ export default Vue.extend({
   methods: {
     async loadData(hash: PageHashDto) {
       this.loading = true
+      try {
+        const {sortBy, sortDesc, page, itemsPerPage} = this.options
+        const pageRequest = {
+          page: page - 1,
+          size: itemsPerPage,
+          sort: [],
+        } as PageRequest
 
-      const {sortBy, sortDesc, page, itemsPerPage} = this.options
+        for (let i = 0; i < sortBy.length; i++) {
+          pageRequest.sort!!.push(`${sortBy[i]},${sortDesc[i] ? 'desc' : 'asc'}`)
+        }
 
-      const pageRequest = {
-        page: page - 1,
-        size: itemsPerPage,
-        sort: [],
-      } as PageRequest
-
-      for (let i = 0; i < sortBy.length; i++) {
-        pageRequest.sort!!.push(`${sortBy[i]},${sortDesc[i] ? 'desc' : 'asc'}`)
+        const elementsPage = await this.$komgaPageHashes.getPageHashMatches(hash, pageRequest)
+        this.totalElements = elementsPage.totalElements
+        this.elements = elementsPage.content
+      } finally {
+        this.loading = false
       }
-
-      const elementsPage = await this.$komgaPageHashes.getPageHashMatches(hash, pageRequest)
-      this.totalElements = elementsPage.totalElements
-      this.elements = elementsPage.content
-
-      this.loading = false
     },
     async deleteMatch(match: PageHashMatchDto) {
       await this.$komgaPageHashes.deleteSingleMatch(this.hash, match)

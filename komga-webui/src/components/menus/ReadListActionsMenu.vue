@@ -2,7 +2,7 @@
   <div>
     <v-menu offset-y v-if="isAdmin" v-model="menuState">
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click.prevent="">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.more')" v-on="on" @click.prevent="">
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>

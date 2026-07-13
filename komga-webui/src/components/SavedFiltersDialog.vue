@@ -11,7 +11,7 @@
         <v-icon left>mdi-bookmark-multiple</v-icon>
         {{ $t('filter.saved_filters') }}
         <v-spacer />
-        <v-btn icon @click="dialog = false">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.close')" @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -46,8 +46,9 @@
                     <v-btn
                       icon
                       x-small
+                      class="delete-btn pa-0 k-touch-target"
+                      :aria-label="$t('common.delete')"
                       @click.stop="deleteFilter(index)"
-                      class="delete-btn pa-0"
                     >
                       <v-icon size="10">mdi-delete</v-icon>
                     </v-btn>
@@ -83,7 +84,7 @@
       persistent
     >
       <v-card>
-        <v-card-title class="headline error white--text" style="background: linear-gradient(90deg, #f44336, #e53935);">
+        <v-card-title class="headline error white--text">
           <v-icon left color="white">mdi-delete-alert</v-icon>
           {{ $t('filter.confirm_delete') }}
         </v-card-title>
@@ -122,7 +123,7 @@
       persistent
     >
       <v-card>
-        <v-card-title class="headline primary white--text" style="background: linear-gradient(90deg, #1976d2, #42a5f5);">
+        <v-card-title class="headline primary white--text">
           <v-icon left color="white">mdi-bookmark-plus</v-icon>
           {{ $t('filter.save_filter') }}
         </v-card-title>

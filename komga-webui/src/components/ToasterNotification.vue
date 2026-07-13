@@ -6,6 +6,8 @@
     multi-line
     :vertical="snackbar.vertical"
     :timeout="snackbar.timeout"
+    :role="snackbar.color === 'error' ? 'alert' : 'status'"
+    :aria-live="snackbar.color === 'error' ? 'assertive' : 'polite'"
   >
     <p>{{ snackbar.text }}</p>
     <p>{{ snackbar.text2 }}</p>

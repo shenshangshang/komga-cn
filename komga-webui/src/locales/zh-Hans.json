@@ -217,6 +217,8 @@
     "title": "包含 {name} 的收藏"
   },
   "common": {
+    "add": "添加",
+    "copy": "复制",
     "age": "年龄",
     "all_libraries": "所有库",
     "all_of": "全部",
@@ -285,6 +287,7 @@
     "reorder": "重新排序",
     "required": "必填",
     "reset_filters": "重置筛选器",
+    "refresh": "刷新",
     "roles": "角色",
     "save_changes": "保存更改",
     "series": "系列 | 系列",
@@ -948,6 +951,10 @@
     },
     "title": "历史记录"
   },
+  "horizontal_scroller": {
+    "next": "向前滚动",
+    "previous": "向后滚动"
+  },
   "home": {
     "theme": "主题",
     "translation": "翻译"
@@ -994,6 +1001,11 @@
     "scan_library_files_deep": "扫描库文件（深度）",
     "select_all": "选择所有",
     "unpin": "取消固定"
+  },
+  "item_card": {
+    "deselect": "取消选择项目",
+    "progress": "阅读进度",
+    "select": "选择项目"
   },
   "metrics": {
     "library_books": "每个库的书籍数量",

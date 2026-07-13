@@ -9,6 +9,7 @@
         dense
         solo
         :items="items"
+        :aria-label="label"
         v-model="input"
         @input="updateInput"
         @change="updateInput"
@@ -56,8 +57,8 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-  .v-text-field__details, div.v-input__control {
+<style scoped>
+  .v-text-field__details, ::v-deep div.v-input__control {
     min-height: 0 !important;
   }
   .v-text-field__details {

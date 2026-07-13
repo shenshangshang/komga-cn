@@ -8,6 +8,7 @@
     </v-col>
     <v-col cols="3" align-self="center" class="pa-0">
       <v-switch v-model="input" dense
+                :aria-label="label"
                 @input="updateInput"
                 @change="updateInput"
                 class="float-right"
@@ -40,7 +41,7 @@ export default Vue.extend({
   },
   data () {
     return {
-      input: '',
+      input: false,
     }
   },
   watch: {

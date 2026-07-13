@@ -47,6 +47,7 @@
                                 type="number"
                                 min="0"
                                 :max="localItems.length - 1"
+                                :aria-label="$t('common.reorder')"
                                 solo
                                 style="position: absolute; top: 0; left: 0;"
                                 ref=""
@@ -72,6 +73,7 @@
                     small
                     color="accent"
                     class="fab-delete"
+                    :aria-label="$t('menu.delete')"
                     @click="deleteItem(item)"
                     style="position: absolute; bottom: 10px; right: 10px;"
                   >
@@ -262,7 +264,7 @@ export default Vue.extend({
 <style scoped>
 .ghost .item-card {
   opacity: 0.5;
-  background: #c8ebfb;
+  background: var(--k-surface-muted);
 }
 
 .handle {
@@ -270,6 +272,6 @@ export default Vue.extend({
 }
 
 .flip-list-move {
-  transition: transform 0.4s;
+  transition: transform var(--k-motion-standard) var(--k-ease-standard);
 }
 </style>

@@ -6,7 +6,7 @@
     >
       <v-card>
         <v-card-title>{{ $t('dialog.filename_chooser.title') }}</v-card-title>
-        <v-btn icon absolute top right @click="dialogClose">
+        <v-btn icon absolute top right class="k-touch-target" :aria-label="$t('common.close')" @click="dialogClose">
           <v-icon>mdi-close</v-icon>
         </v-btn>
 
@@ -18,7 +18,7 @@
             <v-row>
               <v-col>
                 <div class="text-subtitle-1">{{ $t('dialog.filename_chooser.label_source_filename') }}</div>
-                <div style="cursor: pointer" @click="change(existing)">{{ existing }}</div>
+                <button type="button" class="filename-choice" @click="change(existing)">{{ existing }}</button>
               </v-col>
             </v-row>
 
@@ -56,7 +56,7 @@
                   :key="index"
               >
                 <td>{{ b.number }}</td>
-                <td style="cursor: pointer" @click="change(b.name)">{{ b.name }}</td>
+                <td><button type="button" class="filename-choice" @click="change(b.name)">{{ b.name }}</button></td>
               </tr>
               </tbody>
             </v-simple-table>
@@ -131,6 +131,23 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.filename-choice {
+  min-height: var(--k-target-min);
+  padding: var(--k-space-2) 0;
+  border: 0;
+  background: transparent;
+  color: var(--k-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.filename-choice:hover {
+  text-decoration: underline;
+}
+</style>
 
 <style scoped>
 

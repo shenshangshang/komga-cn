@@ -13,7 +13,7 @@ index d989938..56a3b84 100644
 -      })]);
 +      }, [this.date || '\u00a0'])]);
      },
- 
+
      genTitleDate() {
 diff --git a/node_modules/vuetify/lib/util/helpers.js b/node_modules/vuetify/lib/util/helpers.js
 index 9508c86..d858f3c 100644

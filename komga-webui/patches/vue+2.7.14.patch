@@ -1,0 +1,180 @@
+diff --git a/node_modules/vue/dist/vue.common.dev.js b/node_modules/vue/dist/vue.common.dev.js
+index a621ac3..4cca72a 100644
+--- a/node_modules/vue/dist/vue.common.dev.js
++++ b/node_modules/vue/dist/vue.common.dev.js
+@@ -9504,23 +9504,22 @@ function parseHTML(html, options) {
+         else {
+             let endTagLength = 0;
+             const stackedTag = lastTag.toLowerCase();
+-            const reStackedTag = reCache[stackedTag] ||
+-                (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'));
+-            const rest = html.replace(reStackedTag, function (all, text, endTag) {
+-                endTagLength = endTag.length;
+-                if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
+-                    text = text
+-                        .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
+-                        .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
+-                }
+-                if (shouldIgnoreFirstNewline(stackedTag, text)) {
+-                    text = text.slice(1);
+-                }
+-                if (options.chars) {
+-                    options.chars(text);
+-                }
+-                return '';
+-            });
++            const endTagStart = html.toLowerCase().indexOf('</' + stackedTag);
++      const endTagEnd = endTagStart < 0 ? -1 : html.indexOf('>', endTagStart + stackedTag.length + 2);
++      let text = endTagStart < 0 ? html : html.slice(0, endTagStart);
++      const rest = endTagEnd < 0 ? '' : html.slice(endTagEnd + 1);
++      endTagLength = endTagEnd < 0 ? 0 : endTagEnd + 1 - endTagStart;
++      if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
++          text = text
++              .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
++              .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
++      }
++      if (shouldIgnoreFirstNewline(stackedTag, text)) {
++          text = text.slice(1);
++      }
++      if (options.chars) {
++          options.chars(text);
++      }
+             index += html.length - rest.length;
+             html = rest;
+             parseEndTag(stackedTag, index - endTagLength, index);
+diff --git a/node_modules/vue/dist/vue.esm.browser.js b/node_modules/vue/dist/vue.esm.browser.js
+index a149ecd..9e69137 100644
+--- a/node_modules/vue/dist/vue.esm.browser.js
++++ b/node_modules/vue/dist/vue.esm.browser.js
+@@ -9436,23 +9436,22 @@ function parseHTML(html, options) {
+         else {
+             let endTagLength = 0;
+             const stackedTag = lastTag.toLowerCase();
+-            const reStackedTag = reCache[stackedTag] ||
+-                (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'));
+-            const rest = html.replace(reStackedTag, function (all, text, endTag) {
+-                endTagLength = endTag.length;
+-                if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
+-                    text = text
+-                        .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
+-                        .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
+-                }
+-                if (shouldIgnoreFirstNewline(stackedTag, text)) {
+-                    text = text.slice(1);
+-                }
+-                if (options.chars) {
+-                    options.chars(text);
+-                }
+-                return '';
+-            });
++            const endTagStart = html.toLowerCase().indexOf('</' + stackedTag);
++      const endTagEnd = endTagStart < 0 ? -1 : html.indexOf('>', endTagStart + stackedTag.length + 2);
++      let text = endTagStart < 0 ? html : html.slice(0, endTagStart);
++      const rest = endTagEnd < 0 ? '' : html.slice(endTagEnd + 1);
++      endTagLength = endTagEnd < 0 ? 0 : endTagEnd + 1 - endTagStart;
++      if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
++          text = text
++              .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
++              .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
++      }
++      if (shouldIgnoreFirstNewline(stackedTag, text)) {
++          text = text.slice(1);
++      }
++      if (options.chars) {
++          options.chars(text);
++      }
+             index += html.length - rest.length;
+             html = rest;
+             parseEndTag(stackedTag, index - endTagLength, index);
+diff --git a/node_modules/vue/packages/compiler-sfc/dist/compiler-sfc.js b/node_modules/vue/packages/compiler-sfc/dist/compiler-sfc.js
+index a21fc5c..9520fb4 100644
+--- a/node_modules/vue/packages/compiler-sfc/dist/compiler-sfc.js
++++ b/node_modules/vue/packages/compiler-sfc/dist/compiler-sfc.js
+@@ -474,23 +474,22 @@ function parseHTML(html, options) {
+         else {
+             let endTagLength = 0;
+             const stackedTag = lastTag.toLowerCase();
+-            const reStackedTag = reCache[stackedTag] ||
+-                (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'));
+-            const rest = html.replace(reStackedTag, function (all, text, endTag) {
+-                endTagLength = endTag.length;
+-                if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
+-                    text = text
+-                        .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
+-                        .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
+-                }
+-                if (shouldIgnoreFirstNewline(stackedTag, text)) {
+-                    text = text.slice(1);
+-                }
+-                if (options.chars) {
+-                    options.chars(text);
+-                }
+-                return '';
+-            });
++            const endTagStart = html.toLowerCase().indexOf('</' + stackedTag);
++      const endTagEnd = endTagStart < 0 ? -1 : html.indexOf('>', endTagStart + stackedTag.length + 2);
++      let text = endTagStart < 0 ? html : html.slice(0, endTagStart);
++      const rest = endTagEnd < 0 ? '' : html.slice(endTagEnd + 1);
++      endTagLength = endTagEnd < 0 ? 0 : endTagEnd + 1 - endTagStart;
++      if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
++          text = text
++              .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
++              .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
++      }
++      if (shouldIgnoreFirstNewline(stackedTag, text)) {
++          text = text.slice(1);
++      }
++      if (options.chars) {
++          options.chars(text);
++      }
+             index += html.length - rest.length;
+             html = rest;
+             parseEndTag(stackedTag, index - endTagLength, index);
+diff --git a/node_modules/vue/src/compiler/parser/html-parser.ts b/node_modules/vue/src/compiler/parser/html-parser.ts
+index ab24cb5..5cc309a 100644
+--- a/node_modules/vue/src/compiler/parser/html-parser.ts
++++ b/node_modules/vue/src/compiler/parser/html-parser.ts
+@@ -167,27 +167,22 @@ export function parseHTML(html, options: HTMLParserOptions) {
+     } else {
+       let endTagLength = 0
+       const stackedTag = lastTag.toLowerCase()
+-      const reStackedTag =
+-        reCache[stackedTag] ||
+-        (reCache[stackedTag] = new RegExp(
+-          '([\\s\\S]*?)(</' + stackedTag + '[^>]*>)',
+-          'i'
+-        ))
+-      const rest = html.replace(reStackedTag, function (all, text, endTag) {
+-        endTagLength = endTag.length
+-        if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
+-          text = text
+-            .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
+-            .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1')
+-        }
+-        if (shouldIgnoreFirstNewline(stackedTag, text)) {
+-          text = text.slice(1)
+-        }
+-        if (options.chars) {
+-          options.chars(text)
+-        }
+-        return ''
+-      })
++const endTagStart = html.toLowerCase().indexOf('</' + stackedTag)
++const endTagEnd = endTagStart < 0 ? -1 : html.indexOf('>', endTagStart + stackedTag.length + 2)
++let text = endTagStart < 0 ? html : html.slice(0, endTagStart)
++const rest = endTagEnd < 0 ? '' : html.slice(endTagEnd + 1)
++endTagLength = endTagEnd < 0 ? 0 : endTagEnd + 1 - endTagStart
++if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
++    text = text
++        .replace(/<!\--([\s\S]*?)-->/g, '$1') // #7298
++        .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1')
++}
++if (shouldIgnoreFirstNewline(stackedTag, text)) {
++    text = text.slice(1)
++}
++if (options.chars) {
++    options.chars(text)
++}
+       index += html.length - rest.length
+       html = rest
+       parseEndTag(stackedTag, index - endTagLength, index)

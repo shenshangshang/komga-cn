@@ -11,7 +11,9 @@ describe('Vue 2 parseHTML ReDoS backport', () => {
       }
       const Vue = require('./node_modules/vue/dist/vue.common.js')
       Vue.config.warnHandler = () => {}
-      Vue.compile('<div><script>' + '<'.repeat(100000) + '</textarea></div>')
+      const template = '<div><script>' + '<'.repeat(100000) + '</textarea></div>'
+      Vue.compile(template)
+      require('vue-template-compiler').compile(template)
     `
 
     expect(() => execFileSync(process.execPath, ['-e', script], {

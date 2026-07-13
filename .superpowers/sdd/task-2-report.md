@@ -2,7 +2,7 @@
 
 ## Status
 
-**DONE_WITH_CONCERNS.** Route/hash evidence and runtime smoke are established. The requested full Gradle gate is red because the baseline contains extensive ktlint violations. The Web command exits 0 but logs a type-check worker OOM. No blocking P0/P1 security defect was established.
+**FINAL GREEN.** The statements below preserve the chronological RED evidence from the original baseline. Every blocking/correctness item was subsequently remediated: the exact clean Gradle gate, 8 GiB frontend build/type-check, MySQL 8.4 and timezone matrix, non-root runtime smoke, dependency backports, and focused page-prefetch contracts are green. No unresolved P0/P1 or correctness/security P2 finding remains at Task 2 close.
 
 ## Files and commits
 
@@ -181,3 +181,5 @@ TDD evidence:
 
 - RED commit `e8b609a3` introduced cache weight/representation and lifecycle delegation contracts. The existing production shape failed compilation because it lacked format-aware typed cache entries, a bounded-weight constructor, and a separate async worker.
 - GREEN: `./gradlew :komga:test --tests '*PagePrefetchCacheTest' --tests '*PagePrefetchLifecycleTest' --tests '*PagePrefetchWorkerTest' --no-daemon` passed 19 tests. The cache now stores `TypedBytes`, includes the requested conversion format in its key, preserves media type, and uses a 256 MiB Caffeine maximum weight. `PagePrefetchWorker` is a distinct Spring service, so `@Async` is reached through the injected proxy. Worker regressions cover disabled prefetch, existing-entry skips, configured lookahead, and end-of-book bounds.
+
+Final post-remediation gate used a disposable `mysql:8.4` container with tmpfs storage, 1,000 maximum connections, loopback port 33315, per-context schemas, and two-connection application pools. With both datasource URLs supplied as base MySQL URLs, exact `./gradlew clean test build --no-daemon` executed all 40 tasks and 905 tests with zero failures/errors, finishing `BUILD SUCCESSFUL in 3m 59s`. Raw log: `/root/komga-task2-final-full-gate-mysql.log`. The container was removed after evidence collection.

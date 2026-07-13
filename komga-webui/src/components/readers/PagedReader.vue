@@ -44,6 +44,7 @@
     <!--  clickable zone: left  -->
     <div v-if="!vertical"
          @click="turnLeft()"
+         aria-hidden="true"
          class="left-quarter"
          style="z-index: 1;"
     />
@@ -51,6 +52,7 @@
     <!--  clickable zone: right  -->
     <div v-if="!vertical"
          @click="turnRight()"
+         aria-hidden="true"
          class="right-quarter"
          style="z-index: 1;"
     />
@@ -58,6 +60,7 @@
     <!--  clickable zone: top  -->
     <div v-if="vertical"
          @click="verticalPrev()"
+         aria-hidden="true"
          class="top-quarter"
          style="z-index: 1;"
     />
@@ -65,12 +68,14 @@
     <!--  clickable zone: bottom  -->
     <div v-if="vertical"
          @click="verticalNext()"
+         aria-hidden="true"
          class="bottom-quarter"
          style="z-index: 1;"
     />
 
     <!--  clickable zone: menu  -->
     <div @click="centerClick()"
+         aria-hidden="true"
          :class="`${vertical ? 'center-vertical' : 'center-horizontal'}`"
          style="z-index: 1;"
     />

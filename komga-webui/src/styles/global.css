@@ -103,6 +103,28 @@ body {
   align-content: center;
 }
 
+.reader-shell .settings {
+  border-color: var(--k-border) !important;
+  background: var(--k-surface-card) !important;
+  color: var(--k-text-primary) !important;
+  backdrop-filter: blur(12px);
+}
+
+.reader-shell .settings .v-toolbar__title {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reader-shell .v-bottom-sheet .v-card,
+.reader-shell .v-navigation-drawer {
+  border-color: var(--k-border);
+  background: var(--k-surface-card);
+  color: var(--k-text-primary);
+}
+
 @media (max-width: 599px) {
   .k-view-shell .v-toolbar__content {
     gap: var(--k-space-1);

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-0 pa-0 full-height" fluid v-if="pages.length > 0"
+  <v-container class="ma-0 pa-0 full-height reader-shell" fluid v-if="pages.length > 0"
                 :style="`width: 100%; background: ${actualBackgroundColor}`"
   >
     <div>
@@ -13,6 +13,8 @@
         >
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="$t('bookreader.shortcuts.close')"
             @click="closeBook"
           >
             <v-icon>mdi-arrow-left</v-icon>
@@ -29,6 +31,8 @@
 
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="$t('bookreader.shortcuts.fullscreen')"
             :disabled="!screenfull.isEnabled"
             @click="screenfull.isFullscreen ? screenfull.exit() : enterFullscreen()">
             <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -36,12 +40,16 @@
 
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="$t('bookreader.shortcuts.show_hide_help')"
             @click="showHelp = !showHelp">
             <v-icon>mdi-help-circle</v-icon>
           </v-btn>
 
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="$t('bookreader.shortcuts.show_hide_thumbnails')"
             @click="showExplorer = !showExplorer"
           >
             <v-icon>mdi-view-grid</v-icon>
@@ -49,6 +57,8 @@
           <v-btn
             v-if="hasToc"
             icon
+            class="k-touch-target"
+            :aria-label="$t('epubreader.shortcuts.show_hide_toc')"
             @click="showToc = !showToc"
           >
             <v-icon>mdi-table-of-contents</v-icon>
@@ -56,6 +66,8 @@
 
           <v-btn
             icon
+            class="k-touch-target"
+            :aria-label="$t('bookreader.shortcuts.show_hide_settings')"
             @click="showSettings = !showSettings"
           >
             <v-icon>mdi-cog</v-icon>
@@ -63,7 +75,7 @@
 
           <v-menu offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click.prevent="">
+              <v-btn icon class="k-touch-target" :aria-label="$t('bookreader.shortcuts.menus')" v-on="on" @click.prevent="">
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
             </template>
@@ -108,8 +120,8 @@
                 :max="pagesCount"
               >
                 <template v-slot:prepend>
-                  <v-icon @click="previousBook" class="">mdi-undo</v-icon>
-                  <v-icon @click="goToFirst" class="mx-2">mdi-skip-previous</v-icon>
+                  <v-btn icon class="k-touch-target" :aria-label="$t('bookreader.shortcuts.previous_page')" @click="previousBook"><v-icon>mdi-undo</v-icon></v-btn>
+                  <v-btn icon class="k-touch-target mx-2" :aria-label="$t('bookreader.shortcuts.first_page')" @click="goToFirst"><v-icon>mdi-skip-previous</v-icon></v-btn>
                   <v-label>
                     {{ page }}
                   </v-label>
@@ -118,8 +130,8 @@
                   <v-label>
                     {{ pagesCount }}
                   </v-label>
-                  <v-icon @click="goToLast" class="mx-1">mdi-skip-next</v-icon>
-                  <v-icon @click="nextBook" class="">mdi-redo</v-icon>
+                  <v-btn icon class="k-touch-target mx-1" :aria-label="$t('bookreader.shortcuts.last_page')" @click="goToLast"><v-icon>mdi-skip-next</v-icon></v-btn>
+                  <v-btn icon class="k-touch-target" :aria-label="$t('bookreader.shortcuts.next_page')" @click="nextBook"><v-icon>mdi-redo</v-icon></v-btn>
                 </template>
               </v-slider>
             </v-col>
@@ -174,7 +186,7 @@
       <v-toolbar dense flat>
         <v-toolbar-title>Table of contents</v-toolbar-title>
         <v-spacer/>
-        <v-btn icon @click="showToc = false"><v-icon>mdi-close</v-icon></v-btn>
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.close')" @click="showToc = false"><v-icon>mdi-close</v-icon></v-btn>
       </v-toolbar>
       <toc-list :toc="toc" @goto="goToEntry" class="pa-2"></toc-list>
 
@@ -195,7 +207,7 @@
     >
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon dark @click="showSettings = false">
+          <v-btn icon dark class="k-touch-target" :aria-label="$t('common.close')" @click="showSettings = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ $t('bookreader.reader_settings') }}</v-toolbar-title>

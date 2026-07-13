@@ -1,5 +1,5 @@
 <template>
-  <div id="root" :key="bookId">
+  <div id="root" class="reader-shell" :key="bookId">
     <v-slide-y-transition>
       <v-toolbar
         v-if="showToolbars"
@@ -9,6 +9,8 @@
       >
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('bookreader.shortcuts.close')"
           @click="closeBook"
         >
           <v-icon>mdi-arrow-left</v-icon>
@@ -17,6 +19,8 @@
         <v-btn
           :disabled="!hasToc && !hasLandmarks && !hasPageList"
           icon
+          class="k-touch-target"
+          :aria-label="$t('epubreader.shortcuts.show_hide_toc')"
           @click="showToc = !showToc">
           <v-icon>mdi-table-of-contents</v-icon>
         </v-btn>
@@ -26,6 +30,8 @@
 
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('bookreader.shortcuts.fullscreen')"
           :disabled="!screenfull.isEnabled"
           @click="screenfull.isFullscreen ? screenfull.exit() : enterFullscreen()">
           <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -33,12 +39,16 @@
 
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('bookreader.shortcuts.show_hide_help')"
           @click="showHelp = !showHelp">
           <v-icon>mdi-help-circle</v-icon>
         </v-btn>
 
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('bookreader.shortcuts.show_hide_settings')"
           @click="toggleSettings"
         >
           <v-icon>mdi-cog</v-icon>
@@ -56,7 +66,7 @@
         horizontal
         v-if="showToolbars"
       >
-        <v-btn icon @click="previousBook">
+        <v-btn icon class="k-touch-target" :aria-label="$t('epubreader.shortcuts.previous')" @click="previousBook">
           <v-icon>mdi-undo</v-icon>
         </v-btn>
 
@@ -64,6 +74,8 @@
 
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('epubreader.shortcuts.previous')"
           :disabled="!historyCanGoBack"
           @click="historyBack"
         >
@@ -76,6 +88,8 @@
 
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('epubreader.shortcuts.next')"
           :disabled="!historyCanGoForward"
           @click="historyForward"
         >
@@ -84,7 +98,7 @@
 
         <v-spacer/>
 
-        <v-btn icon @click="nextBook">
+        <v-btn icon class="k-touch-target" :aria-label="$t('epubreader.shortcuts.next')" @click="nextBook">
           <v-icon>mdi-redo</v-icon>
         </v-btn>
       </v-toolbar>
@@ -185,7 +199,7 @@
     >
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon dark @click="showSettings = false">
+          <v-btn icon dark class="k-touch-target" :aria-label="$t('common.close')" @click="showSettings = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{ $t('bookreader.reader_settings') }}</v-toolbar-title>

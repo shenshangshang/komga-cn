@@ -17,18 +17,21 @@
 
     <!--  clickable zone: top  -->
     <div @click="prev()"
+         aria-hidden="true"
          class="top-quarter"
          style="z-index: 1;"
     />
 
     <!--  clickable zone: bottom  -->
     <div @click="next()"
+         aria-hidden="true"
          class="bottom-quarter"
          style="z-index: 1;"
     />
 
     <!--  clickable zone: menu  -->
     <div @click="centerClick()"
+         aria-hidden="true"
          class="center-vertical"
          style="z-index: 1;"
     />

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell" role="feed" :aria-label="$t('announcements.tab_title')">
     <div v-for="(item, index) in $store.state.announcements.items" :key="item.id">
       <v-row justify="space-between" align="center">
         <v-col cols="auto">
@@ -28,7 +28,7 @@
         <v-col cols="auto">
           <v-tooltip :left="!$vuetify.rtl" :right="$vuetify.rtl">
             <template v-slot:activator="{ on }">
-              <v-btn icon elevation="5" color="success" v-on="on" :disabled="item._komga.read"
+              <v-btn icon class="k-touch-target" :aria-label="$t('announcements.mark_read')" elevation="5" color="success" v-on="on" :disabled="item._komga.read"
                      @click="markRead(item.id)">
                 <v-icon>mdi-check</v-icon>
               </v-btn>
@@ -52,6 +52,8 @@
           <v-btn v-if="$store.getters.getUnreadAnnouncementsCount()"
                  color="success"
                  fab
+                 class="k-touch-target"
+                 :aria-label="$t('announcements.mark_all_read')"
                  bottom
                  right
                  fixed

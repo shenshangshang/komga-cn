@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-data-table
       :headers="headers"
       :items="items"
@@ -10,6 +10,7 @@
       :sort-desc="true"
       multi-sort
       class="elevation-1"
+      :aria-label="$t('history.title')"
       :footer-props="{
         itemsPerPageOptions: [20, 50, 100]
       }"
@@ -46,13 +47,13 @@
       </template>
 
       <template v-slot:item.properties="{ item }">
-        <v-btn icon small @click="showDetails(item)">
+        <v-btn icon small class="k-touch-target" :aria-label="$t('common.details')" @click="showDetails(item)">
           <v-icon small>mdi-information</v-icon>
         </v-btn>
       </template>
 
       <template v-slot:footer.prepend>
-        <v-btn icon @click="loadData">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.refresh')" @click="loadData">
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
       </template>

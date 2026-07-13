@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-data-table
       :headers="headers"
       :items="books"
@@ -8,6 +8,7 @@
       :loading="loading"
       multi-sort
       class="elevation-1"
+      :aria-label="$t('missing_posters.title')"
       :footer-props="{
         itemsPerPageOptions: [20, 50, 100]
       }"
@@ -35,7 +36,7 @@
       </template>
 
       <template v-slot:footer.prepend>
-        <v-btn icon @click="loadBooks">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.refresh')" @click="loadBooks">
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
       </template>

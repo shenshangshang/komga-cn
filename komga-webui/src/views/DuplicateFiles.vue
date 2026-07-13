@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6 k-view-shell">
     <v-data-table
       :headers="headers"
       :items="books"
@@ -11,6 +11,7 @@
       show-group-by
       group-by="fileHash"
       class="elevation-1"
+      :aria-label="$t('duplicates.title')"
       :footer-props="{
         itemsPerPageOptions: [20, 50, 100]
       }"
@@ -33,6 +34,8 @@
       <template v-slot:item.id="{ item }">
         <v-btn
           icon
+          class="k-touch-target"
+          :aria-label="$t('menu.delete')"
           color="error"
           @click="promptDeleteBook(item)"
         >
@@ -41,7 +44,7 @@
       </template>
 
       <template v-slot:footer.prepend>
-        <v-btn icon @click="loadBooks"><v-icon>mdi-refresh</v-icon></v-btn>
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.refresh')" @click="loadBooks"><v-icon>mdi-refresh</v-icon></v-btn>
       </template>
     </v-data-table>
   </v-container>

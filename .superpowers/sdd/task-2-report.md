@@ -168,3 +168,16 @@ Status: **GREEN_WITH_RECORDED_GAPS** at source commit `1bd4fe9a18f0c8dc62aad3433
 - A separate fresh tmpfs MySQL 8.4 instance on loopback ran `ReadProgressDaoTest`, `BookLifecycleTest`, and `CommonBookControllerTest`: 31 tests, 0 failures/errors, `BUILD SUCCESSFUL`. Log: `/root/komga-task2-runtime-focused-gradle.log`.
 - No `PagePrefetchCache` or `PagePrefetchLifecycle` test source exists in this worktree, so bound/eviction/lifecycle behavior remains an explicit coverage gap. No defect was proven by the executed tests, so no production code or speculative test-only contract was added in this closure.
 - All task containers, networks, and volumes were removed. The candidate image is intentionally retained as the requested artifact.
+
+## Page-prefetch correctness and resource-bound closure (2026-07-13)
+
+The recorded coverage gap was closed with focused unit regressions. Review of the actual cache and call path proved three correctness/resource defects rather than merely missing tests:
+
+- Cache entries were keyed only by book and page, so a PNG request followed by a JPEG request could receive the incompatible first representation. Cached hits also hard-coded `image/jpeg`, losing the actual media type for original or PNG content.
+- The cache was bounded to 500 entries but not by payload weight. Since comic pages are variable-size byte arrays, its maximum resident payload was effectively unbounded at a useful memory scale.
+- `getPageWithPrefetch` invoked its own `@Async` method, bypassing Spring's proxy and performing prefetch synchronously on the request thread.
+
+TDD evidence:
+
+- RED commit `e8b609a3` introduced cache weight/representation and lifecycle delegation contracts. The existing production shape failed compilation because it lacked format-aware typed cache entries, a bounded-weight constructor, and a separate async worker.
+- GREEN: `./gradlew :komga:test --tests '*PagePrefetchCacheTest' --tests '*PagePrefetchLifecycleTest' --tests '*PagePrefetchWorkerTest' --no-daemon` passed 19 tests. The cache now stores `TypedBytes`, includes the requested conversion format in its key, preserves media type, and uses a 256 MiB Caffeine maximum weight. `PagePrefetchWorker` is a distinct Spring service, so `@Async` is reached through the injected proxy. Worker regressions cover disabled prefetch, existing-entry skips, configured lookahead, and end-of-book bounds.

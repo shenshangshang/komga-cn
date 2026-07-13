@@ -1,10 +1,12 @@
 <template>
-  <div v-if="!$_.isEmpty(series)">
+  <div v-if="!$_.isEmpty(series)" class="k-view-shell">
     <toolbar-sticky v-if="selectedBooks.length === 0">
       <!--   Go back to parent library   -->
       <v-tooltip bottom :disabled="!isAdmin">
         <template v-slot:activator="{ on }">
           <v-btn icon
+                 class="k-touch-target"
+                 :aria-label="contextCollection ? $t('common.go_to_collection') : $t('common.go_to_library')"
                  v-on="on"
                  :to="parentLocation"
           >
@@ -27,13 +29,13 @@
 
       <v-spacer/>
 
-      <v-btn icon @click="editSeries" v-if="isAdmin">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.edit')" @click="editSeries" v-if="isAdmin">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
 
       <page-size-select v-model="pageSize"/>
 
-      <v-btn icon @click="drawer = !drawer">
+      <v-btn icon class="k-touch-target" :aria-label="$t('common.filter')" @click="drawer = !drawer">
         <v-icon :color="sortOrFilterActive ? 'secondary' : ''">mdi-filter-variant</v-icon>
       </v-btn>
     </toolbar-sticky>
@@ -312,13 +314,13 @@
         <v-col cols="8" sm="9" md="10" xl="11" class="py-1 text-capitalize">
           <vue-horizontal>
             <template v-slot:btn-prev>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.previous')">
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:btn-next>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.next')">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </template>
@@ -344,13 +346,13 @@
         <v-col cols="8" sm="9" md="10" xl="11" class="py-1 text-capitalize">
           <vue-horizontal>
             <template v-slot:btn-prev>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.previous')">
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:btn-next>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.next')">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </template>
@@ -417,13 +419,13 @@
         <v-col cols="8" sm="9" md="10" xl="11" class="py-1">
           <vue-horizontal>
             <template v-slot:btn-prev>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.previous')">
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:btn-next>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.next')">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </template>
@@ -449,7 +451,7 @@
             <template v-slot:prepend="props">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon class="me-2" v-on="on" @click="removeFromCollection(props.collection.id)">
+                  <v-btn icon class="me-2 k-touch-target" :aria-label="$t('browse_series.remove_from_collection')" v-on="on" @click="removeFromCollection(props.collection.id)">
                     <v-icon>mdi-playlist-remove</v-icon>
                   </v-btn>
                 </template>

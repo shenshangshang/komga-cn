@@ -1,9 +1,11 @@
 <template>
-  <div v-if="!$_.isEmpty(book)">
+  <div v-if="!$_.isEmpty(book)" class="k-view-shell">
     <toolbar-sticky>
       <v-tooltip bottom :disabled="!isAdmin">
         <template v-slot:activator="{ on }">
           <v-btn icon
+                 class="k-touch-target"
+                 :aria-label="contextReadList ? $t('common.go_to_readlist') : $t('common.go_to_series')"
                  v-on="on"
                  :to="parentLocation"
           >
@@ -19,7 +21,7 @@
                          :book="book"
       />
 
-      <v-btn icon @click="editBook" v-if="isAdmin">
+      <v-btn icon class="k-touch-target" :aria-label="$t('menu.edit')" @click="editBook" v-if="isAdmin">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
 
@@ -39,6 +41,8 @@
       <!--   Navigate to previous book   -->
       <v-btn
         icon
+        class="k-touch-target"
+        :aria-label="$t('common.previous')"
         :disabled="$_.isEmpty(siblingPrevious)"
         :to="{ name: siblingPrevious.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingPrevious.seriesId, bookId: previousId }, query: { context: context.origin, contextId: context.id}  }"
       >
@@ -52,7 +56,7 @@
               :max-width="250"
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn icon class="k-touch-target" :aria-label="$t('common.menu')" v-on="on">
             <v-icon>mdi-menu</v-icon>
           </v-btn>
         </template>
@@ -81,6 +85,8 @@
       <!--   Navigate to next book   -->
       <v-btn
         icon
+        class="k-touch-target"
+        :aria-label="$t('common.next')"
         :disabled="$_.isEmpty(siblingNext)"
         :to="{ name: siblingNext.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingNext.seriesId, bookId: nextId }, query: { context: context.origin, contextId: context.id}  }"
       >
@@ -287,13 +293,13 @@
         <v-col cols="8" sm="9" md="10" xl="11" class="py-1">
           <vue-horizontal>
             <template v-slot:btn-prev>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.previous')">
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:btn-next>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.next')">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </template>
@@ -317,13 +323,13 @@
         <v-col cols="8" sm="9" md="10" xl="11" class="py-1 text-capitalize">
           <vue-horizontal>
             <template v-slot:btn-prev>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.previous')">
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:btn-next>
-              <v-btn icon small>
+              <v-btn icon small class="k-touch-target" :aria-label="$t('common.next')">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </template>
@@ -348,7 +354,7 @@
             <template v-slot:prepend="props">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon class="me-2" v-on="on" @click="removeFromReadList(props.readlist.id)">
+                  <v-btn icon class="me-2 k-touch-target" :aria-label="$t('browse_book.remove_from_readlist')" v-on="on" @click="removeFromReadList(props.readlist.id)">
                     <v-icon>mdi-book-remove</v-icon>
                   </v-btn>
                 </template>

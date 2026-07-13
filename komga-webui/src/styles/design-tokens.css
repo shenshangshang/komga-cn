@@ -43,6 +43,7 @@
   --k-focus-offset: 2px;
   --k-target-min: 2.75rem;
   --k-content-gutter: 1rem;
+  --k-content-max: 100rem;
   --k-app-bar-height: 3.5rem;
   --k-cover-aspect-ratio: 2 / 3;
 }

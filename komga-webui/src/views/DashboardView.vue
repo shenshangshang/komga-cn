@@ -1,5 +1,5 @@
 <template>
-  <div :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
+  <div class="k-view-shell" :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
     <toolbar-sticky v-if="individualLibrary && selectedSeries.length === 0 && selectedBooks.length === 0">
       <!--   Action menu   -->
       <library-actions-menu v-if="isAdmin && library"
@@ -93,6 +93,8 @@
       <v-fab-transition>
         <v-btn
           fab
+          class="k-touch-target"
+          :aria-label="$t('menu.edit')"
           bottom
           right
           fixed

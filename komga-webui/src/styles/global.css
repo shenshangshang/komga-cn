@@ -54,6 +54,47 @@ body {
   min-height: var(--k-target-min);
 }
 
+.k-view-shell {
+  min-height: 100%;
+  background: var(--k-surface-page);
+  color: var(--k-text-primary);
+}
+
+.k-view-shell > .container,
+.k-view-shell > .v-window,
+.k-view-shell > .row {
+  max-width: var(--k-content-max);
+  margin-inline: auto;
+}
+
+.k-view-shell .v-toolbar__title {
+  min-width: 0;
+  color: var(--k-text-primary);
+  font-size: var(--k-font-size-page-sm);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.k-view-shell .v-chip {
+  border-color: var(--k-border);
+  background: var(--k-surface-muted);
+  color: var(--k-text-secondary);
+}
+
+.k-view-shell .v-pagination {
+  margin-block: var(--k-space-4);
+}
+
+@media (max-width: 599px) {
+  .k-view-shell .v-toolbar__content {
+    gap: var(--k-space-1);
+  }
+
+  .k-view-shell .v-toolbar__title {
+    font-size: var(--k-font-size-section-sm);
+  }
+}
+
 .k-page-gutters {
   padding-inline: var(--k-content-gutter);
 }

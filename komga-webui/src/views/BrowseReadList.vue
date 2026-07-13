@@ -1,5 +1,5 @@
 <template>
-  <div v-if="readList">
+  <div v-if="readList" class="k-view-shell">
     <toolbar-sticky v-if="!editElements && selectedBooks.length === 0">
 
       <read-list-actions-menu v-if="readList"
@@ -18,7 +18,7 @@
 
       <v-spacer/>
 
-      <v-btn icon @click="startEditElements" v-if="isAdmin">
+      <v-btn icon class="k-touch-target" :aria-label="$t('browse_readlist.edit_elements')" @click="startEditElements" v-if="isAdmin">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-playlist-edit</v-icon>
@@ -27,7 +27,7 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn icon @click="editReadList" v-if="isAdmin">
+      <v-btn icon class="k-touch-target" :aria-label="$t('browse_readlist.edit_readlist')" @click="editReadList" v-if="isAdmin">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-pencil</v-icon>
@@ -38,7 +38,7 @@
 
       <page-size-select v-model="pageSize"/>
 
-      <v-btn icon @click="drawer = !drawer">
+      <v-btn icon class="k-touch-target" :aria-label="$t('common.filter')" @click="drawer = !drawer">
         <v-icon :color="filterActive ? 'secondary' : ''">mdi-filter-variant</v-icon>
       </v-btn>
 
@@ -63,11 +63,11 @@
     <!--  Edit elements sticky bar  -->
     <v-scroll-y-transition hide-on-leave>
       <toolbar-sticky v-if="editElements" :elevation="5" color="base">
-        <v-btn icon @click="cancelEditElements">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.cancel')" @click="cancelEditElements">
           <v-icon>mdi-close</v-icon>
         </v-btn>
 
-        <v-btn icon color="primary" @click="doEditElements" :disabled="books.length === 0">
+        <v-btn icon class="k-touch-target" :aria-label="$t('common.save')" color="primary" @click="doEditElements" :disabled="books.length === 0">
           <v-icon>mdi-check</v-icon>
         </v-btn>
 

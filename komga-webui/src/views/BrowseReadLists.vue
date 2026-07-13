@@ -1,5 +1,5 @@
 <template>
-  <div :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
+  <div class="k-view-shell" :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
     <toolbar-sticky v-if="selectedReadLists.length === 0">
       <!--   Action menu   -->
       <library-actions-menu v-if="isAdmin && library"

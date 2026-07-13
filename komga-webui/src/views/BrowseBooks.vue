@@ -1,5 +1,5 @@
 <template>
-  <div :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
+  <div class="k-view-shell" :style="$vuetify.breakpoint.xs ? 'margin-bottom: 56px' : undefined">
     <toolbar-sticky v-if="selectedBooks.length === 0">
       <!--   Action menu   -->
       <library-actions-menu v-if="isAdmin && library"
@@ -22,14 +22,15 @@
 
       <v-btn
         icon
+        class="mr-2 k-touch-target"
+        :aria-label="$t('common.smart_filter')"
         :color="smartFilterActive ? 'secondary' : ''"
         @click="showSmartFilterDialog = true"
-        class="mr-2"
       >
         <v-icon>mdi-filter-cog-outline</v-icon>
       </v-btn>
 
-      <v-btn icon @click="drawer = !drawer">
+      <v-btn icon class="k-touch-target" :aria-label="$t('common.filter')" @click="drawer = !drawer">
         <v-icon :color="sortOrFilterActive ? 'secondary' : ''">mdi-filter-variant</v-icon>
       </v-btn>
     </toolbar-sticky>

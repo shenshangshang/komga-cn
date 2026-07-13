@@ -83,6 +83,7 @@ export default Vue.extend({
         },
         tooltip: {
           trigger: 'axis',
+          renderMode: 'richText',
           backgroundColor: 'rgba(50, 50, 50, 0.9)',
           borderColor: 'rgba(50, 50, 50, 0.9)',
           textStyle: {

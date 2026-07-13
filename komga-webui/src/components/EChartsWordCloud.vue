@@ -61,6 +61,7 @@ export default Vue.extend({
         },
         tooltip: {
           show: true,
+          renderMode: 'richText',
           backgroundColor: 'rgba(50, 50, 50, 0.9)',
           borderColor: 'rgba(50, 50, 50, 0.9)',
           textStyle: {

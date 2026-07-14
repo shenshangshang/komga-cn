@@ -3,12 +3,7 @@
     <section class="login-shell" aria-labelledby="login-title">
       <aside class="brand-panel" aria-label="Komga">
         <div class="brand-panel__top">
-          <v-img src="../assets/logo.svg"
-                 alt="Komga"
-                 contain
-                 class="brand-logo"
-                 max-width="156"
-          />
+          <div class="brand-monogram" role="img" aria-label="Komga">K</div>
           <span class="brand-edition">INKFRAME / LIBRARY</span>
         </div>
 
@@ -397,9 +392,20 @@ export default Vue.extend({
   gap: 1rem;
 }
 
-.brand-logo {
-  flex: 0 1 9.75rem;
-  filter: brightness(0) invert(1);
+.brand-monogram {
+  display: grid;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex: 0 0 5.5rem;
+  place-items: center;
+  border: 2px solid #f8fafc;
+  background: #3046d3;
+  color: #f8fafc;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 6px 6px 0 #ef4938;
 }
 
 .brand-edition,

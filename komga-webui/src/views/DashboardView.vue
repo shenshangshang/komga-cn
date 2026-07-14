@@ -48,7 +48,19 @@
     />
 
 
-    <v-container fluid>
+    <v-container fluid class="inkframe-dashboard">
+      <header class="inkframe-masthead">
+        <div class="inkframe-masthead__copy">
+          <span class="inkframe-masthead__kicker">KOMGA · PERSONAL ARCHIVE</span>
+          <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
+          <p>{{ $t('navigation.home') }} / {{ sections.length.toString().padStart(2, '0') }}</p>
+        </div>
+        <div class="inkframe-masthead__mark" aria-hidden="true">
+          <span>READ</span>
+          <strong>01</strong>
+        </div>
+      </header>
+
       <empty-state v-if="allEmpty && !loading"
                    :title="$t('common.nothing_to_show')"
                    icon="mdi-help-circle"
@@ -60,12 +72,15 @@
         <horizontal-scroller
           v-bind:key="i"
           v-if="section.loader && section.loader.items.length !== 0"
-          class="mb-4"
+          class="inkframe-shelf mb-8"
           :tick="section.loader.tick"
           @scroll-changed="(percent) => scrollChanged(section.loader, percent)"
         >
           <template v-slot:prepend>
-            <div class="title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</div>
+            <div class="inkframe-shelf__heading">
+              <span class="inkframe-shelf__index">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <span class="inkframe-shelf__title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</span>
+            </div>
           </template>
           <template v-slot:content>
             <item-browser v-if="section.type ===SectionType.BOOK"
@@ -613,5 +628,111 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.inkframe-dashboard {
+  max-width: 112rem;
+  padding: clamp(1rem, 2.5vw, 3rem) !important;
+}
+
+.inkframe-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 15rem;
+  margin-block-end: clamp(2rem, 5vw, 5rem);
+  border-block: 2px solid var(--k-text-primary);
+  background: var(--k-surface-card);
+}
+
+.inkframe-masthead__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 4vw, 4rem);
+}
+
+.inkframe-masthead__kicker,
+.inkframe-masthead__copy p,
+.inkframe-shelf__index {
+  font-family: var(--k-font-data);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.inkframe-masthead__kicker {
+  color: var(--k-primary);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
+.inkframe-masthead h1 {
+  max-width: 18ch;
+  margin: .5rem 0;
+  font-family: var(--k-font-display);
+  font-size: clamp(2.35rem, 5.8vw, 6rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: -.055em;
+}
+
+.inkframe-masthead__copy p {
+  margin: 0;
+  color: var(--k-text-secondary);
+  font-size: .75rem;
+}
+
+.inkframe-masthead__mark {
+  display: flex;
+  width: clamp(6rem, 14vw, 13rem);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--k-primary);
+  color: var(--k-on-primary, #fff);
+  font-family: var(--k-font-data);
+}
+
+.inkframe-masthead__mark span {
+  writing-mode: vertical-rl;
+  letter-spacing: .18em;
+}
+
+.inkframe-masthead__mark strong {
+  align-self: flex-end;
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.inkframe-shelf {
+  position: relative;
+  padding-block: 1rem 2rem;
+  border-block-start: 1px solid var(--k-text-primary);
+}
+
+.inkframe-shelf__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-width: min(22rem, 75vw);
+  padding-block: .5rem 1.5rem;
+}
+
+.inkframe-shelf__index {
+  color: var(--k-accent-progress);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
+.inkframe-shelf__title {
+  font-family: var(--k-font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+
+@media (max-width: 47.9375rem) {
+  .inkframe-dashboard { padding: 1rem !important; }
+  .inkframe-masthead { min-height: 11rem; margin-block-end: 2rem; }
+  .inkframe-masthead__copy { padding: 1.25rem; }
+  .inkframe-masthead__mark { width: 4.5rem; }
+  .inkframe-masthead__mark span { font-size: .65rem; }
+}
 
 </style>

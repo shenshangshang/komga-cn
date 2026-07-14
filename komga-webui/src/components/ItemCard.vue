@@ -476,20 +476,34 @@ export default Vue.extend({
 
 <style scoped>
 .item-card-surface {
+  position: relative;
   overflow: hidden;
-  border: 1px solid var(--k-border);
+  border: 1px solid var(--k-text-primary);
+  border-inline-start: 5px solid var(--k-accent-progress);
+  border-radius: var(--k-radius-card) !important;
   background: var(--k-surface-card);
-  box-shadow: none;
+  box-shadow: var(--k-shadow-card);
+  transition: transform var(--k-motion-standard) var(--k-ease-standard), box-shadow var(--k-motion-standard) var(--k-ease-standard);
 }
 
 .item-card-surface:focus-within,
 .item-card-surface--selected {
   border-color: var(--k-primary);
+  border-inline-start-color: var(--k-primary);
+  box-shadow: var(--k-shadow-card-active);
 }
 
 .item-card__cover {
   aspect-ratio: var(--k-cover-aspect-ratio);
+  border-block-end: 1px solid var(--k-text-primary);
   background: var(--k-surface-muted);
+}
+
+.item-card-surface ::v-deep .v-card__subtitle {
+  color: var(--k-text-primary) !important;
+  font-family: var(--k-font-display);
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 .item-card__unread-count {
@@ -548,8 +562,13 @@ export default Vue.extend({
 }
 
 @media (hover: hover) {
+  .item-card-surface:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--k-shadow-card-active);
+  }
+
   .item-card-surface:hover ::v-deep .v-image__image {
-    transform: scale(1.02);
+    transform: scale(1.035);
   }
 }
 </style>

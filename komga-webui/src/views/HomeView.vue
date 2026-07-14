@@ -57,9 +57,10 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title class="title">
-            Komga
+          <v-list-item-title class="app-shell__brand-title">
+            KOMGA
           </v-list-item-title>
+          <v-list-item-subtitle class="app-shell__brand-subtitle">INKFRAME ARCHIVE</v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action v-if="!isMobile" class="ma-0">
@@ -640,13 +641,16 @@ export default Vue.extend({
 
 <style scoped>
 .app-shell__drawer {
-  border-inline-end: 1px solid var(--k-border) !important;
+  border-inline-end: 2px solid var(--k-text-primary) !important;
+  background: var(--k-nav-surface) !important;
+  color: var(--k-nav-text) !important;
   box-shadow: none !important;
 }
 
 .app-shell__bar {
-  border-block-end: 1px solid var(--k-border) !important;
-  box-shadow: var(--k-shadow-floating) !important;
+  border-block-end: 2px solid var(--k-text-primary) !important;
+  background: var(--k-surface-page) !important;
+  box-shadow: none !important;
   z-index: var(--k-z-navigation) !important;
 }
 
@@ -665,14 +669,40 @@ export default Vue.extend({
 }
 
 .app-shell__brand {
-  min-height: 4.5rem;
-  border-block-end: 1px solid var(--k-border);
+  min-height: 7rem;
+  border-block-end: 1px solid var(--k-nav-border);
+  color: var(--k-nav-text) !important;
+}
+
+.app-shell__brand-title {
+  color: inherit;
+  font-family: var(--k-font-display);
+  font-size: 1.55rem !important;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+
+.app-shell__brand-subtitle {
+  color: var(--k-nav-muted) !important;
+  font-family: var(--k-font-data);
+  font-size: .625rem !important;
+  letter-spacing: .14em;
 }
 
 .app-shell__nav-list ::v-deep .v-list-item {
   min-height: var(--k-target-min);
-  margin: var(--k-space-1) var(--k-space-2);
-  border-radius: var(--k-radius-control);
+  margin: 0 var(--k-space-3);
+  border-block-end: 1px solid var(--k-nav-border);
+  border-radius: 0;
+  color: var(--k-nav-muted);
+}
+
+.app-shell__nav-list ::v-deep .v-list-item::before {
+  border-radius: 0 !important;
+}
+
+.app-shell__nav-list ::v-deep .v-list-item__icon {
+  color: currentColor !important;
 }
 
 .app-shell__main {
@@ -703,8 +733,9 @@ export default Vue.extend({
 }
 
 .v-list-item--active {
-  background: var(--k-surface-muted);
-  color: var(--k-primary) !important;
+  border-inline-start: 4px solid var(--k-accent-progress);
+  background: var(--k-nav-active) !important;
+  color: var(--k-nav-text) !important;
   font-weight: 700;
 }
 

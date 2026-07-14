@@ -1,18 +1,40 @@
 <template>
   <main class="login-page">
-    <v-container class="login-card">
-      <v-row align="center" justify="center" class="ma-3">
-        <v-img src="../assets/logo.svg"
-               alt="Komga"
-               :max-width="logoWidth"
-        />
-      </v-row>
+    <section class="login-shell" aria-labelledby="login-title">
+      <aside class="brand-panel" aria-label="Komga">
+        <div class="brand-panel__top">
+          <v-img src="../assets/logo.svg"
+                 alt="Komga"
+                 contain
+                 class="brand-logo"
+                 max-width="156"
+          />
+          <span class="brand-edition">INKFRAME / LIBRARY</span>
+        </div>
 
-      <form novalidate :aria-label="$t('login.login')" @submit.prevent="performLogin">
-        <v-row justify="center" v-if="unclaimed">
-          <v-col
-            class="text-body-1 mt-2"
-          >
+        <div class="brand-statement">
+          <p class="brand-kicker">YOUR STORIES, IN ORDER</p>
+          <h1>每一格，<br><span>都在等你继续。</span></h1>
+          <p class="brand-copy">收藏、整理并继续阅读你的漫画世界。</p>
+        </div>
+
+        <div class="spine-index" aria-hidden="true">
+          <span class="spine-index__line"></span>
+          <span>01</span>
+          <span>LIBRARY</span>
+          <span class="spine-index__page">KMG—CN</span>
+        </div>
+      </aside>
+
+      <section class="login-workspace">
+        <header class="login-header">
+          <p class="login-header__index">ACCESS / 01</p>
+          <h2 id="login-title">{{ $t('login.login') }}</h2>
+          <p class="login-header__hint">Komga personal media library</p>
+        </header>
+
+        <form novalidate :aria-label="$t('login.login')" @submit.prevent="performLogin">
+          <div v-if="unclaimed" class="claim-notice">
             <v-alert type="info"
                      icon="mdi-account-plus"
                      prominent
@@ -20,12 +42,10 @@
                      v-html="$t('login.unclaimed_html')"
             >
             </v-alert>
-          </v-col>
-        </v-row>
+          </div>
 
-        <div v-if="!hideLogin">
-          <v-row>
-            <v-col>
+          <div v-if="!hideLogin" class="credentials-panel">
+            <div class="field-group">
               <v-text-field v-model="form.login"
                             :label="$t('common.email')"
                             :error-messages="getErrors('login')"
@@ -33,11 +53,9 @@
                             autofocus
                             @blur="$v.form.login.$touch()"
               />
-            </v-col>
-          </v-row>
+            </div>
 
-          <v-row>
-            <v-col>
+            <div class="field-group">
               <v-text-field v-model="form.password"
                             :label="$t('common.password')"
                             :error-messages="getErrors('password')"
@@ -46,80 +64,79 @@
                             @input="$v.form.password.$touch()"
                             @blur="$v.form.password.$touch()"
               />
-            </v-col>
-          </v-row>
+            </div>
 
-          <v-row>
-            <v-col>
+            <div class="login-options">
               <v-checkbox v-model="rememberMe"
                           :label="$t('common.remember-me')"
                           hide-details
                           class="mt-0"
               />
-            </v-col>
-          </v-row>
+            </div>
 
-          <v-row>
-            <v-col cols="auto">
+            <div class="login-actions">
               <v-btn color="primary"
                      type="submit"
                      :disabled="unclaimed"
+                     large
+                     class="login-primary"
               >{{ $t('login.login') }}
               </v-btn>
-            </v-col>
-            <v-col cols="auto">
               <v-btn v-if="unclaimed"
                      color="primary"
+                     large
+                     outlined
                      @click="claim"
               >{{ $t('login.create_user_account') }}
               </v-btn>
-            </v-col>
-          </v-row>
+            </div>
+          </div>
 
-          <v-divider class="my-4 mt-2"/>
-
-        </div>
-
-        <v-row justify="center">
-          <v-col
+          <div v-if="oauth2Providers.length" class="oauth-panel">
+            <div class="section-rule"><span>SSO</span></div>
+            <div class="oauth-list">
+              <div
             v-for="provider in oauth2Providers"
             :key="provider.registrationId"
-            cols="auto"
           >
             <v-btn
               :disabled="unclaimed"
               @click="oauth2Login(provider)"
-              min-width="250"
+              block
+              large
+              outlined
               :class="$_.get(socialButtons[provider.registrationId.toLowerCase()], 'text') ? `${socialButtons[provider.registrationId.toLowerCase()].text}--text` : undefined"
               :color="$_.get(socialButtons[provider.registrationId.toLowerCase()], 'color')"
             >
               <v-icon left>mdi-{{ provider.registrationId }}</v-icon>
               Sign in with {{ provider.name }}
             </v-btn>
-          </v-col>
-        </v-row>
+              </div>
+            </div>
+          </div>
 
-        <v-row justify="center">
-          <v-col cols="6">
+          <footer class="login-preferences">
+            <div>
             <v-select v-model="locale"
                       :items="locales"
                       :label="$t('home.translation')"
                       prepend-icon="mdi-translate"
             >
             </v-select>
-          </v-col>
+            </div>
 
-          <v-col cols="6">
+            <div>
             <v-select v-model="theme"
                       :items="themes"
                       :label="$t('home.theme')"
                       :prepend-icon="themeIcon"
             >
             </v-select>
-          </v-col>
-        </v-row>
-      </form>
-    </v-container>
+            </div>
+          </footer>
+        </form>
+      </section>
+    </section>
 
     <v-snackbar
       v-model="snackbar"
@@ -183,22 +200,6 @@ export default Vue.extend({
         && !this.$route.query.error
         && !this.$route.query.logout
     },
-    logoWidth(): number {
-      let l = 100
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          l = 100
-        case 'sm':
-        case 'md':
-          l = 200
-        case 'lg':
-        case 'xl':
-        default:
-          l = 300
-      }
-      return l
-    },
-
     locale: {
       get: function (): string {
         return this.$i18n.locale
@@ -343,32 +344,288 @@ export default Vue.extend({
 <style scoped>
 .login-page {
   display: grid;
-  min-height: 100%;
+  min-height: 100vh;
   place-items: center;
-  padding: var(--k-space-4);
+  padding: clamp(1rem, 4vw, 4rem);
   background: var(--k-surface-page);
 }
 
-.login-card {
-  width: min(100%, 34rem);
-  padding: var(--k-space-8);
-  border: 1px solid var(--k-border);
-  border-radius: var(--k-radius-sheet);
+.login-shell {
+  display: grid;
+  grid-template-columns: minmax(20rem, 0.88fr) minmax(26rem, 1.12fr);
+  width: min(100%, 74rem);
+  min-height: min(45rem, calc(100vh - 4rem));
+  overflow: hidden;
+  border: 2px solid var(--k-text-primary);
   background: var(--k-surface-card);
-  box-shadow: var(--k-shadow-floating);
+  box-shadow: 12px 12px 0 color-mix(in srgb, var(--k-primary) 24%, transparent);
 }
 
-@media (max-width: 599px) {
+.brand-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(2rem, 4vw, 4rem);
+  color: #f8fafc;
+  background: #111318;
+}
+
+.brand-panel::after {
+  position: absolute;
+  right: 9%;
+  bottom: -10%;
+  width: 48%;
+  height: 58%;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-bottom: 0;
+  content: "";
+  transform: skewY(-9deg);
+}
+
+.brand-panel__top,
+.spine-index {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand-logo {
+  flex: 0 1 9.75rem;
+  filter: brightness(0) invert(1);
+}
+
+.brand-edition,
+.brand-kicker,
+.login-header__index,
+.spine-index {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.brand-edition {
+  text-align: right;
+  color: rgb(255 255 255 / 60%);
+}
+
+.brand-statement {
+  position: relative;
+  z-index: 1;
+  max-width: 28rem;
+  margin: 4rem 0;
+}
+
+.brand-kicker {
+  margin-bottom: 1.5rem;
+  color: #ff7568;
+}
+
+.brand-statement h1 {
+  margin: 0;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2.5rem, 5vw, 4.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+
+.brand-statement h1 span {
+  color: #8190ff;
+}
+
+.brand-copy {
+  max-width: 22rem;
+  margin: 2rem 0 0;
+  color: rgb(255 255 255 / 68%);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.spine-index {
+  display: grid;
+  grid-template-columns: auto 2rem auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgb(255 255 255 / 58%);
+}
+
+.spine-index__line {
+  width: 0.375rem;
+  height: 3rem;
+  background: #ef4938;
+}
+
+.spine-index__page {
+  justify-self: end;
+}
+
+.login-workspace {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 5.5rem);
+}
+
+.login-header {
+  margin-bottom: 2rem;
+}
+
+.login-header__index {
+  margin: 0 0 0.75rem;
+  color: var(--k-primary);
+}
+
+.login-header h2 {
+  margin: 0;
+  color: var(--k-text-primary);
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.1;
+}
+
+.login-header__hint {
+  margin: 0.75rem 0 0;
+  color: var(--k-text-secondary);
+}
+
+.claim-notice,
+.field-group {
+  margin-bottom: 0.5rem;
+}
+
+.login-options {
+  margin-top: -0.5rem;
+}
+
+.login-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.login-primary {
+  min-width: 9rem;
+}
+
+.oauth-panel {
+  margin-top: 1.75rem;
+}
+
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: var(--k-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+}
+
+.section-rule::after {
+  flex: 1;
+  height: 1px;
+  background: var(--k-border);
+  content: "";
+}
+
+.oauth-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.login-preferences {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--k-border);
+}
+
+@media (max-width: 839px) {
   .login-page {
     padding: 0;
     place-items: stretch;
   }
 
-  .login-card {
-    padding: var(--k-space-6) var(--k-space-4);
+  .login-shell {
+    display: block;
+    min-height: 100vh;
     border: 0;
-    border-radius: 0;
     box-shadow: none;
+  }
+
+  .brand-panel {
+    min-height: 17rem;
+    padding: 1.5rem;
+  }
+
+  .brand-statement {
+    margin: 2.5rem 0 1.5rem;
+  }
+
+  .brand-statement h1 {
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+  }
+
+  .brand-copy,
+  .brand-panel::after {
+    display: none;
+  }
+
+  .spine-index {
+    grid-template-columns: auto 2rem auto 1fr;
+  }
+
+  .spine-index__line {
+    height: 1.75rem;
+  }
+
+  .login-workspace {
+    padding: 2.25rem 1.5rem 3rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .brand-edition,
+  .spine-index__page {
+    display: none;
+  }
+
+  .login-actions,
+  .login-preferences {
+    grid-template-columns: 1fr;
+  }
+
+  .login-actions {
+    display: grid;
+  }
+
+  .login-actions .v-btn {
+    width: 100%;
+  }
+
+  .login-preferences {
+    gap: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page *,
+  .login-page *::before,
+  .login-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

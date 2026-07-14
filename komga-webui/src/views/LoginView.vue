@@ -596,8 +596,13 @@ export default Vue.extend({
   }
 }
 
+@media (max-width: 599px) {
+  .brand-edition {
+    display: none;
+  }
+}
+
 @media (max-width: 479px) {
-  .brand-edition,
   .spine-index__page {
     display: none;
   }

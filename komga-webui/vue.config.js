@@ -20,6 +20,18 @@ module.exports = {
     },
   },
 
+  // The Vue 2 codebase is large enough that the production TypeScript checker
+  // can exceed Vue CLI's default child-process heap on current Node releases.
+  chainWebpack: config => {
+    config.plugin('fork-ts-checker').tap(args => {
+      args[0].typescript = {
+        ...(args[0].typescript || {}),
+        memoryLimit: 6144,
+      }
+      return args
+    })
+  },
+
   // custom rule for readium and r2d2bc css that needs to be made available, but untouched
   configureWebpack: {
     module: {

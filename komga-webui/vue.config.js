@@ -23,6 +23,10 @@ module.exports = {
   // The Vue 2 codebase is large enough that the production TypeScript checker
   // can exceed Vue CLI's default child-process heap on current Node releases.
   chainWebpack: config => {
+    if (process.env.SKIP_TYPECHECK === 'true') {
+      config.plugins.delete('fork-ts-checker')
+      return
+    }
     config.plugin('fork-ts-checker').tap(args => {
       args[0].typescript = {
         ...(args[0].typescript || {}),

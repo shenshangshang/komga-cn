@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative">
     <v-list
-      elevation="3"
+      class="k-entity-list users-list__surface"
       two-line
     >
       <div v-for="(u, index) in users" :key="index">
@@ -10,7 +10,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-list-item-icon v-on="on">
-                <v-icon v-if="u.roles.includes(UserRoles.ADMIN)" color="red">mdi-account-star</v-icon>
+                <v-icon v-if="u.roles.includes(UserRoles.ADMIN)" class="users-list__admin-icon">mdi-account-star</v-icon>
                 <v-icon v-else>mdi-account</v-icon>
               </v-list-item-icon>
             </template>
@@ -199,6 +199,16 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.users-list__admin-icon {
+  color: var(--k-pink) !important;
+}
+
+.users-list__surface ::v-deep .v-list-item__action {
+  margin-inline-start: var(--k-space-1);
+}
+</style>
 
 <style scoped>
 

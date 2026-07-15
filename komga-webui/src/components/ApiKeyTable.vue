@@ -2,7 +2,7 @@
   <div style="position: relative">
     <div v-if="apiKeys">
       <div v-if="apiKeys.length > 0">
-        <v-list elevation="3"
+        <v-list class="k-entity-list api-key-list"
                 three-line
         >
           <div v-for="(apiKey, index) in apiKeys" :key="apiKey.id">
@@ -69,7 +69,7 @@
       </div>
 
       <div v-else>
-        <v-container fluid class="pa-0">
+        <v-container fluid class="k-entity-list-state api-key-table__state">
           <v-row>
             <v-col>{{ $t('account_settings.api_key.no_keys') }}</v-col>
           </v-row>
@@ -85,6 +85,9 @@
 
         </v-container>
       </div>
+    </div>
+    <div v-else class="k-entity-list-state api-key-table__state" role="status">
+      <v-progress-circular indeterminate color="primary"/>
     </div>
 
     <confirmation-dialog
@@ -181,3 +184,13 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.api-key-list ::v-deep .v-list-item__action {
+  margin-inline-start: var(--k-space-2);
+}
+
+.api-key-table__state {
+  min-width: min(100%, 28rem);
+}
+</style>

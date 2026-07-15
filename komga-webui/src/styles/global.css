@@ -25,6 +25,11 @@ body { margin: 0; font-family: var(--k-font-sans); font-size: var(--k-font-size-
 .k-settings-surface--compact { max-width: 48rem; }
 .k-settings-surface--soft { background: var(--k-surface-panel-soft); }
 .k-settings-surface .v-input:not(:last-child) { margin-bottom: var(--k-space-2); }
+.k-entity-list { overflow: hidden; border: 1px solid var(--k-border-panel) !important; border-radius: var(--k-radius-card); background: var(--k-surface-panel-soft) !important; color: var(--k-text-primary) !important; box-shadow: none !important; }
+.k-entity-list .v-list-item { color: var(--k-text-primary) !important; }
+.k-entity-list .v-list-item__subtitle { color: var(--k-text-secondary) !important; }
+.k-entity-list .v-divider { border-color: var(--k-border-panel) !important; }
+.k-entity-list-state { min-height: 9rem; padding: var(--k-space-6); display: grid; align-content: center; justify-items: start; gap: var(--k-space-4); border: 1px dashed var(--k-border-panel); border-radius: var(--k-radius-card); background: var(--k-surface-panel-soft); color: var(--k-text-secondary); }
 .k-state-page { display: grid; min-height: 100%; align-content: center; }
 .reader-shell .settings, .reader-shell .v-bottom-sheet .v-card, .reader-shell .v-navigation-drawer { border-color: var(--k-border) !important; background: var(--k-nav-surface) !important; color: var(--k-text-primary) !important; backdrop-filter: blur(22px); }
 .reader-shell .settings .v-toolbar__title { min-width: 0; overflow: hidden; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
@@ -39,7 +44,9 @@ body { margin: 0; font-family: var(--k-font-sans); font-size: var(--k-font-size-
 .v-card { border: 1px solid var(--k-border-soft) !important; border-radius: var(--k-radius-card) !important; background: var(--k-surface-card) !important; box-shadow: var(--k-shadow-card) !important; transition: box-shadow var(--k-motion-standard) var(--k-ease-standard), transform var(--k-motion-standard) var(--k-ease-standard) !important; }
 .v-card:hover { box-shadow: var(--k-shadow-card-active) !important; transform: translateY(-3px); }
 .v-card__subtitle, .text-caption, time { letter-spacing: .01em; }
-.v-dialog > .v-card, .v-menu__content { border: 1px solid var(--k-border); border-radius: var(--k-radius-sheet) !important; background: var(--k-nav-surface); box-shadow: var(--k-shadow-modal) !important; backdrop-filter: blur(22px); }
+.v-dialog > .v-card, .v-menu__content { border: 1px solid var(--k-border); border-radius: var(--k-radius-sheet) !important; box-shadow: var(--k-shadow-modal) !important; }
+.v-dialog > .v-card { background: var(--k-surface-panel) !important; color: var(--k-text-primary) !important; }
+.v-menu__content { background: var(--k-nav-surface); backdrop-filter: blur(22px); }
 .v-data-table { overflow: hidden; border: 1px solid var(--k-border-soft); border-radius: var(--k-radius-card); background: var(--k-surface-card) !important; box-shadow: var(--k-shadow-card) !important; }
 .v-data-table th { background: var(--k-surface-muted); color: var(--k-text-secondary) !important; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
 .v-data-table__wrapper { overflow-x: auto; overscroll-behavior-inline: contain; }

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-6 k-view-shell k-settings-page">
-    <v-row class="aurora-table-panel">
-      <v-col cols="12" md="10" lg="8" xl="4">
+    <v-row class="k-settings-surface k-settings-surface--compact api-keys-panel">
+      <v-col cols="12">
         <api-key-table/>
       </v-col>
     </v-row>
@@ -19,11 +19,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.aurora-table-panel {
-  margin: 0;
-  padding: 12px;
-  border: 1px solid rgba(105, 212, 255, .14);
-  border-radius: 22px;
-  background: rgba(18, 31, 57, .82);
+.api-keys-panel {
+  margin-inline: 0;
 }
 </style>

@@ -181,6 +181,7 @@ import {
   RecommendedViewSection,
 } from '@/types/komga-clientsettings'
 import EditRecommendedDialog from '@/components/dialogs/EditRecommendedDialog.vue'
+import {getLibraryIdsForAggregation} from '@/functions/library-ids'
 
 interface SectionConfig {
   loader: PageLoader<any> | undefined,
@@ -272,11 +273,6 @@ export default Vue.extend({
         else this.reload()
       },
     },
-    '$store.getters.getLibrariesPinned': {
-      handler(val) {
-        if (val.length === 0) this.$router.push({name: 'no-pins'})
-      },
-    },
     '$store.getters.getDashboardSelectedLibraries': {
       handler() {
         if (this.libraryId === LIBRARIES_ALL) {
@@ -330,7 +326,7 @@ export default Vue.extend({
         return selectedLibraries
       }
 
-      return this.$store.getters.getLibrariesPinned.map((it: LibraryDto) => it.id)
+      return getLibraryIdsForAggregation(this.libraryId, this.$store.getters.getLibraries, selectedLibraries)
     },
     isAdmin(): boolean {
       return this.$store.getters.meAdmin

@@ -21,14 +21,6 @@ const noLibraryGuard = (to: any, from: any, next: any) => {
   } else next()
 }
 
-const noLibraryNorPinGuard = (to: any, from: any, next: any) => {
-  if (lStore.state.komgaLibraries.libraries.length === 0) {
-    next({name: 'welcome'})
-  } else if (lStore.getters.getLibrariesPinned.length === 0) {
-    next({name: 'no-pins'})
-  } else next()
-}
-
 const getLibraryRoute = (libraryId: string) => {
   switch ((lStore.getters.getLibraryRoute(libraryId) as LIBRARY_ROUTE)) {
     case LIBRARY_ROUTE.COLLECTIONS:
@@ -75,7 +67,7 @@ const router = new Router({
         {
           path: '/dashboard',
           name: 'dashboard',
-          beforeEnter: noLibraryNorPinGuard,
+          beforeEnter: noLibraryGuard,
           component: () => import(/* webpackChunkName: "dashboard" */ './views/DashboardView.vue'),
         },
         {

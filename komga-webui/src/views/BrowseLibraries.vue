@@ -233,6 +233,7 @@ import {
   NameValue,
 } from '@/types/filter'
 import {CLIENT_SETTING, ClientSettingsSeriesGroup, SERIES_GROUP_ALPHA} from '@/types/komga-clientsettings'
+import {getLibraryIdsForAggregation} from '@/functions/library-ids'
 
 export default Vue.extend({
   name: 'BrowseLibraries',
@@ -292,7 +293,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    '$store.getters.getLibrariesPinned': {
+    '$store.getters.getLibraries': {
       handler(val) {
         if (this.libraryId === LIBRARIES_ALL)
           this.loadLibrary(this.libraryId)
@@ -371,11 +372,10 @@ export default Vue.extend({
       return this.getLibraryLazy(this.libraryId)
     },
     requestLibraryIds(): string[] {
-      return this.libraryId !== LIBRARIES_ALL ? [this.libraryId] : this.$store.getters.getLibrariesPinned.map((it: LibraryDto) => it.id)
+      return getLibraryIdsForAggregation(this.libraryId, this.$store.getters.getLibraries)
     },
     toolbarTitle(): string {
       if (this.library) return this.library.name
-      else if (this.$store.getters.getLibrariesPinned.length > 0) return this.$t('common.pinned_libraries').toString()
       else return this.$t('common.all_libraries').toString()
     },
     symbolCondition(): SearchConditionSeries | undefined {
@@ -608,7 +608,7 @@ export default Vue.extend({
         this.$store.getters.getLibrarySort(route.params.libraryId) ||
         this.$_.clone(this.sortDefault)
 
-      const requestLibraryIds = libraryId !== LIBRARIES_ALL ? [libraryId] : this.$store.getters.getLibrariesPinned.map((it: LibraryDto) => it.id)
+      const requestLibraryIds = getLibraryIdsForAggregation(libraryId, this.$store.getters.getLibraries)
 
       // load dynamic filters
       const [genres, tags, publishers, languages, ageRatings, releaseDates, sharingLabels] = await Promise.all([
@@ -811,7 +811,8 @@ export default Vue.extend({
       if (libraryId !== LIBRARIES_ALL) conditions.push(new SearchConditionLibraryId(new SearchOperatorIs(libraryId)))
       else {
         conditions.push(new SearchConditionAnyOfSeries(
-          this.$store.getters.getLibrariesPinned.map((it: LibraryDto) => new SearchConditionLibraryId(new SearchOperatorIs(it.id))),
+          getLibraryIdsForAggregation(libraryId, this.$store.getters.getLibraries)
+            .map((id: string) => new SearchConditionLibraryId(new SearchOperatorIs(id))),
         ))
       }
 

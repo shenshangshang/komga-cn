@@ -220,7 +220,7 @@
     "add": "添加",
     "copy": "复制",
     "age": "年龄",
-    "all_libraries": "所有库",
+    "all_libraries": "所有媒体库",
     "all_of": "全部",
     "any_of": "任何",
     "book": "书籍",
@@ -277,7 +277,7 @@
     "password": "密码",
     "pdf": "PDF",
     "pending_tasks": "无挂起任务 | 1个挂起任务 | {count} 个挂起任务",
-    "pinned_libraries": "固定库",
+    "pinned_libraries": "侧栏固定库",
     "publisher": "出版商",
     "read": "阅读",
     "read_on": "阅读于 {date}",
@@ -995,12 +995,12 @@
     "empty_trash": "清理垃圾",
     "mark_read": "标记为已读",
     "mark_unread": "标记为未读",
-    "pin": "固定",
+    "pin": "固定到侧栏",
     "refresh_metadata": "刷新元数据",
     "scan_library_files": "扫描库文件",
     "scan_library_files_deep": "扫描库文件（深度）",
     "select_all": "选择所有",
-    "unpin": "取消固定"
+    "unpin": "从侧栏取消固定"
   },
   "item_card": {
     "deselect": "取消选择项目",
@@ -1025,8 +1025,8 @@
     "logout": "退出登录"
   },
   "no_libraries_pinned": {
-    "subtitle": "您可以通过3点菜单中固定库",
-    "title": "没有固定的库"
+    "subtitle": "固定只影响侧栏显示，可通过媒体库菜单将其固定到侧栏",
+    "title": "侧栏没有固定的媒体库"
   },
   "page_not_found": {
     "go_back_to_home_page": "返回主页",

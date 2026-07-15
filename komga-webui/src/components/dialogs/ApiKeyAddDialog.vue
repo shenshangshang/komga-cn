@@ -2,7 +2,7 @@
   <v-dialog v-model="modal"
             max-width="600"
   >
-    <v-card>
+    <v-card class="api-key-dialog">
       <v-card-title>{{ $t('dialog.add_api_key.dialog_title') }}</v-card-title>
         <v-btn icon absolute top right class="k-touch-target" :aria-label="$t('common.close')" @click="dialogClose">
         <v-icon>mdi-close</v-icon>
@@ -27,12 +27,12 @@
 
           <v-row v-if="apiKey">
             <v-col>
-              <v-alert type="info" class="body-2">{{ $t('dialog.add_api_key.info_copy') }}</v-alert>
+              <v-alert type="info" class="body-2 api-key-dialog__notice">{{ $t('dialog.add_api_key.info_copy') }}</v-alert>
             </v-col>
           </v-row>
 
           <v-row v-if="apiKey">
-            <v-col>
+            <v-col class="api-key-dialog__key">
               <v-icon color="success">mdi-check</v-icon>
               {{ apiKey.key }}
 
@@ -169,5 +169,15 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.api-key-dialog__notice {
+  border: 1px solid var(--k-border-panel);
+  background: var(--k-surface-panel-soft) !important;
+  color: var(--k-text-primary) !important;
+}
 
+.api-key-dialog__key {
+  overflow-wrap: anywhere;
+  border-radius: var(--k-radius-control);
+  background: var(--k-surface-panel-soft);
+}
 </style>

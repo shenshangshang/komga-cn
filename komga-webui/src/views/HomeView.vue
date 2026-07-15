@@ -413,7 +413,7 @@
             color="warning"
           >
             <router-link :to="{name: 'updates'}" class="link-none">
-              v{{ $store.state.actuatorInfo.build.version }}-{{ $store.state.actuatorInfo.git.branch }}
+              版本 {{ $store.state.actuatorInfo.build.version }}
             </router-link>
           </v-badge>
         </div>

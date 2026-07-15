@@ -49,16 +49,7 @@
 
 
     <v-container fluid class="aurora-dashboard">
-      <header class="aurora-hero">
-        <div class="aurora-hero__icon" aria-hidden="true">
-          <v-icon color="primary" size="34">mdi-bookshelf</v-icon>
-        </div>
-        <div class="aurora-hero__copy">
-          <span class="aurora-hero__kicker">漫画书库</span>
-          <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
-          <p>发现最近添加与继续阅读的内容</p>
-        </div>
-      </header>
+      <h1 class="sr-only">{{ library ? library.name : $t('common.all_libraries') }}</h1>
 
       <empty-state v-if="allEmpty && !loading"
                    :title="$t('common.nothing_to_show')"
@@ -628,81 +619,16 @@ export default Vue.extend({
   padding: clamp(1rem, 2.2vw, 2.5rem) !important;
 }
 
-.aurora-hero {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 1rem;
-  min-height: 7.5rem;
-  margin-block-end: clamp(1.5rem, 3vw, 2.5rem);
-  overflow: hidden;
-  padding: clamp(1.25rem, 2.5vw, 2rem);
-  border: 1px solid var(--k-border-soft);
-  border-radius: var(--k-radius-sheet);
-  background: linear-gradient(120deg, var(--k-surface-card), color-mix(in srgb, var(--k-purple) 12%, var(--k-surface-card)));
-  box-shadow: var(--k-shadow-card);
-}
-
-.aurora-hero::after {
+.sr-only {
   position: absolute;
-  top: -5rem;
-  right: -3rem;
-  width: 12rem;
-  height: 12rem;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--k-cyan) 9%, transparent);
-  content: "";
-  pointer-events: none;
-}
-
-.aurora-hero__icon {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 3.5rem;
-  height: 3.5rem;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--k-primary) 28%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--k-primary) 11%, var(--k-surface-card));
-}
-
-.aurora-hero__copy {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-.aurora-hero__kicker,
-.aurora-hero__copy p {
-  font-family: var(--k-font-data);
-}
-
-.aurora-hero__kicker {
-  color: var(--k-mint);
-  font-size: .6875rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-}
-
-.aurora-hero h1 {
-  margin: .25rem 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   overflow: hidden;
-  color: var(--k-text-primary);
-  font-family: var(--k-font-display);
-  font-size: clamp(1.55rem, 2.8vw, 2.35rem);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -.025em;
-  text-overflow: ellipsis;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-}
-
-.aurora-hero__copy p {
-  margin: 0;
-  color: var(--k-text-secondary);
-  font-size: .8125rem;
 }
 
 .aurora-shelf {
@@ -738,21 +664,6 @@ export default Vue.extend({
 @media (max-width: 47.9375rem) {
   .aurora-dashboard {
     padding: .75rem !important;
-  }
-
-  .aurora-hero {
-    min-height: 6.75rem;
-    margin-block-end: 1rem;
-    padding: 1rem;
-  }
-
-  .aurora-hero__icon {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .aurora-hero__copy p {
-    display: none;
   }
 
   .aurora-shelf {

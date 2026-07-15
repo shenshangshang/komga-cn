@@ -808,38 +808,19 @@ export default Vue.extend({
 }
 
 .app-shell__library-children {
-  position: relative;
   margin: 0 var(--k-space-2) var(--k-space-3);
   margin-inline-start: var(--k-space-6);
-  padding-inline-start: var(--k-space-3);
-}
-
-.app-shell__library-children::before {
-  position: absolute;
-  inset-block: var(--k-space-1) var(--k-space-2);
-  inset-inline-start: 0;
-  width: 1px;
-  background: var(--k-nav-border);
-  content: "";
+  padding-inline-start: var(--k-space-2);
 }
 
 .app-shell__library-child {
-  min-height: 40px !important;
+  min-height: var(--k-target-min) !important;
   margin: var(--k-space-1) 0 !important;
-  padding-inline: var(--k-space-2) var(--k-space-1) !important;
+  padding-inline: var(--k-space-3) var(--k-space-1) !important;
   border-radius: 10px !important;
   color: var(--k-nav-muted) !important;
-}
-
-.app-shell__library-child::after {
-  position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: calc(-1 * var(--k-space-3));
-  width: var(--k-space-3);
-  height: 1px;
-  background: var(--k-nav-border);
-  content: "";
-  pointer-events: none;
+  box-shadow: none !important;
+  overflow: hidden;
 }
 
 .app-shell__library-child ::v-deep .v-list-item__icon {
@@ -855,17 +836,19 @@ export default Vue.extend({
 }
 
 .app-shell__library-child.v-list-item--active {
-  border-inline-start: 3px solid var(--k-primary) !important;
   background: var(--k-nav-active) !important;
   color: var(--k-primary) !important;
   font-weight: 750;
+  box-shadow: none !important;
 }
 
 .app-shell__library-more ::v-deep .v-list-group__header {
-  min-height: 40px;
+  min-height: var(--k-target-min);
   margin: var(--k-space-1) 0;
-  padding-inline: var(--k-space-2) var(--k-space-1);
+  padding-inline: var(--k-space-3) var(--k-space-1);
+  border-radius: 10px;
   color: var(--k-nav-muted);
+  box-shadow: none !important;
 }
 
 .app-shell__library-child--nested {

@@ -1136,8 +1136,6 @@ export default Vue.extend({
 <style scoped>
 .settings {
   z-index: 2;
-  border: 1px solid rgba(107, 219, 255, .18) !important;
-  background: rgba(10, 20, 42, .88) !important;
   box-shadow: 0 16px 48px rgba(0, 5, 18, .36) !important;
   backdrop-filter: blur(18px) saturate(130%);
 }
@@ -1152,13 +1150,11 @@ export default Vue.extend({
 
 .aurora-reader ::v-deep .v-navigation-drawer,
 .aurora-reader ::v-deep .v-bottom-sheet .v-card {
-  border: 1px solid rgba(107, 219, 255, .16);
-  background: linear-gradient(155deg, rgba(24, 39, 70, .98), rgba(9, 18, 38, .98));
   box-shadow: -20px 0 70px rgba(0, 5, 18, .42);
 }
 
 .aurora-reader ::v-deep .v-btn:focus-visible {
-  outline: 2px solid #73ddff;
+  outline: 2px solid var(--k-reader-chrome-accent);
   outline-offset: 2px;
 }
 

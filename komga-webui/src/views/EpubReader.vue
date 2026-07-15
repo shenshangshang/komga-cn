@@ -725,7 +725,7 @@ export default Vue.extend({
         this.$router.push({
           name: getBookReadRouteFromMedia(this.siblingPrevious.media),
           params: {bookId: this.siblingPrevious.id.toString()},
-          query: {context: this.context.origin, contextId: this.context.id, incognito: this.incognito.toString()},
+          query: {context: this.context.origin, contextId: this.context.id, folder: this.siblingPrevious.directoryPath || undefined, incognito: this.incognito.toString()},
         })
       }
     },
@@ -737,7 +737,7 @@ export default Vue.extend({
         this.$router.push({
           name: getBookReadRouteFromMedia(this.siblingNext.media),
           params: {bookId: this.siblingNext.id.toString()},
-          query: {context: this.context.origin, contextId: this.context.id, incognito: this.incognito.toString()},
+          query: {context: this.context.origin, contextId: this.context.id, folder: this.siblingNext.directoryPath || undefined, incognito: this.incognito.toString()},
         })
       }
     },
@@ -1071,7 +1071,7 @@ export default Vue.extend({
         {
           name: this.book.oneshot ? 'browse-oneshot' : 'browse-book',
           params: {bookId: this.bookId.toString(), seriesId: this.book.seriesId},
-          query: {context: this.context.origin, contextId: this.context.id},
+          query: {context: this.context.origin, contextId: this.context.id, folder: this.$route.query.folder},
         })
     },
     cycleViewingTheme() {

@@ -152,12 +152,12 @@ export class BookItem extends Item<BookDto> {
       {
         name: 'browse-oneshot',
         params: {seriesId: this.item.seriesId},
-        query: {context: this.item?.context?.origin, contextId: this.item?.context?.id},
+        query: {context: this.item?.context?.origin, contextId: this.item?.context?.id, folder: this.item.directoryPath || undefined},
       } :
       {
         name: 'browse-book',
         params: {bookId: this.item.id},
-        query: {context: this.item?.context?.origin, contextId: this.item?.context?.id},
+        query: {context: this.item?.context?.origin, contextId: this.item?.context?.id, folder: this.item.directoryPath || undefined},
       }
   }
 
@@ -171,6 +171,7 @@ export class BookItem extends Item<BookDto> {
       {
         name: 'browse-series',
         params: {seriesId: this.item.seriesId},
+        query: {folder: this.item.directoryPath || undefined},
       }
   }
 
@@ -178,7 +179,7 @@ export class BookItem extends Item<BookDto> {
     return {
       name: getBookReadRouteFromMedia(this.item?.media),
       params: {bookId: this.item.id},
-      query: {context: this.item?.context?.origin, contextId: this.item?.context?.id},
+      query: {context: this.item?.context?.origin, contextId: this.item?.context?.id, folder: this.item.directoryPath || undefined},
     }
   }
 }

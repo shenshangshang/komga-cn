@@ -44,7 +44,7 @@
         class="k-touch-target"
         :aria-label="$t('common.previous')"
         :disabled="$_.isEmpty(siblingPrevious)"
-        :to="{ name: siblingPrevious.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingPrevious.seriesId, bookId: previousId }, query: { context: context.origin, contextId: context.id}  }"
+        :to="{ name: siblingPrevious.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingPrevious.seriesId, bookId: previousId }, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined}  }"
       >
         <rtl-icon icon="mdi-chevron-left" rtl="mdi-chevron-right"/>
       </v-btn>
@@ -68,7 +68,7 @@
             <v-list-item
               v-for="(book, i) in siblings"
               :key="i"
-              :to="{ name: book.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: book.seriesId, bookId: book.id }, query: { context: context.origin, contextId: context.id}  }"
+              :to="{ name: book.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: book.seriesId, bookId: book.id }, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined}  }"
             >
               <v-list-item-title class="text-wrap text-body-2">
                 <template v-if="contextReadList && !book.oneshot">{{ book.seriesTitle }} {{ book.metadata.number }}:
@@ -88,7 +88,7 @@
         class="k-touch-target"
         :aria-label="$t('common.next')"
         :disabled="$_.isEmpty(siblingNext)"
-        :to="{ name: siblingNext.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingNext.seriesId, bookId: nextId }, query: { context: context.origin, contextId: context.id}  }"
+        :to="{ name: siblingNext.oneshot ? 'browse-oneshot' : 'browse-book', params: { seriesId: siblingNext.seriesId, bookId: nextId }, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined}  }"
       >
         <rtl-icon icon="mdi-chevron-right" rtl="mdi-chevron-left"/>
       </v-btn>
@@ -200,7 +200,7 @@
                   <v-btn color="accent"
                          small
                          :title="$t('browse_book.read_book')"
-                         :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id}}"
+                         :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined}}"
                          :disabled="!canRead"
                   >
                     <v-icon left small>mdi-book-open-page-variant</v-icon>
@@ -211,7 +211,7 @@
                 <v-col cols="auto">
                   <v-btn small
                          :title="$t('browse_book.read_incognito')"
-                         :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, incognito: true}}"
+                         :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined, incognito: true}}"
                          :disabled="!canRead"
                   >
                     <v-icon left small>mdi-incognito</v-icon>
@@ -246,7 +246,7 @@
             <v-btn color="accent"
                    small
                    :title="$t('browse_book.read_book')"
-                   :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id}}"
+                   :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined}}"
                    :disabled="!canRead"
             >
               <v-icon left small>mdi-book-open-page-variant</v-icon>
@@ -257,7 +257,7 @@
           <v-col cols="auto">
             <v-btn small
                    :title="$t('browse_book.read_incognito')"
-                   :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, incognito: true}}"
+                   :to="{name: readRouteName, params: { bookId: bookId}, query: { context: context.origin, contextId: context.id, folder: book.directoryPath || undefined, incognito: true}}"
                    :disabled="!canRead"
             >
               <v-icon left small>mdi-incognito</v-icon>
@@ -476,7 +476,14 @@ import RtlIcon from '@/components/RtlIcon.vue'
 import {BookSseDto, LibrarySseDto, ReadListSseDto, ReadProgressSseDto} from '@/types/komga-sse'
 import {RawLocation} from 'vue-router/types/router'
 import {ReadListDto} from '@/types/komga-readlists'
-import {BookSearch, SearchConditionSeriesId, SearchConditionTag, SearchOperatorIs} from '@/types/komga-search'
+import {
+  BookSearch,
+  SearchConditionAllOfBook,
+  SearchConditionDirectoryPath,
+  SearchConditionSeriesId,
+  SearchConditionTag,
+  SearchOperatorIs,
+} from '@/types/komga-search'
 
 export default Vue.extend({
   name: 'BrowseBook',
@@ -598,7 +605,7 @@ export default Vue.extend({
       if (this.contextReadList)
         return {name: 'browse-readlist', params: {readListId: this.context.id}}
       else
-        return {name: 'browse-series', params: {seriesId: this.book.seriesId}}
+        return {name: 'browse-series', params: {seriesId: this.book.seriesId}, query: {folder: this.book.directoryPath || undefined}}
     },
     displayedRoles(): string[] {
       const allRoles = this.$_.uniq([...authorRoles, ...(this.book.metadata.authors.map(x => x.role))])
@@ -657,7 +664,10 @@ export default Vue.extend({
           .then(v => this.siblings = v.content)
       } else {
         this.$komgaBooks.getBooksList({
-          condition: new SearchConditionSeriesId(new SearchOperatorIs(this.book.seriesId)),
+          condition: new SearchConditionAllOfBook([
+            new SearchConditionSeriesId(new SearchOperatorIs(this.book.seriesId)),
+            new SearchConditionDirectoryPath(this.book.directoryPath, false),
+          ]),
         } as BookSearch, {unpaged: true, sort: ['metadata.numberSort']})
           .then(v => this.siblings = v.content)
       }

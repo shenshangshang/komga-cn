@@ -496,6 +496,7 @@ class BookDtoDao(
     seriesId = seriesId,
     seriesTitle = seriesTitle,
     libraryId = libraryId,
+    directoryPath = directoryPath,
     name = name,
     url = URL(url).toFilePath(),
     number = number,

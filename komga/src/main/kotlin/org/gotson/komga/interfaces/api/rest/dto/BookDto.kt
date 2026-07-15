@@ -12,6 +12,7 @@ data class BookDto(
   val seriesId: String,
   val seriesTitle: String,
   val libraryId: String,
+  val directoryPath: String,
   val name: String,
   val url: String,
   val number: Int,

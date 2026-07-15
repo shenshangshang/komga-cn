@@ -6,6 +6,7 @@ import org.apache.commons.io.FilenameUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.gotson.komga.domain.model.DirectoryNotFoundException
+import org.gotson.komga.domain.model.Library
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -193,6 +194,38 @@ class FileSystemScannerTest {
           },
         )
       }
+    }
+  }
+
+  @Test
+  fun `given nested directories in top level mode when scanning then group by top folder and retain relative directory paths`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val root = fs.getPath("/root")
+      Files.createDirectory(root)
+      Files.createFile(root.resolve("root-book.cbz"))
+      Files.createDirectories(root.resolve("漫画/第一部/第一集"))
+      Files.createDirectories(root.resolve("漫画/第二部"))
+      Files.createFile(root.resolve("漫画/第一部/第一集/01.cbz"))
+      Files.createFile(root.resolve("漫画/第二部/02.zip"))
+
+      val scan =
+        scanner.scanRootFolder(
+          root = root,
+          seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
+        ).series
+
+      assertThat(scan).hasSize(2)
+      val nested = scan.entries.first { it.key.name == "漫画" }
+      assertThat(nested.value.map { it.name }).containsExactlyInAnyOrder("01", "02")
+      assertThat(nested.value.associate { it.name to it.directoryPath })
+        .containsExactlyInAnyOrderEntriesOf(
+          mapOf(
+            "01" to "第一部/第一集",
+            "02" to "第二部",
+          ),
+        )
+      val rootSeries = scan.entries.first { it.key.url == root.toUri().toURL() }
+      assertThat(rootSeries.value.single().directoryPath).isEmpty()
     }
   }
 

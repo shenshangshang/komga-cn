@@ -113,6 +113,7 @@ class LibraryDao(
       .set(l.ANALYZE_DIMENSIONS, library.analyzeDimensions)
       .set(l.AD_PAGES_DETECTOR, library.adPagesDetector)
       .set(l.ONESHOTS_DIRECTORY, library.oneshotsDirectory)
+      .set(l.SERIES_GROUPING_MODE, library.seriesGroupingMode.name)
       .set(l.UNAVAILABLE_DATE, library.unavailableDate)
       .execute()
 
@@ -151,6 +152,7 @@ class LibraryDao(
       .set(l.ANALYZE_DIMENSIONS, library.analyzeDimensions)
       .set(l.AD_PAGES_DETECTOR, library.adPagesDetector)
       .set(l.ONESHOTS_DIRECTORY, library.oneshotsDirectory)
+      .set(l.SERIES_GROUPING_MODE, library.seriesGroupingMode.name)
       .set(l.UNAVAILABLE_DATE, library.unavailableDate)
       .set(l.LAST_MODIFIED_DATE, LocalDateTime.now(ZoneId.of("Z")))
       .where(l.ID.eq(library.id))
@@ -208,6 +210,7 @@ class LibraryDao(
       analyzeDimensions = analyzeDimensions,
       adPagesDetector = adPagesDetector,
       oneshotsDirectory = oneshotsDirectory,
+      seriesGroupingMode = Library.SeriesGroupingMode.valueOf(seriesGroupingMode),
       unavailableDate = unavailableDate,
       id = id,
       createdDate = createdDate.toCurrentTimeZone(),

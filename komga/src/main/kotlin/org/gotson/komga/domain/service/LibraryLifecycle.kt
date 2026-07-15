@@ -93,6 +93,7 @@ class LibraryLifecycle(
     if (existing.scanMobi != updated.scanMobi) return true
     if (existing.scanForceModifiedTime != updated.scanForceModifiedTime) return true
     if (existing.scanDirectoryExclusions != updated.scanDirectoryExclusions) return true
+    if (existing.seriesGroupingMode != updated.seriesGroupingMode) return true
     return false
   }
 

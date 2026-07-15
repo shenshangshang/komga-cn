@@ -37,6 +37,7 @@ data class Library(
   val analyzeDimensions: Boolean = true,
   val adPagesDetector: Boolean = false,
   val oneshotsDirectory: String? = null,
+  val seriesGroupingMode: SeriesGroupingMode = SeriesGroupingMode.DIRECT_PARENT,
   val unavailableDate: LocalDateTime? = null,
   val id: String = TsidCreator.getTsid256().toString(),
   override val createdDate: LocalDateTime = LocalDateTime.now(),
@@ -56,6 +57,11 @@ data class Library(
     EVERY_12H,
     DAILY,
     WEEKLY,
+  }
+
+  enum class SeriesGroupingMode {
+    DIRECT_PARENT,
+    TOP_LEVEL,
   }
 
   @delegate:Transient

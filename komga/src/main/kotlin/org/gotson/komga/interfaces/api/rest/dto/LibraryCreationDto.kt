@@ -1,6 +1,7 @@
 package org.gotson.komga.interfaces.api.rest.dto
 
 import jakarta.validation.constraints.NotBlank
+import org.gotson.komga.domain.model.Library
 
 data class LibraryCreationDto(
   @get:NotBlank val name: String,
@@ -33,4 +34,5 @@ data class LibraryCreationDto(
   val analyzeDimensions: Boolean = true,
   val adPagesDetector: Boolean = false,
   val oneshotsDirectory: String? = null,
+  val seriesGroupingMode: Library.SeriesGroupingMode = Library.SeriesGroupingMode.DIRECT_PARENT,
 )

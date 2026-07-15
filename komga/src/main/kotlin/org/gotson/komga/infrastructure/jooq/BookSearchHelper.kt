@@ -57,6 +57,17 @@ class BookSearchHelper(
 
       is SearchCondition.SeriesId -> searchCondition.operator.toCondition(Tables.BOOK.SERIES_ID) to emptySet()
 
+      is SearchCondition.DirectoryPath ->
+        Tables.BOOK.DIRECTORY_PATH.let { field ->
+          val path = searchCondition.match.normalizedPath
+          if (searchCondition.match.recursive && path.isNotEmpty())
+            field.eq(path).or(field.startsWith("$path/"))
+          else if (searchCondition.match.recursive)
+            DSL.noCondition()
+          else
+            field.eq(path)
+        } to emptySet()
+
       is SearchCondition.ReadListId ->
         when (searchCondition.operator) {
           // for IS condition we have to do a join, so as to order the books by readList number

@@ -30,6 +30,7 @@ import org.gotson.komga.domain.model.SearchCondition
 import org.gotson.komga.domain.model.SearchContext
 import org.gotson.komga.domain.model.SearchField
 import org.gotson.komga.domain.model.SearchOperator
+import org.gotson.komga.domain.model.normalizeSeriesDirectoryPath
 import org.gotson.komga.domain.model.SeriesMetadata
 import org.gotson.komga.domain.model.SeriesSearch
 import org.gotson.komga.domain.model.ThumbnailSeries
@@ -61,6 +62,9 @@ import org.gotson.komga.interfaces.api.rest.dto.BookDto
 import org.gotson.komga.interfaces.api.rest.dto.CollectionDto
 import org.gotson.komga.interfaces.api.rest.dto.GroupCountDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesDto
+import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryBreadcrumbDto
+import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryDto
+import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryListingDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesMetadataUpdateDto
 import org.gotson.komga.interfaces.api.rest.dto.TachiyomiReadProgressUpdateV2Dto
 import org.gotson.komga.interfaces.api.rest.dto.TachiyomiReadProgressV2Dto
@@ -473,6 +477,81 @@ class SeriesController(
       contentRestrictionChecker.checkContentRestriction(principal.user, it)
       it.restrictUrl(!principal.user.isAdmin)
     } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  @Operation(summary = "List immediate directories in a series", tags = [OpenApiConfiguration.TagNames.SERIES])
+  @GetMapping("v1/series/{seriesId}/directories")
+  fun getSeriesDirectories(
+    @AuthenticationPrincipal principal: KomgaPrincipal,
+    @PathVariable seriesId: String,
+    @RequestParam(required = false, defaultValue = "") parentPath: String,
+  ): SeriesDirectoryListingDto {
+    if (seriesRepository.findByIdOrNull(seriesId) == null) throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    principal.user.checkContentRestriction(seriesId)
+    val normalizedParent =
+      try {
+        normalizeSeriesDirectoryPath(parentPath)
+      } catch (e: IllegalArgumentException) {
+        throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+      }
+
+    val books =
+      bookRepository
+        .findAllBySeriesId(seriesId)
+        .filter { it.deletedDate == null }
+        .filter { book ->
+          normalizedParent.isEmpty() ||
+            book.directoryPath == normalizedParent ||
+            book.directoryPath.startsWith("$normalizedParent/")
+        }
+
+    val prefix = if (normalizedParent.isEmpty()) "" else "$normalizedParent/"
+    val directoryBooks = mutableMapOf<String, MutableList<org.gotson.komga.domain.model.Book>>()
+    books.forEach { book ->
+      val remainder = book.directoryPath.removePrefix(prefix)
+      if (remainder.isNotEmpty() && remainder != book.directoryPath || normalizedParent.isEmpty()) {
+        val childName = remainder.substringBefore('/')
+        if (childName.isNotEmpty()) {
+          val childPath = if (normalizedParent.isEmpty()) childName else "$normalizedParent/$childName"
+          directoryBooks.getOrPut(childPath) { mutableListOf() }.add(book)
+        }
+      }
+    }
+
+    val directories =
+      directoryBooks
+        .map { (path, descendants) ->
+          val pathPrefix = "$path/"
+          SeriesDirectoryDto(
+            name = path.substringAfterLast('/'),
+            path = path,
+            parentPath = normalizedParent,
+            directBooksCount = descendants.count { it.directoryPath == path },
+            descendantBooksCount = descendants.size,
+            childDirectoryCount =
+              descendants
+                .mapNotNull { book ->
+                  if (book.directoryPath.startsWith(pathPrefix))
+                    book.directoryPath.removePrefix(pathPrefix).substringBefore('/').takeIf { it.isNotEmpty() }
+                  else
+                    null
+                }.distinct()
+                .size,
+            thumbnailBookId = descendants.minWithOrNull(compareBy<org.gotson.komga.domain.model.Book> { it.number }.thenBy { it.name })?.id,
+          )
+        }.sortedBy { it.name.lowercase() }
+
+    var breadcrumbPath = ""
+    val breadcrumbs =
+      normalizedParent
+        .split('/')
+        .filter { it.isNotEmpty() }
+        .map { segment ->
+          breadcrumbPath = if (breadcrumbPath.isEmpty()) segment else "$breadcrumbPath/$segment"
+          SeriesDirectoryBreadcrumbDto(segment, breadcrumbPath)
+        }
+
+    return SeriesDirectoryListingDto(normalizedParent, breadcrumbs, directories)
+  }
 
   @Operation(summary = "Get series' poster image", tags = [OpenApiConfiguration.TagNames.SERIES_POSTER])
   @ApiResponse(content = [Content(schema = Schema(type = "string", format = "binary"))])

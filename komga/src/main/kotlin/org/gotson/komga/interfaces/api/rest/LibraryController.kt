@@ -121,6 +121,7 @@ class LibraryController(
             analyzeDimensions = library.analyzeDimensions,
             adPagesDetector = library.adPagesDetector,
             oneshotsDirectory = library.oneshotsDirectory?.ifBlank { null },
+            seriesGroupingMode = library.seriesGroupingMode,
           ),
         ).toDto(includeRoot = principal.user.isAdmin)
     } catch (e: Exception) {
@@ -194,6 +195,7 @@ class LibraryController(
             analyzeDimensions = analyzeDimensions ?: existing.analyzeDimensions,
             adPagesDetector = adPagesDetector ?: existing.adPagesDetector,
             oneshotsDirectory = if (isSet("oneshotsDirectory")) oneshotsDirectory?.ifBlank { null } else existing.oneshotsDirectory,
+            seriesGroupingMode = seriesGroupingMode ?: existing.seriesGroupingMode,
           )
         }
       try {

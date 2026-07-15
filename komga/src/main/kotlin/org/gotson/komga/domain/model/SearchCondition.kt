@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 class SearchCondition {
   @Schema(
     name = "SearchConditionBook",
-    oneOf = [AnyOfBook::class, AllOfBook::class, LibraryId::class, ReadListId::class, SeriesId::class, Deleted::class, OneShot::class, Title::class, ReleaseDate::class, Tag::class, NumberSort::class, ReadStatus::class, MediaStatus::class, MediaProfile::class, Author::class, Poster::class],
+    oneOf = [AnyOfBook::class, AllOfBook::class, LibraryId::class, ReadListId::class, SeriesId::class, DirectoryPath::class, Deleted::class, OneShot::class, Title::class, ReleaseDate::class, Tag::class, NumberSort::class, ReadStatus::class, MediaStatus::class, MediaProfile::class, Author::class, Poster::class],
   )
   @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
   sealed interface Book
@@ -76,6 +76,19 @@ class SearchCondition {
     @JsonProperty("seriesId")
     val operator: SearchOperator.Equality<String>,
   ) : Book
+
+  @Schema(name = "SearchConditionDirectoryPath")
+  data class DirectoryPath(
+    @JsonProperty("directoryPath")
+    val match: DirectoryPathMatch,
+  ) : Book
+
+  data class DirectoryPathMatch(
+    val path: String = "",
+    val recursive: Boolean = false,
+  ) {
+    val normalizedPath: String = normalizeSeriesDirectoryPath(path)
+  }
 
   @Schema(name = "SearchConditionDeleted")
   data class Deleted(

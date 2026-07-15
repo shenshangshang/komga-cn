@@ -1,6 +1,7 @@
 package org.gotson.komga.interfaces.api.rest.dto
 
 import org.gotson.komga.infrastructure.validation.NullOrNotBlank
+import org.gotson.komga.domain.model.Library
 import kotlin.properties.Delegates
 
 class LibraryUpdateDto {
@@ -46,6 +47,7 @@ class LibraryUpdateDto {
   val hashKoreader: Boolean? = null
   val analyzeDimensions: Boolean? = null
   val adPagesDetector: Boolean? = null
+  val seriesGroupingMode: Library.SeriesGroupingMode? = null
   var oneshotsDirectory: String?
     by Delegates.observable(null) { prop, _, _ ->
       isSet[prop.name] = true

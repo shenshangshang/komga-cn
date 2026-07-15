@@ -35,6 +35,7 @@ data class LibraryDto(
   val analyzeDimensions: Boolean,
   val adPagesDetector: Boolean,
   val oneshotsDirectory: String?,
+  val seriesGroupingMode: Library.SeriesGroupingMode,
   val unavailable: Boolean,
 )
 
@@ -71,5 +72,6 @@ fun Library.toDto(includeRoot: Boolean) =
     analyzeDimensions = analyzeDimensions,
     adPagesDetector = adPagesDetector,
     oneshotsDirectory = oneshotsDirectory,
+    seriesGroupingMode = seriesGroupingMode,
     unavailable = unavailableDate != null,
   )

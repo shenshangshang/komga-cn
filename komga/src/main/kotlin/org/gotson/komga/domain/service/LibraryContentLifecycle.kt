@@ -74,16 +74,30 @@ class LibraryContentLifecycle(
     measureTime {
       val scanResult =
         try {
-          fileSystemScanner.scanRootFolder(
-            Paths.get(library.root.toURI()),
-            library.scanForceModifiedTime,
-            library.oneshotsDirectory,
-            library.scanCbx,
-            library.scanPdf,
-            library.scanEpub,
-            library.scanMobi,
-            library.scanDirectoryExclusions,
-          )
+          if (library.seriesGroupingMode == Library.SeriesGroupingMode.DIRECT_PARENT) {
+            fileSystemScanner.scanRootFolder(
+              Paths.get(library.root.toURI()),
+              library.scanForceModifiedTime,
+              library.oneshotsDirectory,
+              library.scanCbx,
+              library.scanPdf,
+              library.scanEpub,
+              library.scanMobi,
+              library.scanDirectoryExclusions,
+            )
+          } else {
+            fileSystemScanner.scanRootFolder(
+              root = Paths.get(library.root.toURI()),
+              forceDirectoryModifiedTime = library.scanForceModifiedTime,
+              oneshotsDir = library.oneshotsDirectory,
+              scanCbx = library.scanCbx,
+              scanPdf = library.scanPdf,
+              scanEpub = library.scanEpub,
+              scanMobi = library.scanMobi,
+              directoryExclusions = library.scanDirectoryExclusions,
+              seriesGroupingMode = library.seriesGroupingMode,
+            )
+          }
         } catch (e: DirectoryNotFoundException) {
           library.copy(unavailableDate = LocalDateTime.now()).let {
             libraryRepository.update(it)
@@ -105,6 +119,43 @@ class LibraryContentLifecycle(
           .map { (series, books) ->
             series.copy(libraryId = library.id) to books.map { it.copy(libraryId = library.id) }
           }.toMap()
+
+      // A grouping-mode migration changes the owning series, but not the book file.
+      // Move matching books by their stable library/url identity before obsolete leaf
+      // series are soft-deleted so media, thumbnails, progress and read-list entries
+      // remain attached to the same book id.
+      val regroupedSeries = mutableListOf<Series>()
+      if (library.seriesGroupingMode == Library.SeriesGroupingMode.TOP_LEVEL) {
+        scannedSeries.forEach { (scanned, scannedBooks) ->
+          val targetSeries =
+            seriesRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, scanned.url)
+              ?: seriesLifecycle.createSeries(scanned)
+          val newBooks = mutableListOf<Book>()
+          scannedBooks.forEach { scannedBook ->
+            val existingBook = bookRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, scannedBook.url)
+            if (existingBook == null) {
+              newBooks += scannedBook
+            } else if (
+              existingBook.seriesId != targetSeries.id ||
+              existingBook.directoryPath != scannedBook.directoryPath ||
+              existingBook.deletedDate != null
+            ) {
+              bookRepository.update(
+                existingBook.copy(
+                  seriesId = targetSeries.id,
+                  directoryPath = scannedBook.directoryPath,
+                  deletedDate = null,
+                ),
+              )
+            }
+          }
+          if (newBooks.isNotEmpty()) {
+            seriesLifecycle.addBooks(targetSeries, newBooks)
+            tryRestoreBooks(newBooks)
+          }
+          regroupedSeries += targetSeries
+        }
+      }
 
       // delete series that don't exist anymore
       if (scannedSeries.isEmpty()) {
@@ -137,6 +188,7 @@ class LibraryContentLifecycle(
             mutableListOf()
           }
         }
+      seriesToSortAndRefresh.addAll(regroupedSeries)
       // we store the url of all the series that had deleted books
       // this can be used to detect changed series even if their file modified date did not change, for example because of NFS/SMB cache
       val seriesUrlWithDeletedBooks = seriesToSortAndRefresh.map { it.url }

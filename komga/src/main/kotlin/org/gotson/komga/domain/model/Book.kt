@@ -17,6 +17,7 @@ data class Book(
   val id: String = TsidCreator.getTsid256().toString(),
   val seriesId: String = "",
   val libraryId: String = "",
+  val directoryPath: String = "",
   val deletedDate: LocalDateTime? = null,
   val oneshot: Boolean = false,
   override val createdDate: LocalDateTime = LocalDateTime.now(),

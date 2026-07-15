@@ -333,9 +333,10 @@ class BookDao(
                 b.FILE_HASH_KOREADER,
                 b.LIBRARY_ID,
                 b.SERIES_ID,
+                b.DIRECTORY_PATH,
                 b.DELETED_DATE,
                 b.ONESHOT,
-              ).values(null as String?, null, null, null, null, null, null, null, null, null, null, null),
+              ).values(null as String?, null, null, null, null, null, null, null, null, null, null, null, null),
           ).also { step ->
             chunk.forEach {
               step.bind(
@@ -349,6 +350,7 @@ class BookDao(
                 it.fileHashKoreader,
                 it.libraryId,
                 it.seriesId,
+                it.directoryPath,
                 it.deletedDate,
                 it.oneshot,
               )
@@ -380,6 +382,7 @@ class BookDao(
       .set(b.FILE_HASH_KOREADER, book.fileHashKoreader)
       .set(b.LIBRARY_ID, book.libraryId)
       .set(b.SERIES_ID, book.seriesId)
+      .set(b.DIRECTORY_PATH, book.directoryPath)
       .set(b.DELETED_DATE, book.deletedDate)
       .set(b.LAST_MODIFIED_DATE, LocalDateTime.now(ZoneId.of("Z")))
       .set(b.ONESHOT, book.oneshot)
@@ -429,6 +432,7 @@ class BookDao(
       id = id,
       libraryId = libraryId,
       seriesId = seriesId,
+      directoryPath = directoryPath,
       deletedDate = deletedDate,
       oneshot = oneshot,
       createdDate = createdDate.toCurrentTimeZone(),

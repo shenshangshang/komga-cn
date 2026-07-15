@@ -113,10 +113,19 @@
           </v-list-item>
 
           <!--   LIBRARIES     -->
-          <v-list-item :to="{name:'libraries', params: {libraryId: LIBRARIES_ALL}}">
-            <v-list-item-icon>
-              <v-icon>mdi-book-multiple</v-icon>
-            </v-list-item-icon>
+          <v-list-item
+            :to="{name:'libraries', params: {libraryId: LIBRARIES_ALL}}"
+            class="app-shell__library-parent"
+            :aria-label="$t('navigation.libraries')"
+          >
+            <v-tooltip right :disabled="!navigationCollapsed">
+              <template v-slot:activator="{ on }">
+                <v-list-item-icon v-on="on">
+                  <v-icon>mdi-book-multiple</v-icon>
+                </v-list-item-icon>
+              </template>
+              <span>{{ $t('navigation.libraries') }}</span>
+            </v-tooltip>
             <v-list-item-content>
               <v-list-item-title>{{ $t('navigation.libraries') }}</v-list-item-title>
             </v-list-item-content>
@@ -135,41 +144,17 @@
             </v-list-item-action>
           </v-list-item>
 
-          <!--   PINNED LIBRARIES     -->
-          <v-list-item v-for="(l, index) in librariesPinned"
-                       :key="index"
-                       :to="{name:'libraries', params: {libraryId: l.id}}"
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-bookshelf</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ l.name }}</v-list-item-title>
-              <v-list-item-subtitle
-                v-if="l.unavailable"
-                class="error--text caption"
-              >{{ $t('common.unavailable') }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action class="ma-0" v-if="isAdmin">
-              <library-actions-menu :library="l"/>
-            </v-list-item-action>
-          </v-list-item>
-
-          <!--   UNPINNED LIBRARIES     -->
-          <v-list-group no-action
-                        sub-group
-                        v-if="librariesUnpinned.length > 0"
-                        v-model="expandUnpinned"
-          >
-            <template v-slot:activator>
-              <v-list-item-title>{{ $t('common.more') }}</v-list-item-title>
-            </template>
-
-            <v-list-item v-for="(l, index) in librariesUnpinned"
+          <div class="app-shell__library-children" role="group" :aria-label="$t('navigation.libraries')">
+            <!--   PINNED LIBRARIES     -->
+            <v-list-item v-for="(l, index) in librariesPinned"
                          :key="index"
                          :to="{name:'libraries', params: {libraryId: l.id}}"
+                         class="app-shell__library-child"
+                         :aria-label="l.name"
             >
+              <v-list-item-icon>
+                <v-icon small>mdi-bookshelf</v-icon>
+              </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ l.name }}</v-list-item-title>
                 <v-list-item-subtitle
@@ -178,11 +163,45 @@
                 >{{ $t('common.unavailable') }}
                 </v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action class="ma-0">
+              <v-list-item-action class="ma-0" v-if="isAdmin">
                 <library-actions-menu :library="l"/>
               </v-list-item-action>
             </v-list-item>
-          </v-list-group>
+
+            <!--   UNPINNED LIBRARIES     -->
+            <v-list-group no-action
+                          sub-group
+                          class="app-shell__library-more"
+                          v-if="librariesUnpinned.length > 0"
+                          v-model="expandUnpinned"
+            >
+              <template v-slot:activator>
+                <v-list-item-title>{{ $t('common.more') }}</v-list-item-title>
+              </template>
+
+              <v-list-item v-for="(l, index) in librariesUnpinned"
+                           :key="index"
+                           :to="{name:'libraries', params: {libraryId: l.id}}"
+                           class="app-shell__library-child app-shell__library-child--nested"
+                           :aria-label="l.name"
+              >
+                <v-list-item-icon>
+                  <v-icon small>mdi-bookshelf</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ l.name }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    v-if="l.unavailable"
+                    class="error--text caption"
+                  >{{ $t('common.unavailable') }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-action class="ma-0">
+                  <library-actions-menu :library="l"/>
+                </v-list-item-action>
+              </v-list-item>
+            </v-list-group>
+          </div>
 
           <!--   IMPORT     -->
           <v-list-group v-if="isAdmin"
@@ -677,6 +696,10 @@ export default Vue.extend({
   padding: var(--k-space-2) 0;
 }
 
+.app-shell__drawer--collapsed .app-shell__library-children {
+  display: none;
+}
+
 .app-shell__drawer--collapsed ::v-deep .v-list-item {
   width: 52px !important;
   min-width: 52px !important;
@@ -771,6 +794,82 @@ export default Vue.extend({
 
 .app-shell__nav-list ::v-deep .v-list-item__icon {
   color: currentColor !important;
+}
+
+.app-shell__library-parent {
+  margin-block-start: var(--k-space-2) !important;
+  background: var(--k-surface-panel-soft);
+  color: var(--k-nav-text) !important;
+  font-weight: 750;
+}
+
+.app-shell__library-parent ::v-deep .v-list-item__action {
+  color: var(--k-nav-muted);
+}
+
+.app-shell__library-children {
+  position: relative;
+  margin: 0 var(--k-space-2) var(--k-space-3);
+  margin-inline-start: var(--k-space-6);
+  padding-inline-start: var(--k-space-3);
+}
+
+.app-shell__library-children::before {
+  position: absolute;
+  inset-block: var(--k-space-1) var(--k-space-2);
+  inset-inline-start: 0;
+  width: 1px;
+  background: var(--k-nav-border);
+  content: "";
+}
+
+.app-shell__library-child {
+  min-height: 40px !important;
+  margin: var(--k-space-1) 0 !important;
+  padding-inline: var(--k-space-2) var(--k-space-1) !important;
+  border-radius: 10px !important;
+  color: var(--k-nav-muted) !important;
+}
+
+.app-shell__library-child::after {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(-1 * var(--k-space-3));
+  width: var(--k-space-3);
+  height: 1px;
+  background: var(--k-nav-border);
+  content: "";
+  pointer-events: none;
+}
+
+.app-shell__library-child ::v-deep .v-list-item__icon {
+  min-width: 28px;
+  margin: 0;
+  margin-inline-end: var(--k-space-2);
+}
+
+.app-shell__library-child ::v-deep .v-list-item__title,
+.app-shell__library-more ::v-deep .v-list-item__title {
+  font-size: .8125rem;
+  font-weight: 600;
+}
+
+.app-shell__library-child.v-list-item--active {
+  border-inline-start: 3px solid var(--k-primary) !important;
+  background: var(--k-nav-active) !important;
+  color: var(--k-primary) !important;
+  font-weight: 750;
+}
+
+.app-shell__library-more ::v-deep .v-list-group__header {
+  min-height: 40px;
+  margin: var(--k-space-1) 0;
+  padding-inline: var(--k-space-2) var(--k-space-1);
+  color: var(--k-nav-muted);
+}
+
+.app-shell__library-child--nested {
+  margin-inline-start: var(--k-space-2) !important;
 }
 
 .app-shell__main {

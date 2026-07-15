@@ -313,44 +313,44 @@ class SeriesDtoDao(
 
     dsl.withTempTable(batchSize, seriesIds).use { tempTable ->
       genres =
-        dsl
+        tempTable.dsl
           .selectFrom(g)
           .where(g.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { it.genre })
 
       tags =
-        dsl
+        tempTable.dsl
           .selectFrom(st)
           .where(st.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { it.tag })
 
       sharingLabels =
-        dsl
+        tempTable.dsl
           .selectFrom(sl)
           .where(sl.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { it.label })
 
       links =
-        dsl
+        tempTable.dsl
           .selectFrom(slk)
           .where(slk.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { WebLinkDto(it.label, it.url) })
 
       alternateTitles =
-        dsl
+        tempTable.dsl
           .selectFrom(sat)
           .where(sat.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { AlternateTitleDto(it.label, it.title) })
 
       aggregatedAuthors =
-        dsl
+        tempTable.dsl
           .selectFrom(bmaa)
           .where(bmaa.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .filter { it.name != null }
           .groupBy({ it.seriesId }, { AuthorDto(it.name, it.role) })
 
       aggregatedTags =
-        dsl
+        tempTable.dsl
           .selectFrom(bmat)
           .where(bmat.SERIES_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.seriesId }, { it.tag })

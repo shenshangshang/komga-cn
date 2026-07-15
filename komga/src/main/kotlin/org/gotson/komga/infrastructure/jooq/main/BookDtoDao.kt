@@ -152,8 +152,8 @@ class BookDtoDao(
         }
 
       val count =
-        dslRO.fetchCount(
-          dslRO
+        tempTable.dsl.fetchCount(
+          tempTable.dsl
             .select(b.ID)
             .from(b)
             .leftJoin(m)
@@ -188,13 +188,13 @@ class BookDtoDao(
         )
 
       val dtos =
-        dslRO
+        tempTable.dsl
           .selectBase(userId, joins)
           .where(conditions)
           .and(searchCondition)
           .orderBy(orderBy)
           .apply { if (pageable.isPaged) limit(pageable.pageSize).offset(pageable.offset) }
-          .fetchAndMap(dslRO)
+          .fetchAndMap(tempTable.dsl)
 
       val pageSort = if (orderBy.isNotEmpty()) pageable.sort else Sort.unsorted()
       return PageImpl(
@@ -455,20 +455,20 @@ class BookDtoDao(
     lateinit var links: Map<String, List<WebLinkDto>>
     dsl.withTempTable(batchSize, bookIds).use { tempTable ->
       authors =
-        dsl
+        tempTable.dsl
           .selectFrom(a)
           .where(a.BOOK_ID.`in`(tempTable.selectTempStrings()))
           .filter { it.name != null }
           .groupBy({ it.bookId }, { AuthorDto(it.name, it.role) })
 
       tags =
-        dsl
+        tempTable.dsl
           .selectFrom(bt)
           .where(bt.BOOK_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.bookId }, { it.tag })
 
       links =
-        dsl
+        tempTable.dsl
           .selectFrom(bl)
           .where(bl.BOOK_ID.`in`(tempTable.selectTempStrings()))
           .groupBy({ it.bookId }, { WebLinkDto(it.label, it.url) })

@@ -65,7 +65,7 @@ class SeriesDao(
     urls: Collection<URL>,
   ): List<Series> {
     dslRO.withTempTable(batchSize, urls.map { it.toString() }).use { tempTable ->
-      return dslRO
+      return tempTable.dsl
         .selectFrom(s)
         .where(s.LIBRARY_ID.eq(libraryId))
         .and(s.DELETED_DATE.isNull)
@@ -200,8 +200,8 @@ class SeriesDao(
 
   @Transactional
   override fun delete(seriesIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, seriesIds).use {
-      dslRW.deleteFrom(s).where(s.ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, seriesIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(s).where(s.ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

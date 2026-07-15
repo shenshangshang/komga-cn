@@ -306,10 +306,10 @@ class MediaDao(
 
   @Transactional
   override fun delete(bookIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, bookIds).use {
-      dslRW.deleteFrom(p).where(p.BOOK_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(f).where(f.BOOK_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(m).where(m.BOOK_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(p).where(p.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(f).where(f.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(m).where(m.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

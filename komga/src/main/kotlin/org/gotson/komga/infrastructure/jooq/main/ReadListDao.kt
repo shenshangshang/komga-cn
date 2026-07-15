@@ -264,10 +264,10 @@ class ReadListDao(
 
   @Transactional
   override fun removeBooksFromAll(bookIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, bookIds).use {
-      dslRW
+    dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
+      tempTable.dsl
         .deleteFrom(rlb)
-        .where(rlb.BOOK_ID.`in`(it.selectTempStrings()))
+        .where(rlb.BOOK_ID.`in`(tempTable.selectTempStrings()))
         .execute()
     }
   }

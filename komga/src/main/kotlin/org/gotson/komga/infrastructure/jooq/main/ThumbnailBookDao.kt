@@ -150,8 +150,8 @@ class ThumbnailBookDao(
 
   @Transactional
   override fun deleteByBookIds(bookIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, bookIds).use {
-      dslRW.deleteFrom(tb).where(tb.BOOK_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(tb).where(tb.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

@@ -49,11 +49,11 @@ class SidecarDao(
     libraryId: String,
     urls: Collection<URL>,
   ) {
-    dslRW.withTempTable(batchSize, urls.map { it.toString() }).use {
-      dslRW
+    dslRW.withTempTable(batchSize, urls.map { it.toString() }).use { tempTable ->
+      tempTable.dsl
         .deleteFrom(sc)
         .where(sc.LIBRARY_ID.eq(libraryId))
-        .and(sc.URL.`in`(it.selectTempStrings()))
+        .and(sc.URL.`in`(tempTable.selectTempStrings()))
         .execute()
     }
   }

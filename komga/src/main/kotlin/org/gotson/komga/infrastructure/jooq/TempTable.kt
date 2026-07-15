@@ -12,16 +12,26 @@ import java.io.Closeable
  *
  * The table name is automatically generated, and the table is dropped when the object is closed.
  */
-class TempTable private constructor(
-  private val dslContext: DSLContext,
-  val name: String,
+class TempTable(
+  dslContext: DSLContext,
 ) : Closeable {
-  constructor(dslContext: DSLContext) : this(dslContext, generateName())
+  private val connectionProvider = dslContext.configuration().connectionProvider()
+  private val connection = connectionProvider.acquire()
+
+  /**
+   * A DSL context pinned to the physical connection that owns this temporary table.
+   * Queries referencing [selectTempStrings] must execute through this context.
+   */
+  val dsl: DSLContext = DSL.using(dslContext.configuration().derive(connection))
+
+  val name: String = generateName()
 
   private var created = false
+  private var closed = false
 
   fun create() {
-    dslContext.execute("CREATE TEMPORARY TABLE $name (STRING varchar(768) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL);")
+    check(!closed) { "Temporary table is already closed" }
+    dsl.execute("CREATE TEMPORARY TABLE $name (STRING varchar(768) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL);")
     created = true
   }
 
@@ -32,9 +42,9 @@ class TempTable private constructor(
     if (!created) create()
     if (collection.isNotEmpty()) {
       collection.chunked(batchSize).forEach { chunk ->
-        dslContext
+        dsl
           .batch(
-            dslContext.insertInto(DSL.table(DSL.name(name)), DSL.field(DSL.name("STRING"), String::class.java)).values(null as String?),
+            dsl.insertInto(DSL.table(DSL.name(name)), DSL.field(DSL.name("STRING"), String::class.java)).values(null as String?),
           ).also { step ->
             chunk.forEach {
               step.bind(it)
@@ -44,10 +54,17 @@ class TempTable private constructor(
     }
   }
 
-  fun selectTempStrings() = dslContext.select(DSL.field(DSL.name("STRING"), String::class.java)).from(DSL.table(DSL.name(name)))
+  fun selectTempStrings() = dsl.select(DSL.field(DSL.name("STRING"), String::class.java)).from(DSL.table(DSL.name(name)))
 
   override fun close() {
-    if (created) dslContext.dropTableIfExists(name).execute()
+    if (closed) return
+    closed = true
+
+    try {
+      if (created) dsl.dropTableIfExists(name).execute()
+    } finally {
+      connectionProvider.release(connection)
+    }
   }
 
   companion object {
@@ -56,9 +73,19 @@ class TempTable private constructor(
     fun DSLContext.withTempTable(
       batchSize: Int,
       collection: Collection<String>,
-    ) = TempTable(this, generateName())
-      .also {
-        it.insertTempStrings(batchSize, collection)
+    ): TempTable {
+      val tempTable = TempTable(this)
+      try {
+        tempTable.insertTempStrings(batchSize, collection)
+        return tempTable
+      } catch (throwable: Throwable) {
+        try {
+          tempTable.close()
+        } catch (closeException: Throwable) {
+          throwable.addSuppressed(closeException)
+        }
+        throw throwable
       }
+    }
   }
 }

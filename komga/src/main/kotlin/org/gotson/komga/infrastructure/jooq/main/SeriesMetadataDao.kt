@@ -276,13 +276,13 @@ class SeriesMetadataDao(
 
   @Transactional
   override fun delete(seriesIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, seriesIds).use {
-      dslRW.deleteFrom(g).where(g.SERIES_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(st).where(st.SERIES_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(sl).where(sl.SERIES_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(slk).where(slk.SERIES_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(sat).where(sat.SERIES_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(d).where(d.SERIES_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, seriesIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(g).where(g.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(st).where(st.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(sl).where(sl.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(slk).where(slk.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(sat).where(sat.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(d).where(d.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

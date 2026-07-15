@@ -259,10 +259,10 @@ class SeriesCollectionDao(
 
   @Transactional
   override fun removeSeriesFromAll(seriesIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, seriesIds).use {
-      dslRW
+    dslRW.withTempTable(batchSize, seriesIds).use { tempTable ->
+      tempTable.dsl
         .deleteFrom(cs)
-        .where(cs.SERIES_ID.`in`(it.selectTempStrings()))
+        .where(cs.SERIES_ID.`in`(tempTable.selectTempStrings()))
         .execute()
     }
   }

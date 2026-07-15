@@ -117,8 +117,8 @@ class ThumbnailSeriesDao(
 
   @Transactional
   override fun deleteBySeriesIds(seriesIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, seriesIds).use {
-      dslRW.deleteFrom(ts).where(ts.SERIES_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, seriesIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(ts).where(ts.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

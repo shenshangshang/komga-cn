@@ -248,11 +248,11 @@ class BookMetadataDao(
 
   @Transactional
   override fun delete(bookIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, bookIds).use {
-      dslRW.deleteFrom(a).where(a.BOOK_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(bt).where(bt.BOOK_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(bl).where(bl.BOOK_ID.`in`(it.selectTempStrings())).execute()
-      dslRW.deleteFrom(d).where(d.BOOK_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(a).where(a.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(bt).where(bt.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(bl).where(bl.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(d).where(d.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

@@ -79,7 +79,7 @@ class BookDao(
   @Transactional
   override fun findAllBySeriesIds(seriesIds: Collection<String>): Collection<Book> {
     dslRO.withTempTable(batchSize, seriesIds).use { tempTable ->
-      return dslRO
+      return tempTable.dsl
         .selectFrom(b)
         .where(b.SERIES_ID.`in`(tempTable.selectTempStrings()))
         .fetchInto(b)
@@ -94,7 +94,7 @@ class BookDao(
   ): Collection<Book> {
     dslRO.withTempTable(batchSize, urls.map { it.toString() }).use { tempTable ->
 
-      return dslRO
+      return tempTable.dsl
         .selectFrom(b)
         .where(b.LIBRARY_ID.eq(libraryId))
         .and(b.DELETED_DATE.isNull)
@@ -394,7 +394,7 @@ class BookDao(
   @Transactional
   override fun delete(bookIds: Collection<String>) {
     dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
-      dslRW.deleteFrom(b).where(b.ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.deleteFrom(b).where(b.ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 

@@ -149,15 +149,15 @@ class ReadProgressDao(
   @Transactional
   override fun deleteByBookIds(bookIds: Collection<String>) {
     dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
-      dslRW.deleteFrom(r).where(r.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
-      dslRW.aggregateSeriesProgress(tempTable)
+      tempTable.dsl.deleteFrom(r).where(r.BOOK_ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl.aggregateSeriesProgress(tempTable)
     }
   }
 
   @Transactional
   override fun deleteBySeriesIds(seriesIds: Collection<String>) {
-    dslRW.withTempTable(batchSize, seriesIds).use {
-      dslRW.deleteFrom(rs).where(rs.SERIES_ID.`in`(it.selectTempStrings())).execute()
+    dslRW.withTempTable(batchSize, seriesIds).use { tempTable ->
+      tempTable.dsl.deleteFrom(rs).where(rs.SERIES_ID.`in`(tempTable.selectTempStrings())).execute()
     }
   }
 
@@ -167,12 +167,12 @@ class ReadProgressDao(
     userId: String,
   ) {
     dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
-      dslRW
+      tempTable.dsl
         .deleteFrom(r)
         .where(r.BOOK_ID.`in`(tempTable.selectTempStrings()))
         .and(r.USER_ID.eq(userId))
         .execute()
-      dslRW.aggregateSeriesProgress(tempTable, userId)
+      tempTable.dsl.aggregateSeriesProgress(tempTable, userId)
     }
   }
 
@@ -187,7 +187,7 @@ class ReadProgressDao(
     userId: String? = null,
   ) {
     this.withTempTable(batchSize, bookIds).use { tempTable ->
-      this.aggregateSeriesProgress(tempTable, userId)
+      tempTable.dsl.aggregateSeriesProgress(tempTable, userId)
     }
   }
 

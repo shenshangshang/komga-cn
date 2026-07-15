@@ -1,23 +1,15 @@
 <template>
   <main class="login-page">
     <section class="login-shell" aria-labelledby="login-title">
-      <aside class="brand-panel" aria-label="Komga">
-        <div class="brand-panel__top">
-          <div class="brand-monogram" role="img" aria-label="Komga">K</div>
-          <span class="brand-edition">个人漫画书库</span>
-        </div>
-
-        <div class="brand-statement">
-          <p class="brand-kicker">你的故事，井然有序</p>
-          <h1>每一格，<br><span>都在等你继续。</span></h1>
-          <p class="brand-copy">收藏、整理并继续阅读你的漫画世界。</p>
-        </div>
-
-        <div class="spine-index" aria-hidden="true">
-          <span class="spine-index__line"></span>
-          <span>01</span>
-          <span>漫画书库</span>
-          <span class="spine-index__page">中文版</span>
+      <aside class="brand-panel" aria-label="Komga 漫画书库">
+        <div class="brand-visual" role="img" aria-label="漫画书库">
+          <span class="brand-visual__halo brand-visual__halo--outer" aria-hidden="true"></span>
+          <span class="brand-visual__halo brand-visual__halo--inner" aria-hidden="true"></span>
+          <div class="brand-visual__mark">
+            <v-icon color="white" size="72">mdi-book-open-page-variant</v-icon>
+          </div>
+          <span class="brand-visual__spark brand-visual__spark--cyan" aria-hidden="true"></span>
+          <span class="brand-visual__spark brand-visual__spark--purple" aria-hidden="true"></span>
         </div>
       </aside>
 
@@ -362,10 +354,10 @@ export default Vue.extend({
 
 .brand-panel {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  place-items: center;
   overflow: hidden;
+  min-height: 34rem;
   padding: clamp(2rem, 4vw, 4rem);
   color: #f8fafc;
   background:
@@ -373,114 +365,97 @@ export default Vue.extend({
     #071329;
 }
 
+.brand-panel::before,
 .brand-panel::after {
   position: absolute;
-  right: 9%;
-  bottom: -10%;
-  width: 48%;
-  height: 58%;
-  border: 1px solid rgb(102 224 255 / 24%);
-  border-radius: 50%;
   content: "";
-  box-shadow: 0 0 80px rgb(105 95 255 / 28%);
-  transform: rotate(-12deg);
+  filter: blur(8px);
 }
 
-.brand-panel__top,
-.spine-index {
+.brand-panel::before {
+  top: -14rem;
+  left: -12rem;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 50%;
+  background: rgb(92 225 255 / 13%);
+}
+
+.brand-panel::after {
+  right: -13rem;
+  bottom: -15rem;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 50%;
+  background: rgb(157 132 255 / 14%);
+}
+
+.brand-visual {
+  position: relative;
+  display: grid;
+  width: min(24rem, 78%);
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.brand-visual__halo {
+  position: absolute;
+  border: 1px solid rgb(122 224 255 / 22%);
+  border-radius: 50%;
+}
+
+.brand-visual__halo--outer {
+  inset: 0;
+  box-shadow: inset 0 0 5rem rgb(85 209 255 / 6%), 0 0 5rem rgb(105 95 255 / 12%);
+}
+
+.brand-visual__halo--inner {
+  inset: 17%;
+  border-color: rgb(179 151 255 / 28%);
+  transform: rotate(-14deg);
+}
+
+.brand-visual__mark {
   position: relative;
   z-index: 1;
-}
-
-.brand-panel__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.brand-monogram {
   display: grid;
-  width: 5.5rem;
-  height: 5.5rem;
-  flex: 0 0 5.5rem;
+  width: 8.5rem;
+  height: 8.5rem;
   place-items: center;
-  border: 1px solid rgb(255 255 255 / 34%);
-  border-radius: 20px;
-  background: linear-gradient(135deg, #66e0ff, #9d84ff 62%, #ff7fba);
-  color: #f8fafc;
-  font-family: Inter, "Noto Sans SC", system-ui, sans-serif;
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1;
-  box-shadow: 0 12px 34px rgb(73 197 255 / 28%);
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 2.25rem;
+  background: linear-gradient(145deg, #58d9ff, #826dff 56%, #e873b0);
+  box-shadow: 0 1.5rem 4rem rgb(46 144 255 / 28%), inset 0 1px rgb(255 255 255 / 38%);
+  transform: rotate(-5deg);
 }
 
-.brand-edition,
-.brand-kicker,
-.login-header__index,
-.spine-index {
+.brand-visual__spark {
+  position: absolute;
+  width: .75rem;
+  height: .75rem;
+  border-radius: 50%;
+  box-shadow: 0 0 1.5rem currentColor;
+}
+
+.brand-visual__spark--cyan {
+  top: 19%;
+  right: 14%;
+  background: #66e0ff;
+  color: #66e0ff;
+}
+
+.brand-visual__spark--purple {
+  bottom: 18%;
+  left: 13%;
+  background: #b49aff;
+  color: #b49aff;
+}
+
+.login-header__index {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.16em;
-}
-
-.brand-edition {
-  text-align: right;
-  color: rgb(255 255 255 / 60%);
-}
-
-.brand-statement {
-  position: relative;
-  z-index: 1;
-  max-width: 28rem;
-  margin: 4rem 0;
-}
-
-.brand-kicker {
-  margin-bottom: 1.5rem;
-  color: #66e0ff;
-}
-
-.brand-statement h1 {
-  margin: 0;
-  font-family: Inter, "Noto Sans SC", system-ui, sans-serif;
-  font-size: clamp(2.5rem, 5vw, 4.75rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.06em;
-}
-
-.brand-statement h1 span {
-  color: #9d84ff;
-}
-
-.brand-copy {
-  max-width: 22rem;
-  margin: 2rem 0 0;
-  color: rgb(255 255 255 / 68%);
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-.spine-index {
-  display: grid;
-  grid-template-columns: auto 2rem auto 1fr;
-  align-items: center;
-  gap: 0.75rem;
-  color: rgb(255 255 255 / 58%);
-}
-
-.spine-index__line {
-  width: 0.375rem;
-  height: 3rem;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #66e0ff, #9d84ff);
-}
-
-.spine-index__page {
-  justify-self: end;
 }
 
 .login-workspace {
@@ -584,29 +559,22 @@ export default Vue.extend({
   }
 
   .brand-panel {
-    min-height: 17rem;
+    min-height: 12rem;
     padding: 1.5rem;
   }
 
-  .brand-statement {
-    margin: 2.5rem 0 1.5rem;
+  .brand-visual {
+    width: 9rem;
   }
 
-  .brand-statement h1 {
-    font-size: clamp(2.25rem, 11vw, 3.5rem);
+  .brand-visual__mark {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 1.4rem;
   }
 
-  .brand-copy,
-  .brand-panel::after {
-    display: none;
-  }
-
-  .spine-index {
-    grid-template-columns: auto 2rem auto 1fr;
-  }
-
-  .spine-index__line {
-    height: 1.75rem;
+  .brand-visual__mark .v-icon {
+    font-size: 2.75rem !important;
   }
 
   .login-workspace {
@@ -614,22 +582,7 @@ export default Vue.extend({
   }
 }
 
-@media (max-width: 599px) {
-  .brand-edition {
-    display: none;
-  }
-}
-
 @media (max-width: 479px) {
-  .brand-statement h1 {
-    font-size: clamp(2rem, 9.5vw, 2.5rem);
-    letter-spacing: -0.04em;
-  }
-
-  .spine-index__page {
-    display: none;
-  }
-
   .login-actions,
   .login-preferences {
     grid-template-columns: 1fr;

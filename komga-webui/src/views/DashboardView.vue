@@ -50,14 +50,13 @@
 
     <v-container fluid class="aurora-dashboard">
       <header class="aurora-hero">
-        <div class="aurora-hero__copy">
-          <span class="aurora-hero__kicker">私人漫画书库</span>
-          <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
-          <p>{{ $t('navigation.home') }} / {{ sections.length.toString().padStart(2, '0') }}</p>
+        <div class="aurora-hero__icon" aria-hidden="true">
+          <v-icon color="primary" size="34">mdi-bookshelf</v-icon>
         </div>
-        <div class="aurora-hero__orb" aria-hidden="true">
-          <span>{{ sections.length.toString().padStart(2, '0') }}</span>
-          <small>内容分区</small>
+        <div class="aurora-hero__copy">
+          <span class="aurora-hero__kicker">漫画书库</span>
+          <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
+          <p>发现最近添加与继续阅读的内容</p>
         </div>
       </header>
 
@@ -68,9 +67,9 @@
       >
       </empty-state>
 
-      <template v-for="(section, i) in sections">
+      <template v-for="section in sections">
         <horizontal-scroller
-          v-bind:key="i"
+          v-bind:key="section.value"
           v-if="section.loader && section.loader.items.length !== 0"
           class="aurora-shelf mb-8"
           :tick="section.loader.tick"
@@ -78,7 +77,7 @@
         >
           <template v-slot:prepend>
             <div class="aurora-shelf__heading">
-              <span class="aurora-shelf__index">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <v-icon class="aurora-shelf__icon" size="20">mdi-book-multiple-outline</v-icon>
               <span class="aurora-shelf__title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</span>
             </div>
           </template>
@@ -630,133 +629,139 @@ export default Vue.extend({
 <style scoped>
 .aurora-dashboard {
   max-width: 112rem;
-  padding: clamp(1rem, 2.5vw, 3rem) !important;
+  padding: clamp(1rem, 2.2vw, 2.5rem) !important;
 }
 
 .aurora-hero {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 15rem;
-  margin-block-end: clamp(2rem, 5vw, 5rem);
-  border-block: 2px solid var(--k-text-primary);
-  background: var(--k-surface-card);
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  min-height: 7.5rem;
+  margin-block-end: clamp(1.5rem, 3vw, 2.5rem);
+  overflow: hidden;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--k-border-soft);
+  border-radius: var(--k-radius-sheet);
+  background: linear-gradient(120deg, var(--k-surface-card), color-mix(in srgb, var(--k-purple) 12%, var(--k-surface-card)));
+  box-shadow: var(--k-shadow-card);
+}
+
+.aurora-hero::after {
+  position: absolute;
+  top: -5rem;
+  right: -3rem;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--k-cyan) 9%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.aurora-hero__icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--k-primary) 28%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--k-primary) 11%, var(--k-surface-card));
 }
 
 .aurora-hero__copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: clamp(1.5rem, 4vw, 4rem);
+  position: relative;
+  z-index: 1;
+  min-width: 0;
 }
 
 .aurora-hero__kicker,
-.aurora-hero__copy p,
-.aurora-shelf__index {
+.aurora-hero__copy p {
   font-family: var(--k-font-data);
-  letter-spacing: .12em;
-  text-transform: uppercase;
 }
 
 .aurora-hero__kicker {
-  color: var(--k-primary);
-  font-size: .75rem;
-  font-weight: 800;
+  color: var(--k-mint);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
 }
 
 .aurora-hero h1 {
-  max-width: 18ch;
-  margin: .5rem 0;
+  margin: .25rem 0;
+  overflow: hidden;
+  color: var(--k-text-primary);
   font-family: var(--k-font-display);
-  font-size: clamp(2.35rem, 5.8vw, 6rem);
+  font-size: clamp(1.55rem, 2.8vw, 2.35rem);
   font-weight: 700;
-  line-height: .95;
-  letter-spacing: -.055em;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .aurora-hero__copy p {
   margin: 0;
   color: var(--k-text-secondary);
-  font-size: .75rem;
-}
-
-.aurora-hero__orb {
-  display: flex;
-  width: clamp(6rem, 14vw, 13rem);
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1rem;
-  background: var(--k-primary);
-  color: var(--k-on-primary, #fff);
-  font-family: var(--k-font-data);
-}
-
-.aurora-hero__orb span {
-  writing-mode: vertical-rl;
-  letter-spacing: .18em;
-}
-
-.aurora-hero__orb small {
-  align-self: flex-end;
-  font-size: clamp(2rem, 4vw, 4rem);
+  font-size: .8125rem;
 }
 
 .aurora-shelf {
   position: relative;
-  padding-block: 1rem 2rem;
-  border-block-start: 1px solid var(--k-text-primary);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--k-border-soft);
+  border-radius: var(--k-radius-sheet);
+  background: color-mix(in srgb, var(--k-surface-card) 94%, transparent);
+  box-shadow: var(--k-shadow-card);
 }
 
 .aurora-shelf__heading {
   display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  min-width: min(22rem, 75vw);
-  padding-block: .5rem 1.5rem;
+  align-items: center;
+  gap: .625rem;
+  min-width: min(18rem, 72vw);
+  padding-block: .125rem 1rem;
 }
 
-.aurora-shelf__index {
-  color: var(--k-accent-progress);
-  font-size: .75rem;
-  font-weight: 800;
+.aurora-shelf__icon {
+  flex: 0 0 auto;
+  color: var(--k-primary);
 }
 
 .aurora-shelf__title {
+  color: var(--k-text-primary);
   font-family: var(--k-font-display);
-  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-  font-weight: 700;
-  letter-spacing: -.025em;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 650;
+  letter-spacing: -.012em;
 }
 
 @media (max-width: 47.9375rem) {
-  .aurora-dashboard { padding: 1rem !important; }
-  .aurora-hero { min-height: 12rem; margin-block-end: 2rem; }
-  .aurora-hero__copy { padding: 1.25rem; }
-  .aurora-hero__orb { width: 5rem; margin: 1rem; }
-  .aurora-hero__orb small { display: none; }
-}
+  .aurora-dashboard {
+    padding: .75rem !important;
+  }
 
-.aurora-hero {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--k-border-soft);
-  border-radius: clamp(1.25rem, 3vw, 2rem);
-  background: linear-gradient(120deg, var(--k-surface-card) 0%, var(--k-surface-card) 55%, color-mix(in srgb, var(--k-purple) 22%, var(--k-surface-card)) 100%);
-  box-shadow: var(--k-shadow-card);
+  .aurora-hero {
+    min-height: 6.75rem;
+    margin-block-end: 1rem;
+    padding: 1rem;
+  }
+
+  .aurora-hero__icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .aurora-hero__copy p {
+    display: none;
+  }
+
+  .aurora-shelf {
+    padding: .875rem;
+  }
 }
-.aurora-hero__kicker { color: var(--k-mint); }
-.aurora-hero__orb {
-  align-items: center;
-  justify-content: center;
-  margin: clamp(1.5rem, 4vw, 3rem);
-  border: 1px solid color-mix(in srgb, var(--k-cyan) 35%, transparent);
-  border-radius: 50%;
-  aspect-ratio: 1;
-  background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--k-cyan) 42%, transparent), color-mix(in srgb, var(--k-purple) 24%, transparent) 58%, transparent 74%);
-  box-shadow: inset 0 0 30px color-mix(in srgb, var(--k-cyan) 14%, transparent), 0 0 70px color-mix(in srgb, var(--k-purple) 18%, transparent);
-}
-.aurora-hero__orb span { writing-mode: initial; font-size: clamp(2.25rem, 4vw, 4.25rem); font-weight: 800; line-height: 1; }
-.aurora-hero__orb small { align-self: auto; margin-top: .5rem; color: var(--k-text-secondary); font-size: .625rem; letter-spacing: .12em; }
-.aurora-shelf { padding: 1.25rem; border: 1px solid var(--k-border-soft); border-radius: var(--k-radius-sheet); background: color-mix(in srgb, var(--k-surface-card) 90%, transparent); box-shadow: var(--k-shadow-card); }
-.aurora-shelf__index { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--k-primary) 16%, transparent); color: var(--k-primary); }
 
 </style>

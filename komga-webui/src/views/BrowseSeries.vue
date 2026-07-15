@@ -464,8 +464,17 @@
 
       <v-divider class="mt-4 mb-1"/>
 
+      <series-directory-browser
+        v-if="showDirectoryBrowser"
+        :root-label="series.metadata.title || series.name"
+        :current-path="directoryListing.currentPath"
+        :breadcrumbs="directoryListing.breadcrumbs"
+        :directories="directoryListing.directories"
+        @navigate="navigateToDirectory"
+      />
+
       <empty-state
-        v-if="totalPages === 0"
+        v-if="!directoriesLoading && totalPages === 0 && directoryListing.directories.length === 0"
         :title="$t('common.filter_no_matches')"
         :sub-title="$t('common.use_filter_panel_to_change_filter')"
         icon="mdi-book-multiple"
@@ -474,7 +483,7 @@
         <v-btn @click="resetSortAndFilters">{{ $t('common.reset_filters') }}</v-btn>
       </empty-state>
 
-      <template v-else>
+      <template v-if="totalPages > 0">
         <v-pagination
           v-if="totalPages > 1"
           v-model="page"
@@ -509,6 +518,7 @@ import EmptyState from '@/components/EmptyState.vue'
 import ItemBrowser from '@/components/ItemBrowser.vue'
 import ItemCard from '@/components/ItemCard.vue'
 import SeriesActionsMenu from '@/components/menus/SeriesActionsMenu.vue'
+import SeriesDirectoryBrowser from '@/components/SeriesDirectoryBrowser.vue'
 import PageSizeSelect from '@/components/PageSizeSelect.vue'
 import {parseQuerySort} from '@/functions/query-params'
 import {seriesFileUrl, seriesThumbnailUrl} from '@/functions/urls'
@@ -563,6 +573,7 @@ import {
   SearchConditionMediaProfile,
   SearchConditionPublisher,
   SearchConditionReadStatus,
+  SearchConditionDirectoryPath,
   SearchConditionSeriesId,
   SearchConditionSeriesStatus,
   SearchConditionTag,
@@ -584,6 +595,7 @@ import {
   FiltersOptions,
   NameValue,
 } from '@/types/filter'
+import {SeriesDirectoryListingDto} from '@/types/komga-directories'
 
 const tags = require('language-tags')
 
@@ -599,6 +611,7 @@ export default Vue.extend({
     ItemBrowser,
     PageSizeSelect,
     SeriesActionsMenu,
+    SeriesDirectoryBrowser,
     ItemCard,
     EmptyState,
     MultiSelectBar,
@@ -623,6 +636,13 @@ export default Vue.extend({
       series: {} as SeriesDto,
       context: {} as Context,
       books: [] as BookDto[],
+      currentDirectoryPath: '',
+      directoryListing: {
+        currentPath: '',
+        breadcrumbs: [],
+        directories: [],
+      } as SeriesDirectoryListingDto,
+      directoriesLoading: false,
       selectedBooks: [] as BookDto[],
       page: 1,
       pageSize: 20,
@@ -804,6 +824,9 @@ export default Vue.extend({
     sortOrFilterActive(): boolean {
       return sortOrFilterActive(this.sortActive, this.sortDefault, this.filters)
     },
+    showDirectoryBrowser(): boolean {
+      return this.directoriesLoading || this.currentDirectoryPath.length > 0 || this.directoryListing.directories.length > 0
+    },
     authorsByRole(): any {
       return groupAuthorsByRole(this.series.booksMetadata.authors)
     },
@@ -866,6 +889,7 @@ export default Vue.extend({
     await this.resetParams(this.$route, this.seriesId)
     if (this.$route.query.page) this.page = Number(this.$route.query.page)
     if (this.$route.query.pageSize) this.pageSize = Number(this.$route.query.pageSize)
+    this.currentDirectoryPath = this.routeFolder(this.$route.query.folder)
 
     this.loadSeries(this.seriesId)
 
@@ -884,15 +908,30 @@ export default Vue.extend({
       this.totalElements = null
       this.books = []
       this.collections = []
+      this.currentDirectoryPath = this.routeFolder(to.query.folder)
 
       this.loadSeries(to.params.seriesId)
 
       this.setWatches()
+    } else {
+      const nextDirectoryPath = this.routeFolder(to.query.folder)
+      if (nextDirectoryPath !== this.currentDirectoryPath) {
+        this.currentDirectoryPath = nextDirectoryPath
+        this.page = to.query.page ? Number(to.query.page) : 1
+        await Promise.all([
+          this.loadDirectory(this.seriesId, nextDirectoryPath),
+          this.loadPage(this.seriesId, this.page, this.sortActive),
+        ])
+      }
     }
 
     next()
   },
   methods: {
+    routeFolder(folder: unknown): string {
+      if (Array.isArray(folder)) return folder[0]?.toString() || ''
+      return folder?.toString() || ''
+    },
     getLibraryName(item: SeriesDto): string {
       return this.$store.getters.getLibraryById(item.libraryId).name
     },
@@ -982,6 +1021,19 @@ export default Vue.extend({
 
       this.setWatches()
     },
+    async navigateToDirectory(path: string) {
+      if (path === this.currentDirectoryPath) return
+
+      this.unsetWatches()
+      this.currentDirectoryPath = path
+      this.page = 1
+      this.updateRoute()
+      await Promise.all([
+        this.loadDirectory(this.seriesId, path),
+        this.loadPage(this.seriesId, this.page, this.sortActive),
+      ])
+      this.setWatches()
+    },
     libraryDeleted(event: LibrarySseDto) {
       if (event.libraryId === this.series.libraryId) {
         this.$router.push({name: 'home'})
@@ -1028,6 +1080,7 @@ export default Vue.extend({
         })
       this.$komgaSeries.getCollections(seriesId)
         .then(v => this.collections = v)
+      this.loadDirectory(seriesId, this.currentDirectoryPath)
 
       // parse query params to get context and contextId
       if (this.$route.query.contextId && this.$route.query.context
@@ -1059,8 +1112,19 @@ export default Vue.extend({
       } as Location
       mergeFilterParams(this.filters, loc.query)
       loc.query['filterMode'] = this.validateFiltersMode(this.filtersMode)
+      if (this.currentDirectoryPath) loc.query['folder'] = this.currentDirectoryPath
+      if (this.$route.query.context) loc.query['context'] = this.$route.query.context
+      if (this.$route.query.contextId) loc.query['contextId'] = this.$route.query.contextId
       this.$router.replace(loc).catch((_: any) => {
       })
+    },
+    async loadDirectory(seriesId: string, path: string) {
+      this.directoriesLoading = true
+      try {
+        this.directoryListing = await this.$komgaSeries.getDirectories(seriesId, path)
+      } finally {
+        this.directoriesLoading = false
+      }
     },
     async loadPage(seriesId: string, page: number, sort: SortActive) {
       this.selectedBooks = []
@@ -1076,6 +1140,7 @@ export default Vue.extend({
 
       const conditions = [] as SearchConditionBook[]
       conditions.push(new SearchConditionSeriesId(new SearchOperatorIs(seriesId)))
+      conditions.push(new SearchConditionDirectoryPath(this.currentDirectoryPath, false))
       if (this.filters.readStatus && this.filters.readStatus.length > 0) conditions.push(new SearchConditionAnyOfBook(this.filters.readStatus))
       if (this.filters.tag && this.filters.tag.length > 0) this.filtersMode?.tag?.allOf ? conditions.push(new SearchConditionAllOfBook(this.filters.tag)) : conditions.push(new SearchConditionAnyOfBook(this.filters.tag))
       if (this.filters.mediaProfile && this.filters.mediaProfile.length > 0) this.filtersMode?.mediaProfile?.allOf ? conditions.push(new SearchConditionAllOfBook(this.filters.mediaProfile)) : conditions.push(new SearchConditionAnyOfBook(this.filters.mediaProfile))

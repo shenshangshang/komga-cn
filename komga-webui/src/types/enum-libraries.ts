@@ -13,3 +13,8 @@ export enum ScanIntervalDto {
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
 }
+
+export enum SeriesGroupingModeDto {
+  DIRECT_PARENT = 'DIRECT_PARENT',
+  TOP_LEVEL = 'TOP_LEVEL',
+}

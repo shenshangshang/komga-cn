@@ -127,6 +127,15 @@
                                 class="mx-4 mt-3"
                       />
 
+                      <v-select
+                        v-model="form.seriesGroupingMode"
+                        :items="seriesGroupingModes"
+                        :label="$t('dialog.edit_library.field_series_grouping_mode')"
+                        :hint="$t('dialog.edit_library.hint_series_grouping_mode')"
+                        persistent-hint
+                        class="mx-4 mt-3"
+                      />
+
                       <v-text-field v-model="form.oneshotsDirectory"
                                     clearable
                                     :label="$t('dialog.edit_library.field_oneshotsdirectory')"
@@ -461,7 +470,7 @@ import FileBrowserDialog from '@/components/dialogs/FileBrowserDialog.vue'
 import Vue from 'vue'
 import {required} from 'vuelidate/lib/validators'
 import {ERROR} from '@/types/events'
-import {ScanIntervalDto, SeriesCoverDto} from '@/types/enum-libraries'
+import {ScanIntervalDto, SeriesCoverDto, SeriesGroupingModeDto} from '@/types/enum-libraries'
 import {LibraryDto} from '@/types/komga-libraries'
 
 export default Vue.extend({
@@ -488,6 +497,7 @@ export default Vue.extend({
         scanForceModifiedTime: false,
         scanInterval: ScanIntervalDto.EVERY_6H,
         scanOnStartup: false,
+        seriesGroupingMode: SeriesGroupingModeDto.TOP_LEVEL as SeriesGroupingModeDto,
         scanTypes: [],
         scanDirectoryExclusions: [] as string[],
         repairExtensions: false,
@@ -523,6 +533,12 @@ export default Vue.extend({
     scanInterval(): any[] {
       return Object.keys(ScanIntervalDto).map(x => ({
         text: this.$t(`enums.scan_interval.${x}`),
+        value: x,
+      }))
+    },
+    seriesGroupingModes(): any[] {
+      return Object.keys(SeriesGroupingModeDto).map(x => ({
+        text: this.$t(`enums.series_grouping_mode.${x}`),
         value: x,
       }))
     },
@@ -648,6 +664,7 @@ export default Vue.extend({
       this.form.scanForceModifiedTime = library ? library.scanForceModifiedTime : false
       this.form.scanInterval = library ? library.scanInterval : ScanIntervalDto.EVERY_6H
       this.form.scanOnStartup = library ? library.scanOnStartup : false
+      this.form.seriesGroupingMode = library ? library.seriesGroupingMode : SeriesGroupingModeDto.TOP_LEVEL
       this.form.scanTypes = []
       if (!library) this.form.scanTypes = ['cbx', 'pdf', 'epub', 'mobi']
       if (library?.scanEpub == true) this.form.scanTypes.splice(0, 0, 'epub')
@@ -687,6 +704,7 @@ export default Vue.extend({
           scanForceModifiedTime: this.form.scanForceModifiedTime,
           scanInterval: this.form.scanInterval,
           scanOnStartup: this.form.scanOnStartup,
+          seriesGroupingMode: this.form.seriesGroupingMode,
           scanCbx: this.form.scanTypes.includes('cbx'),
           scanPdf: this.form.scanTypes.includes('pdf'),
           scanEpub: this.form.scanTypes.includes('epub'),

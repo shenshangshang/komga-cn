@@ -1,6 +1,7 @@
 import {AxiosInstance} from 'axios'
 import {GroupCountDto, SeriesDto, SeriesMetadataUpdateDto, SeriesThumbnailDto} from '@/types/komga-series'
 import {SeriesSearch} from '@/types/komga-search'
+import {SeriesDirectoryListingDto} from '@/types/komga-directories'
 
 const qs = require('qs')
 
@@ -82,6 +83,20 @@ export default class KomgaSeriesService {
     } catch (e) {
       let msg = 'An error occurred while trying to retrieve series'
       if (e.response.data.message) {
+        msg += `: ${e.response.data.message}`
+      }
+      throw new Error(msg)
+    }
+  }
+
+  async getDirectories(seriesId: string, parentPath = ''): Promise<SeriesDirectoryListingDto> {
+    try {
+      return (await this.http.get(`${API_SERIES}/${seriesId}/directories`, {
+        params: {parentPath},
+      })).data
+    } catch (e) {
+      let msg = 'An error occurred while trying to retrieve series directories'
+      if (e.response?.data?.message) {
         msg += `: ${e.response.data.message}`
       }
       throw new Error(msg)

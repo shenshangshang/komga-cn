@@ -207,7 +207,9 @@
     "manual_ordering": "手动排序"
   },
   "browse_series": {
+    "directory_breadcrumb_label": "系列目录",
     "earliest_year_from_release_dates": "这是该系列所有书发行日期最早的一年",
+    "open_directory": "打开{name}",
     "remove_from_collection": "从收藏中移除系列",
     "series_no_summary": "这个系列没有概要，所以我们为您挑选了一个！",
     "summary_from_book": "书籍 {number} 的概要："
@@ -513,6 +515,7 @@
       "field_repair_extensions": "自动修复不正确的文件扩展名",
       "field_root_folder": "根文件夹",
       "field_scan_interval": "扫描间隔",
+      "field_series_grouping_mode": "系列目录结构",
       "field_scanner_empty_trash_after_scan": "每次扫描后自动清理垃圾",
       "field_scanner_force_directory_modified_time": "强制目录修改时间",
       "field_scanner_scan_startup": "启动时扫描",
@@ -527,6 +530,7 @@
       "label_import_local": "导入本地媒体",
       "label_import_mylar": "导入 Mylar 生成的元数据",
       "label_scan_directory_exclusions": "目录排除",
+      "hint_series_grouping_mode": "多层目录会把最顶层文件夹作为系列，并允许在系列中逐层浏览子文件夹。",
       "label_scan_types": "扫描文件类型",
       "label_scanner": "扫描器",
       "label_series_cover": "系列封面",
@@ -788,6 +792,10 @@
       "FIRST_UNREAD_OR_FIRST": "第一张未读或第一张封面",
       "FIRST_UNREAD_OR_LAST": "第一张未读或最后一张封面",
       "LAST": "最后一张"
+    },
+    "series_grouping_mode": {
+      "DIRECT_PARENT": "每个书籍文件夹作为系列",
+      "TOP_LEVEL": "顶层系列与多层子目录"
     },
     "series_status": {
       "ABANDONED": "已放弃",

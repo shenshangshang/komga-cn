@@ -62,6 +62,14 @@ export class SearchConditionSeriesId implements SearchConditionBook {
   }
 }
 
+export class SearchConditionDirectoryPath implements SearchConditionBook {
+  directoryPath: {path: string, recursive: boolean}
+
+  constructor(path: string, recursive = false) {
+    this.directoryPath = {path, recursive}
+  }
+}
+
 export class SearchConditionSeriesStatus implements SearchConditionSeries {
   seriesStatus: SearchOperatorEquality
 

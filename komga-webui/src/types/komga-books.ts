@@ -6,6 +6,7 @@ export interface BookDto {
   seriesId: string,
   seriesTitle: string,
   libraryId: string,
+  directoryPath: string,
   name: string,
   url: string,
   number: number,

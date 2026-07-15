@@ -199,7 +199,9 @@
     "manual_ordering": "手動排序"
   },
   "browse_series": {
+    "directory_breadcrumb_label": "系列目錄",
     "earliest_year_from_release_dates": "系列書籍中最早書籍的發行年份",
+    "open_directory": "開啟{name}",
     "remove_from_collection": "從收藏中移除系列",
     "series_no_summary": "系列書籍沒有概要，所以我們為你挑選一個!",
     "summary_from_book": "{number}書中的概要："
@@ -486,6 +488,7 @@
       "field_repair_extensions": "自動修復不正確的檔案擴展名",
       "field_root_folder": "根資料夾",
       "field_scan_interval": "掃描間隔",
+      "field_series_grouping_mode": "系列目錄結構",
       "field_scanner_empty_trash_after_scan": "每次掃描後自動清理垃圾",
       "field_scanner_force_directory_modified_time": "強制目錄修改時間",
       "field_scanner_scan_startup": "啟動時掃描",
@@ -500,6 +503,7 @@
       "label_import_local": "匯入本地媒體",
       "label_import_mylar": "匯入 Mylar 生成的元資料",
       "label_scan_directory_exclusions": "目錄排除項",
+      "hint_series_grouping_mode": "多層目錄會把最頂層資料夾作為系列，並允許在系列中逐層瀏覽子資料夾。",
       "label_scan_types": "掃描這些檔案類型",
       "label_scanner": "掃描器",
       "label_series_cover": "系列封面",
@@ -755,6 +759,10 @@
       "FIRST_UNREAD_OR_FIRST": "第一張未讀或第一張封面",
       "FIRST_UNREAD_OR_LAST": "第一張未讀或最後一張封面",
       "LAST": "最後一張"
+    },
+    "series_grouping_mode": {
+      "DIRECT_PARENT": "每個書籍資料夾作為系列",
+      "TOP_LEVEL": "頂層系列與多層子目錄"
     },
     "series_status": {
       "ABANDONED": "已斷尾",

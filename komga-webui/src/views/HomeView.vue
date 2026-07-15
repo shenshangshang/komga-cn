@@ -44,6 +44,7 @@
       :mini-variant-width="80"
       :mobile-breakpoint="0"
       class="app-shell__drawer"
+      :class="{'app-shell__drawer--collapsed': !isMobile && navigationCollapsed}"
       :aria-label="$t('shell.primary_navigation')"
     >
       <v-list-item
@@ -140,6 +141,7 @@
                        :to="{name:'libraries', params: {libraryId: l.id}}"
           >
             <v-list-item-icon>
+              <v-icon>mdi-bookshelf</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ l.name }}</v-list-item-title>
@@ -649,6 +651,69 @@ export default Vue.extend({
   color: var(--k-nav-text) !important;
   box-shadow: var(--k-shadow-floating) !important;
   backdrop-filter: blur(22px);
+}
+
+.app-shell__drawer--collapsed {
+  width: 80px !important;
+  overflow: hidden;
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+
+.app-shell__drawer--collapsed .app-shell__brand {
+  min-height: 80px;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+.app-shell__drawer--collapsed .app-shell__brand ::v-deep .v-list-item__avatar {
+  min-width: 44px;
+  width: 44px;
+  height: 44px;
+  margin: 0 !important;
+}
+
+.app-shell__drawer--collapsed .app-shell__nav-list {
+  padding: var(--k-space-2) 0;
+}
+
+.app-shell__drawer--collapsed ::v-deep .v-list-item {
+  width: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  margin: var(--k-space-1) auto !important;
+  padding: 4px !important;
+  display: grid;
+  place-items: center;
+}
+
+.app-shell__drawer--collapsed ::v-deep .v-list-item__icon,
+.app-shell__drawer--collapsed ::v-deep .v-list-group__header__prepend-icon {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  margin: 0 !important;
+  display: grid;
+  place-items: center;
+}
+
+.app-shell__drawer--collapsed ::v-deep .v-list-item__icon .v-badge,
+.app-shell__drawer--collapsed ::v-deep .v-list-group__header__prepend-icon .v-badge {
+  display: inline-grid;
+  place-items: center;
+}
+
+.app-shell__drawer--collapsed ::v-deep .v-list-item__content,
+.app-shell__drawer--collapsed ::v-deep .v-list-item__action,
+.app-shell__drawer--collapsed ::v-deep .v-list-group__header__append-icon,
+.app-shell__drawer--collapsed ::v-deep .v-list-group__items,
+.app-shell__drawer--collapsed ::v-deep .v-navigation-drawer__append {
+  display: none !important;
+}
+
+.app-shell__drawer--collapsed ::v-deep .v-divider {
+  width: 52px;
+  margin-inline: auto;
 }
 
 .app-shell__bar {

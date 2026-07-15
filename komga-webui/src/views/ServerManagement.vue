@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pa-6 k-view-shell k-settings-page">
-    <div class="aurora-danger-panel">
+    <div class="k-settings-surface server-management-panel">
     <v-row>
       <v-col><h2 class="text-h5">{{ $t('server.server_management.section_title') }}</h2></v-col>
     </v-row>
@@ -11,7 +11,6 @@
         </v-btn>
       </v-col>
     </v-row>
-    </div>
     <v-row>
       <v-col cols="auto">
         <v-btn @click="cancelAllTasks"
@@ -28,6 +27,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    </div>
 
     <confirmation-dialog
       v-model="modalStopServer"
@@ -81,15 +81,11 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.aurora-danger-panel {
+.server-management-panel {
   max-width: 760px;
-  padding: 24px;
-  border: 1px solid rgba(255, 112, 151, .22);
-  border-radius: 22px;
-  background: linear-gradient(145deg, rgba(48, 31, 57, .9), rgba(17, 26, 49, .96));
 }
 
-.aurora-danger-panel ::v-deep .v-btn {
+.server-management-panel ::v-deep .v-btn {
   min-height: 44px;
   border-radius: 14px;
 }

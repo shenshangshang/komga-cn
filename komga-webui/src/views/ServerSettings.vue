@@ -4,7 +4,7 @@
       <v-col><h1 class="text-h5">{{ $t('server_settings.server_settings') }}</h1></v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md="9" lg="7" class="aurora-settings-panel">
+      <v-col cols="12" md="9" lg="7" class="k-settings-surface server-settings-panel">
         <v-select
           v-model="form.thumbnailSize"
           @change="$v.form.thumbnailSize.$touch()"
@@ -62,7 +62,7 @@
         <v-checkbox
           v-model="form.renewRememberMeKey"
           @change="$v.form.renewRememberMeKey.$touch()"
-          label="Regenerate the RememberMe key"
+          label="重新生成“记住我”密钥"
           persistent-hint
           :hint="$t('server_settings.requires_restart')"
         />
@@ -385,15 +385,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.aurora-settings-panel {
-  padding: clamp(20px, 3vw, 32px);
-  border: 1px solid rgba(105, 212, 255, .14);
-  border-radius: 22px;
-  background: linear-gradient(145deg, rgba(23, 38, 68, .94), rgba(13, 23, 45, .94));
-  box-shadow: 0 22px 64px rgba(2, 8, 23, .2);
-}
-
-.aurora-settings-panel ::v-deep .v-input:not(:last-child) {
+.server-settings-panel ::v-deep .v-input:not(:last-child) {
   margin-bottom: 8px;
 }
 </style>

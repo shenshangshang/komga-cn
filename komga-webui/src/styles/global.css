@@ -21,6 +21,10 @@ body { margin: 0; font-family: var(--k-font-sans); font-size: var(--k-font-size-
 .k-view-shell .v-pagination { margin-block: var(--k-space-4); }
 .k-settings-page > .row { max-width: 72rem; margin-inline: auto; }
 .k-settings-page h1, .k-settings-page h2 { margin: 0; }
+.k-settings-surface { width: 100%; max-width: 72rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--k-border-panel); border-radius: var(--k-radius-sheet); background: var(--k-surface-panel); box-shadow: var(--k-shadow-panel); color: var(--k-text-primary); }
+.k-settings-surface--compact { max-width: 48rem; }
+.k-settings-surface--soft { background: var(--k-surface-panel-soft); }
+.k-settings-surface .v-input:not(:last-child) { margin-bottom: var(--k-space-2); }
 .k-state-page { display: grid; min-height: 100%; align-content: center; }
 .reader-shell .settings, .reader-shell .v-bottom-sheet .v-card, .reader-shell .v-navigation-drawer { border-color: var(--k-border) !important; background: var(--k-nav-surface) !important; color: var(--k-text-primary) !important; backdrop-filter: blur(22px); }
 .reader-shell .settings .v-toolbar__title { min-width: 0; overflow: hidden; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }

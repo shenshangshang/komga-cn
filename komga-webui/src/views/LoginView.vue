@@ -621,6 +621,11 @@ export default Vue.extend({
 }
 
 @media (max-width: 479px) {
+  .brand-statement h1 {
+    font-size: clamp(2rem, 9.5vw, 2.5rem);
+    letter-spacing: -0.04em;
+  }
+
   .spine-index__page {
     display: none;
   }

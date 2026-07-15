@@ -4,11 +4,11 @@
       <aside class="brand-panel" aria-label="Komga">
         <div class="brand-panel__top">
           <div class="brand-monogram" role="img" aria-label="Komga">K</div>
-          <span class="brand-edition">AURORA / LIBRARY</span>
+          <span class="brand-edition">个人漫画书库</span>
         </div>
 
         <div class="brand-statement">
-          <p class="brand-kicker">YOUR STORIES, IN ORDER</p>
+          <p class="brand-kicker">你的故事，井然有序</p>
           <h1>每一格，<br><span>都在等你继续。</span></h1>
           <p class="brand-copy">收藏、整理并继续阅读你的漫画世界。</p>
         </div>
@@ -16,16 +16,16 @@
         <div class="spine-index" aria-hidden="true">
           <span class="spine-index__line"></span>
           <span>01</span>
-          <span>LIBRARY</span>
-          <span class="spine-index__page">KMG—CN</span>
+          <span>漫画书库</span>
+          <span class="spine-index__page">中文版</span>
         </div>
       </aside>
 
       <section class="login-workspace">
         <header class="login-header">
-          <p class="login-header__index">ACCESS / 01</p>
+          <p class="login-header__index">账号登录</p>
           <h2 id="login-title">{{ $t('login.login') }}</h2>
-          <p class="login-header__hint">Komga personal media library</p>
+          <p class="login-header__hint">私人漫画与电子书库</p>
         </header>
 
         <form novalidate :aria-label="$t('login.login')" @submit.prevent="performLogin">
@@ -88,7 +88,7 @@
           </div>
 
           <div v-if="oauth2Providers.length" class="oauth-panel">
-            <div class="section-rule"><span>SSO</span></div>
+            <div class="section-rule"><span>第三方登录</span></div>
             <div class="oauth-list">
               <div
             v-for="provider in oauth2Providers"
@@ -104,7 +104,7 @@
               :color="$_.get(socialButtons[provider.registrationId.toLowerCase()], 'color')"
             >
               <v-icon left>mdi-{{ provider.registrationId }}</v-icon>
-              Sign in with {{ provider.name }}
+              使用 {{ provider.name }} 登录
             </v-btn>
               </div>
             </div>

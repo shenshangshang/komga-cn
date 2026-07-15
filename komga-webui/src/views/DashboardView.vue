@@ -51,13 +51,13 @@
     <v-container fluid class="aurora-dashboard">
       <header class="aurora-hero">
         <div class="aurora-hero__copy">
-          <span class="aurora-hero__kicker">AURORA · PERSONAL LIBRARY</span>
+          <span class="aurora-hero__kicker">私人漫画书库</span>
           <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
           <p>{{ $t('navigation.home') }} / {{ sections.length.toString().padStart(2, '0') }}</p>
         </div>
         <div class="aurora-hero__orb" aria-hidden="true">
           <span>{{ sections.length.toString().padStart(2, '0') }}</span>
-          <small>ACTIVE SHELVES</small>
+          <small>内容分区</small>
         </div>
       </header>
 

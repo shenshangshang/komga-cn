@@ -60,7 +60,7 @@
           <v-list-item-title class="app-shell__brand-title">
             KOMGA
           </v-list-item-title>
-          <v-list-item-subtitle class="app-shell__brand-subtitle">AURORA LIBRARY</v-list-item-subtitle>
+          <v-list-item-subtitle class="app-shell__brand-subtitle">个人漫画书库</v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action v-if="!isMobile" class="ma-0">

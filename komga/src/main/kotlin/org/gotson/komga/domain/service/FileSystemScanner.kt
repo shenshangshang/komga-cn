@@ -246,7 +246,9 @@ class FileSystemScanner(
           ): FileVisitResult {
             if (dir != root &&
               (dir.name.startsWith(".") || directoryExclusions.any { exclude -> dir.pathString.contains(exclude, true) })
-            ) return FileVisitResult.SKIP_SUBTREE
+            ) {
+              return FileVisitResult.SKIP_SUBTREE
+            }
             return FileVisitResult.CONTINUE
           }
 
@@ -341,7 +343,9 @@ class FileSystemScanner(
             bookSidecarsByPath[parent]
               ?.mapNotNull { sidecar ->
                 sidecarBookConsumers.firstOrNull { it.isSidecarBookMatch(book.name, sidecar.name) }?.let { sidecar to it.getSidecarBookType() }
-              }?.toMap().orEmpty()
+              }
+              ?.toMap()
+              .orEmpty()
           bookSidecarsByPath[parent]?.minusAssign(matched.keys)
           matched.mapTo(scannedSidecars) { (sidecar, type) ->
             Sidecar(sidecar.url, book.url, sidecar.lastModifiedTime, type, Sidecar.Source.BOOK)

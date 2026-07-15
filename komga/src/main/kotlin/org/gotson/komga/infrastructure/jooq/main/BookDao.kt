@@ -397,7 +397,10 @@ class BookDao(
   @Transactional
   override fun delete(bookIds: Collection<String>) {
     dslRW.withTempTable(batchSize, bookIds).use { tempTable ->
-      tempTable.dsl.deleteFrom(b).where(b.ID.`in`(tempTable.selectTempStrings())).execute()
+      tempTable.dsl
+        .deleteFrom(b)
+        .where(b.ID.`in`(tempTable.selectTempStrings()))
+        .execute()
     }
   }
 

@@ -13,7 +13,7 @@ class SeriesDirectoryPathTest {
 
   @Test
   fun `absolute traversal and empty segments are rejected`() {
-    listOf("/absolute", "trailing/", "../escape", "part/../escape", "part//episode", "part\\episode", "%2e%2e/escape").forEach { path ->
+    listOf("/absolute", "C:/absolute", "trailing/", "../escape", "part/../escape", "part//episode", "part\\episode", "%2e%2e/escape").forEach { path ->
       assertThatIllegalArgumentException().isThrownBy { normalizeSeriesDirectoryPath(path) }
     }
   }

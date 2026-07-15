@@ -14,9 +14,11 @@ import org.gotson.komga.domain.model.BookMetadataPatchCapability
 import org.gotson.komga.domain.model.Dimension
 import org.gotson.komga.domain.model.DirectoryNotFoundException
 import org.gotson.komga.domain.model.KomgaUser
+import org.gotson.komga.domain.model.Library
 import org.gotson.komga.domain.model.MarkSelectedPreference
 import org.gotson.komga.domain.model.Media
 import org.gotson.komga.domain.model.ReadList
+import org.gotson.komga.domain.model.ReadProgress
 import org.gotson.komga.domain.model.Series
 import org.gotson.komga.domain.model.SeriesCollection
 import org.gotson.komga.domain.model.ThumbnailBook
@@ -117,6 +119,84 @@ class LibraryContentLifecycleTest(
 
   @Nested
   inner class Scan {
+    @Test
+    fun `switching to top level grouping moves books in place and preserves attached state`() {
+      val library = makeLibrary()
+      libraryRepository.insert(library)
+      val bookUrl = URL("file:/library/漫画/第一部/第一集/01.cbz")
+      val leafSeries = makeSeries("第一集", url = URL("file:/library/漫画/第一部/第一集"))
+      val scannedBook = makeBook("01", url = bookUrl)
+
+      every { mockScanner.scanRootFolder(any()) } returns mapOf(leafSeries to listOf(scannedBook)).toScanResult()
+      libraryContentLifecycle.scanRootFolder(library)
+
+      val original = bookRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, bookUrl)!!
+      mediaRepository.update(mediaRepository.findById(original.id).copy(status = Media.Status.READY))
+      readProgressRepository.save(ReadProgress(original.id, user.id, page = 7, completed = false))
+      readListLifecycle.addReadList(ReadList("read list", bookIds = listOf(original.id).toIndexedMap()))
+      bookLifecycle.addThumbnailForBook(
+        ThumbnailBook(
+          ByteArray(10),
+          type = ThumbnailBook.Type.USER_UPLOADED,
+          mediaType = "image/jpeg",
+          fileSize = 10L,
+          dimension = Dimension(1, 1),
+          bookId = original.id,
+        ),
+        MarkSelectedPreference.YES,
+      )
+
+      val topLevelLibrary = library.copy(seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL)
+      libraryRepository.update(topLevelLibrary)
+      val topSeries = makeSeries("漫画", url = URL("file:/library/漫画"))
+      val nestedBook = scannedBook.copy(directoryPath = "第一部/第一集")
+      every {
+        mockScanner.scanRootFolder(
+          root = any(),
+          forceDirectoryModifiedTime = any(),
+          oneshotsDir = any(),
+          scanCbx = any(),
+          scanPdf = any(),
+          scanEpub = any(),
+          scanMobi = any(),
+          directoryExclusions = any(),
+          seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
+        )
+      } returns mapOf(topSeries to listOf(nestedBook)).toScanResult()
+
+      libraryContentLifecycle.scanRootFolder(topLevelLibrary)
+
+      val regrouped = bookRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, bookUrl)!!
+      assertThat(regrouped.id).isEqualTo(original.id)
+      assertThat(regrouped.seriesId).isNotEqualTo(original.seriesId)
+      assertThat(regrouped.directoryPath).isEqualTo("第一部/第一集")
+      assertThat(mediaRepository.findById(regrouped.id).status).isEqualTo(Media.Status.READY)
+      assertThat(readProgressRepository.findByBookIdAndUserIdOrNull(regrouped.id, user.id)?.page).isEqualTo(7)
+      assertThat(readListRepository.findAllContainingBookId(regrouped.id, null)).hasSize(1)
+      assertThat(bookLifecycle.getThumbnail(regrouped.id)?.type).isEqualTo(ThumbnailBook.Type.USER_UPLOADED)
+      assertThat(bookRepository.findAll().single().id).isEqualTo(original.id)
+      val activeTopSeries = seriesRepository.findAll().filter { it.deletedDate == null }.single()
+      assertThat(activeTopSeries.url).isEqualTo(topSeries.url)
+      assertThat(seriesRepository.findAll().first { it.url == leafSeries.url }.deletedDate).isNotNull()
+
+      // A repeated scan must be idempotent and must not create another book.
+      libraryContentLifecycle.scanRootFolder(topLevelLibrary)
+      assertThat(bookRepository.findAll().single().id).isEqualTo(original.id)
+
+      // Switching back to the legacy layout also moves the same book in place.
+      val directLibrary = topLevelLibrary.copy(seriesGroupingMode = Library.SeriesGroupingMode.DIRECT_PARENT)
+      libraryRepository.update(directLibrary)
+      libraryContentLifecycle.scanRootFolder(directLibrary)
+      val movedBack = bookRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, bookUrl)!!
+      assertThat(movedBack.id).isEqualTo(original.id)
+      assertThat(movedBack.directoryPath).isEmpty()
+      assertThat(bookRepository.findAll().single().id).isEqualTo(original.id)
+      assertThat(mediaRepository.findById(movedBack.id).status).isEqualTo(Media.Status.READY)
+      assertThat(readProgressRepository.findByBookIdAndUserIdOrNull(movedBack.id, user.id)?.page).isEqualTo(7)
+      val activeLeafSeries = seriesRepository.findAll().filter { it.deletedDate == null }.single()
+      assertThat(activeLeafSeries.url).isEqualTo(leafSeries.url)
+    }
+
     @Test
     fun `given existing series when adding files and scanning then only updated books are persisted`() {
       // given

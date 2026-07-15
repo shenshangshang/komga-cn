@@ -209,10 +209,12 @@ class FileSystemScannerTest {
       Files.createFile(root.resolve("漫画/第二部/02.zip"))
 
       val scan =
-        scanner.scanRootFolder(
-          root = root,
-          seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
-        ).series
+        scanner
+          .scanRootFolder(
+            root = root,
+            seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
+          )
+          .series
 
       assertThat(scan).hasSize(2)
       val nested = scan.entries.first { it.key.name == "漫画" }

@@ -1,7 +1,7 @@
 package org.gotson.komga.interfaces.api.rest.dto
 
-import org.gotson.komga.infrastructure.validation.NullOrNotBlank
 import org.gotson.komga.domain.model.Library
+import org.gotson.komga.infrastructure.validation.NullOrNotBlank
 import kotlin.properties.Delegates
 
 class LibraryUpdateDto {

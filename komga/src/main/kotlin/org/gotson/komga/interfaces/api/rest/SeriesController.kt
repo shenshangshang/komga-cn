@@ -30,11 +30,11 @@ import org.gotson.komga.domain.model.SearchCondition
 import org.gotson.komga.domain.model.SearchContext
 import org.gotson.komga.domain.model.SearchField
 import org.gotson.komga.domain.model.SearchOperator
-import org.gotson.komga.domain.model.normalizeSeriesDirectoryPath
 import org.gotson.komga.domain.model.SeriesMetadata
 import org.gotson.komga.domain.model.SeriesSearch
 import org.gotson.komga.domain.model.ThumbnailSeries
 import org.gotson.komga.domain.model.WebLink
+import org.gotson.komga.domain.model.normalizeSeriesDirectoryPath
 import org.gotson.komga.domain.persistence.BookRepository
 import org.gotson.komga.domain.persistence.MediaRepository
 import org.gotson.komga.domain.persistence.SeriesCollectionRepository
@@ -531,7 +531,10 @@ class SeriesController(
               descendants
                 .mapNotNull { book ->
                   if (book.directoryPath.startsWith(pathPrefix))
-                    book.directoryPath.removePrefix(pathPrefix).substringBefore('/').takeIf { it.isNotEmpty() }
+                    book.directoryPath
+                      .removePrefix(pathPrefix)
+                      .substringBefore('/')
+                      .takeIf { it.isNotEmpty() }
                   else
                     null
                 }.distinct()

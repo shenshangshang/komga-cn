@@ -125,33 +125,33 @@ class LibraryContentLifecycle(
       // series are soft-deleted so media, thumbnails, progress and read-list entries
       // remain attached to the same book id.
       val regroupedSeries = mutableListOf<Series>()
-      if (library.seriesGroupingMode == Library.SeriesGroupingMode.TOP_LEVEL) {
-        scannedSeries.forEach { (scanned, scannedBooks) ->
+      scannedSeries.forEach { (scanned, scannedBooks) ->
+        val booksToMove =
+          scannedBooks.mapNotNull { scannedBook ->
+            bookRepository
+              .findNotDeletedByLibraryIdAndUrlOrNull(library.id, scannedBook.url)
+              ?.takeIf { existingBook ->
+                existingBook.directoryPath != scannedBook.directoryPath ||
+                  seriesRepository.findByIdOrNull(existingBook.seriesId)?.url != scanned.url
+              }?.let { it to scannedBook }
+          }
+        if (booksToMove.isNotEmpty()) {
           val targetSeries =
             seriesRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, scanned.url)
+              ?: seriesRepository
+                .findAllByLibraryId(library.id)
+                .firstOrNull { it.url == scanned.url }
+                ?.copy(fileLastModified = scanned.fileLastModified, deletedDate = null)
+                ?.also { seriesRepository.update(it) }
               ?: seriesLifecycle.createSeries(scanned)
-          val newBooks = mutableListOf<Book>()
-          scannedBooks.forEach { scannedBook ->
-            val existingBook = bookRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, scannedBook.url)
-            if (existingBook == null) {
-              newBooks += scannedBook
-            } else if (
-              existingBook.seriesId != targetSeries.id ||
-              existingBook.directoryPath != scannedBook.directoryPath ||
-              existingBook.deletedDate != null
-            ) {
-              bookRepository.update(
-                existingBook.copy(
-                  seriesId = targetSeries.id,
-                  directoryPath = scannedBook.directoryPath,
-                  deletedDate = null,
-                ),
-              )
-            }
-          }
-          if (newBooks.isNotEmpty()) {
-            seriesLifecycle.addBooks(targetSeries, newBooks)
-            tryRestoreBooks(newBooks)
+          booksToMove.forEach { (existingBook, scannedBook) ->
+            bookRepository.update(
+              existingBook.copy(
+                seriesId = targetSeries.id,
+                directoryPath = scannedBook.directoryPath,
+                deletedDate = null,
+              ),
+            )
           }
           regroupedSeries += targetSeries
         }
@@ -212,7 +212,7 @@ class LibraryContentLifecycle(
             logger.info { "Series changed on disk, updating: $existingSeries" }
             seriesRepository.update(existingSeries.copy(fileLastModified = newSeries.fileLastModified, deletedDate = null))
           }
-          if (scanDeep || seriesChanged) {
+          if (scanDeep || seriesChanged || regroupedSeries.any { it.id == existingSeries.id }) {
             // update list of books with existing entities if they exist
             val existingBooks = bookRepository.findAllBySeriesId(existingSeries.id)
             logger.debug { "Existing books: $existingBooks" }

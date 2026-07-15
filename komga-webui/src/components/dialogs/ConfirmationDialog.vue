@@ -49,11 +49,11 @@ import {sanitizeRichHtml} from '@/functions/sanitize-html'
 
 export default Vue.extend({
   name: 'ConfirmationDialog',
-  data: () => ({sanitizeRichHtml}),
   data: () => {
     return {
       modal: false,
       confirmation: false,
+      sanitizeRichHtml,
     }
   },
   props: {

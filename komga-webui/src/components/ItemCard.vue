@@ -208,7 +208,6 @@ import {CLIENT_SETTING} from '@/types/komga-clientsettings'
 
 export default Vue.extend({
   name: 'ItemCard',
-  data: () => ({sanitizeRichHtml}),
   components: {OneShotActionsMenu, BookActionsMenu, SeriesActionsMenu, CollectionActionsMenu, ReadListActionsMenu},
   props: {
     item: {
@@ -275,6 +274,7 @@ export default Vue.extend({
       thumbnailCacheBust: '',
       focusWithin: false,
       coverBase64,
+      sanitizeRichHtml,
     }
   },
   created() {

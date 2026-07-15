@@ -4,7 +4,7 @@
       <aside class="brand-panel" aria-label="Komga">
         <div class="brand-panel__top">
           <div class="brand-monogram" role="img" aria-label="Komga">K</div>
-          <span class="brand-edition">INKFRAME / LIBRARY</span>
+          <span class="brand-edition">AURORA / LIBRARY</span>
         </div>
 
         <div class="brand-statement">
@@ -342,7 +342,10 @@ export default Vue.extend({
   min-height: 100vh;
   place-items: center;
   padding: clamp(1rem, 4vw, 4rem);
-  background: var(--k-surface-page);
+  background:
+    radial-gradient(circle at 14% 12%, rgb(91 223 255 / 16%), transparent 34rem),
+    radial-gradient(circle at 88% 82%, rgb(162 130 255 / 15%), transparent 36rem),
+    var(--k-surface-page);
 }
 
 .login-shell {
@@ -351,9 +354,10 @@ export default Vue.extend({
   width: min(100%, 74rem);
   min-height: min(45rem, calc(100vh - 4rem));
   overflow: hidden;
-  border: 2px solid var(--k-text-primary);
+  border: 1px solid color-mix(in srgb, var(--k-primary) 22%, transparent);
+  border-radius: 28px;
   background: var(--k-surface-card);
-  box-shadow: 12px 12px 0 color-mix(in srgb, var(--k-primary) 24%, transparent);
+  box-shadow: 0 32px 90px rgb(2 8 24 / 42%), 0 0 70px color-mix(in srgb, var(--k-primary) 9%, transparent);
 }
 
 .brand-panel {
@@ -364,7 +368,9 @@ export default Vue.extend({
   overflow: hidden;
   padding: clamp(2rem, 4vw, 4rem);
   color: #f8fafc;
-  background: #111318;
+  background:
+    linear-gradient(145deg, rgb(9 28 55 / 92%), rgb(18 24 65 / 96%)),
+    #071329;
 }
 
 .brand-panel::after {
@@ -373,10 +379,11 @@ export default Vue.extend({
   bottom: -10%;
   width: 48%;
   height: 58%;
-  border: 1px solid rgb(255 255 255 / 18%);
-  border-bottom: 0;
+  border: 1px solid rgb(102 224 255 / 24%);
+  border-radius: 50%;
   content: "";
-  transform: skewY(-9deg);
+  box-shadow: 0 0 80px rgb(105 95 255 / 28%);
+  transform: rotate(-12deg);
 }
 
 .brand-panel__top,
@@ -398,14 +405,15 @@ export default Vue.extend({
   height: 5.5rem;
   flex: 0 0 5.5rem;
   place-items: center;
-  border: 2px solid #f8fafc;
-  background: #3046d3;
+  border: 1px solid rgb(255 255 255 / 34%);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #66e0ff, #9d84ff 62%, #ff7fba);
   color: #f8fafc;
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-family: Inter, "Noto Sans SC", system-ui, sans-serif;
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1;
-  box-shadow: 6px 6px 0 #ef4938;
+  box-shadow: 0 12px 34px rgb(73 197 255 / 28%);
 }
 
 .brand-edition,
@@ -432,12 +440,12 @@ export default Vue.extend({
 
 .brand-kicker {
   margin-bottom: 1.5rem;
-  color: #ff7568;
+  color: #66e0ff;
 }
 
 .brand-statement h1 {
   margin: 0;
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-family: Inter, "Noto Sans SC", system-ui, sans-serif;
   font-size: clamp(2.5rem, 5vw, 4.75rem);
   font-weight: 700;
   line-height: 1.05;
@@ -445,7 +453,7 @@ export default Vue.extend({
 }
 
 .brand-statement h1 span {
-  color: #8190ff;
+  color: #9d84ff;
 }
 
 .brand-copy {
@@ -467,7 +475,8 @@ export default Vue.extend({
 .spine-index__line {
   width: 0.375rem;
   height: 3rem;
-  background: #ef4938;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #66e0ff, #9d84ff);
 }
 
 .spine-index__page {
@@ -479,6 +488,7 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: center;
   padding: clamp(2rem, 6vw, 5.5rem);
+  background: linear-gradient(155deg, color-mix(in srgb, var(--k-surface-card) 96%, var(--k-primary) 4%), var(--k-surface-card));
 }
 
 .login-header {
@@ -493,7 +503,7 @@ export default Vue.extend({
 .login-header h2 {
   margin: 0;
   color: var(--k-text-primary);
-  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  font-family: Inter, "Noto Sans SC", system-ui, sans-serif;
   font-size: clamp(2rem, 4vw, 3.25rem);
   line-height: 1.1;
 }
@@ -520,6 +530,8 @@ export default Vue.extend({
 
 .login-primary {
   min-width: 9rem;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--k-primary) 28%, transparent);
 }
 
 .oauth-panel {

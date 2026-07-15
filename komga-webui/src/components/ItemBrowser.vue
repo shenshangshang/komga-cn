@@ -3,6 +3,7 @@
     <div v-if="hasItems"
          ref="content"
          v-resize="onResize"
+         class="item-browser"
     >
       <draggable v-model="localItems"
                  :class="flexClass"
@@ -269,9 +270,33 @@ export default Vue.extend({
 
 .handle {
   cursor: grab;
+  display: grid;
+  min-width: 44px;
+  min-height: 44px;
+  place-items: center;
 }
 
 .flip-list-move {
   transition: transform var(--k-motion-standard) var(--k-ease-standard);
+}
+
+.item-browser {
+  padding: var(--k-space-2) clamp(0px, 1vw, var(--k-space-3));
+}
+
+.item-browser ::v-deep .fab-delete {
+  min-width: 44px;
+  min-height: 44px;
+  box-shadow: 0 10px 26px rgba(3, 10, 30, .32);
+}
+
+@media (max-width: 600px) {
+  .item-browser { padding-inline: 0; }
+
+  .item-browser ::v-deep .v-item { margin-inline: 6px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-list-move { transition: none; }
 }
 </style>

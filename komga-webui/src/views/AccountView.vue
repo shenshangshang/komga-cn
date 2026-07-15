@@ -1,5 +1,6 @@
 <template>
   <v-container fluid class="pa-6 k-view-shell k-settings-page">
+    <div class="aurora-settings-panel">
     <v-row align="center">
       <v-col cols="12" md="8" lg="6" xl="4">
         <span class="text-capitalize">{{ $t('common.email') }}</span>
@@ -29,6 +30,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    </div>
 
     <password-change-dialog v-model="modalPasswordChange"
                             :user="me"
@@ -60,5 +62,17 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.aurora-settings-panel {
+  max-width: 760px;
+  padding: clamp(20px, 4vw, 36px);
+  border: 1px solid rgba(100, 210, 255, .16);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(24, 38, 67, .96), rgba(13, 23, 45, .96));
+  box-shadow: 0 24px 70px rgba(2, 8, 23, .24);
+}
 
+.aurora-settings-panel ::v-deep .v-chip {
+  border: 1px solid rgba(113, 226, 255, .2);
+  background: rgba(80, 202, 238, .11) !important;
+}
 </style>

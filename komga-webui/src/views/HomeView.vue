@@ -60,7 +60,7 @@
           <v-list-item-title class="app-shell__brand-title">
             KOMGA
           </v-list-item-title>
-          <v-list-item-subtitle class="app-shell__brand-subtitle">INKFRAME ARCHIVE</v-list-item-subtitle>
+          <v-list-item-subtitle class="app-shell__brand-subtitle">AURORA LIBRARY</v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action v-if="!isMobile" class="ma-0">
@@ -641,16 +641,21 @@ export default Vue.extend({
 
 <style scoped>
 .app-shell__drawer {
-  border-inline-end: 2px solid var(--k-text-primary) !important;
+  margin: 1rem 0 1rem 1rem;
+  max-height: calc(100vh - 2rem) !important;
+  border: 1px solid var(--k-nav-border) !important;
+  border-radius: var(--k-radius-sheet);
   background: var(--k-nav-surface) !important;
   color: var(--k-nav-text) !important;
-  box-shadow: none !important;
+  box-shadow: var(--k-shadow-floating) !important;
+  backdrop-filter: blur(22px);
 }
 
 .app-shell__bar {
-  border-block-end: 2px solid var(--k-text-primary) !important;
-  background: var(--k-surface-page) !important;
-  box-shadow: none !important;
+  border-block-end: 1px solid var(--k-border-soft) !important;
+  background: var(--k-nav-surface) !important;
+  box-shadow: 0 8px 32px rgb(3 12 32 / 10%) !important;
+  backdrop-filter: blur(18px);
   z-index: var(--k-z-navigation) !important;
 }
 
@@ -658,8 +663,8 @@ export default Vue.extend({
   margin-inline: var(--k-space-3) var(--k-space-6);
   color: var(--k-text-primary);
   font-size: var(--k-font-size-section);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -.04em;
 }
 
 .app-shell__search {
@@ -669,14 +674,13 @@ export default Vue.extend({
 }
 
 .app-shell__brand {
-  min-height: 7rem;
+  min-height: 6.5rem;
   border-block-end: 1px solid var(--k-nav-border);
   color: var(--k-nav-text) !important;
 }
 
 .app-shell__brand-title {
   color: inherit;
-  font-family: var(--k-font-display);
   font-size: 1.55rem !important;
   font-weight: 800;
   letter-spacing: -.04em;
@@ -684,21 +688,20 @@ export default Vue.extend({
 
 .app-shell__brand-subtitle {
   color: var(--k-nav-muted) !important;
-  font-family: var(--k-font-data);
   font-size: .625rem !important;
   letter-spacing: .14em;
 }
 
 .app-shell__nav-list ::v-deep .v-list-item {
   min-height: var(--k-target-min);
-  margin: 0 var(--k-space-3);
-  border-block-end: 1px solid var(--k-nav-border);
-  border-radius: 0;
+  margin: .25rem var(--k-space-3);
+  border: 0;
+  border-radius: var(--k-radius-control);
   color: var(--k-nav-muted);
 }
 
 .app-shell__nav-list ::v-deep .v-list-item::before {
-  border-radius: 0 !important;
+  border-radius: var(--k-radius-control) !important;
 }
 
 .app-shell__nav-list ::v-deep .v-list-item__icon {
@@ -713,7 +716,9 @@ export default Vue.extend({
 .app-shell__bottom-nav {
   min-height: calc(4rem + env(safe-area-inset-bottom));
   padding-block-end: env(safe-area-inset-bottom);
-  border-block-start: 1px solid var(--k-border);
+  border-block-start: 1px solid var(--k-nav-border);
+  background: var(--k-nav-surface) !important;
+  backdrop-filter: blur(22px);
   box-shadow: var(--k-shadow-floating) !important;
   z-index: var(--k-z-navigation) !important;
 }
@@ -733,13 +738,18 @@ export default Vue.extend({
 }
 
 .v-list-item--active {
-  border-inline-start: 4px solid var(--k-accent-progress);
+  border-inline-start: 0;
   background: var(--k-nav-active) !important;
-  color: var(--k-nav-text) !important;
+  color: var(--k-primary) !important;
   font-weight: 700;
 }
 
 @media (max-width: 47.9375rem) {
+  .app-shell__drawer {
+    margin: 0;
+    max-height: 100vh !important;
+    border-radius: 0;
+  }
   .app-shell__bar {
     padding-inline: var(--k-space-1) !important;
   }

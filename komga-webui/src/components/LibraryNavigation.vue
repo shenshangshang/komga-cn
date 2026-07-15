@@ -5,6 +5,7 @@
       grow color="primary"
       :app="$vuetify.breakpoint.smAndUp"
       :fixed="bottomNavigation"
+      class="library-nav library-nav--bottom"
     >
       <v-btn v-if="showRecommended"
              :to="{name: 'recommended-libraries', params: {libraryId: libraryId}}"
@@ -47,21 +48,21 @@
       <v-btn v-if="showRecommended"
              :to="{name: 'recommended-libraries', params: {libraryId: libraryId}}"
              text
-             class="mx-1"
+             class="mx-1 library-nav__button"
       >
         {{ $t('library_navigation.recommended') }}
       </v-btn>
 
       <v-btn :to="{name: 'browse-libraries', params: {libraryId: libraryId}}"
              text
-             class="mx-1"
+             class="mx-1 library-nav__button"
       >
         {{ $t('library_navigation.browse_series') }}
       </v-btn>
 
       <v-btn :to="{name: 'browse-books', params: {libraryId: libraryId}}"
              text
-             class="mx-1"
+             class="mx-1 library-nav__button"
       >
         {{ $t('library_navigation.browse_books') }}
       </v-btn>
@@ -70,7 +71,7 @@
         v-if="collectionsCount > 0"
         :to="{name: 'browse-collections', params: {libraryId: libraryId}}"
         text
-        class="mx-1"
+        class="mx-1 library-nav__button"
       >
         {{ $t('library_navigation.collections') }}
       </v-btn>
@@ -79,7 +80,7 @@
         v-if="readListsCount > 0"
         :to="{name: 'browse-readlists', params: {libraryId: libraryId}}"
         text
-        class="mx-1"
+        class="mx-1 library-nav__button"
       >
         {{ $t('library_navigation.readlists') }}
       </v-btn>
@@ -174,5 +175,32 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.library-nav__button {
+  min-height: 44px;
+  border-radius: 14px;
+  color: var(--k-text-secondary);
+  letter-spacing: .01em;
+}
+
+.library-nav__button.v-btn--active {
+  background: color-mix(in srgb, var(--k-primary) 14%, transparent);
+  color: var(--k-primary);
+}
+
+.library-nav--bottom {
+  margin: 0 auto 8px;
+  width: min(calc(100% - 20px), 680px) !important;
+  border: 1px solid color-mix(in srgb, var(--k-primary) 18%, transparent);
+  border-radius: 20px 20px 12px 12px;
+  background: color-mix(in srgb, var(--k-surface-card) 88%, transparent) !important;
+  box-shadow: 0 16px 42px rgba(3, 10, 30, .34) !important;
+  backdrop-filter: blur(18px) saturate(140%);
+  overflow: hidden;
+}
+
+.library-nav--bottom ::v-deep .v-btn {
+  min-width: 44px !important;
+  min-height: 56px;
+}
 
 </style>

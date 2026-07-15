@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6 k-view-shell k-settings-page">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page aurora-form-page">
     <v-row>
       <v-col cols="auto">
         <v-checkbox
@@ -118,5 +118,12 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-
+.aurora-form-page > .row:first-child {
+  max-width: 780px;
+  margin: 0 0 18px;
+  padding: 18px 22px;
+  border: 1px solid rgba(105, 212, 255, .13);
+  border-radius: 20px;
+  background: rgba(18, 31, 57, .78);
+}
 </style>

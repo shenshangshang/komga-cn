@@ -5,7 +5,7 @@
     fixed
     temporary
     disable-route-watcher
-    class="fill-height"
+    class="fill-height filter-drawer"
   >
     <v-fab-transition>
       <v-btn
@@ -78,5 +78,26 @@ export default Vue.extend({
 .filter-drawer__clear {
   z-index: var(--k-z-sticky);
   background: var(--k-surface-card);
+}
+
+.filter-drawer {
+  border-inline-start: 1px solid color-mix(in srgb, var(--k-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--k-surface-card) 91%, transparent) !important;
+  box-shadow: -18px 0 54px rgba(3, 10, 30, .38) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+.filter-drawer ::v-deep .v-subheader {
+  color: var(--k-primary);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.filter-drawer ::v-deep .v-list-item,
+.filter-drawer ::v-deep .v-btn { min-height: 44px; }
+
+.filter-drawer ::v-deep .v-divider {
+  border-color: color-mix(in srgb, var(--k-primary) 12%, transparent);
 }
 </style>

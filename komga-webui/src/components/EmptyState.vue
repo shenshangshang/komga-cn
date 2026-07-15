@@ -52,7 +52,9 @@ export default Vue.extend({
 .empty-state {
   width: 100%;
   padding: var(--k-space-8);
-  border: 1px solid var(--k-border);
+  border: 1px solid color-mix(in srgb, var(--k-primary) 16%, transparent);
   border-radius: var(--k-radius-sheet) !important;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--k-primary) 7%, var(--k-surface-card)), var(--k-surface-card)) !important;
+  box-shadow: 0 18px 48px rgba(3, 10, 30, .18);
 }
 </style>

@@ -87,8 +87,8 @@ export default Vue.extend({
     },
     updateThemeColor(isDark: boolean) {
       const currentTheme = isDark ? 'dark' : 'light'
-      // Use contrast-1 color for status bar (matches toolbar/app bar background)
-      const themeColor = String(this.$vuetify.theme.themes[currentTheme]['contrast-1'] || (isDark ? '#424242' : '#fafafa'))
+      // Keep the browser chrome aligned with the AURORA page surface.
+      const themeColor = String(this.$vuetify.theme.themes[currentTheme]['contrast-1'] || (isDark ? '#071329' : '#f1f6ff'))
       const metaThemeColor = document.querySelector('meta[name="theme-color"]')
       if (metaThemeColor) {
         metaThemeColor.setAttribute('content', themeColor)

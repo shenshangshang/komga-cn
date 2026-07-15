@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6 k-view-shell k-settings-page">
+  <v-container fluid class="pa-6 k-view-shell k-settings-page aurora-server-stack">
     <v-row>
       <v-col>
         <server-settings/>
@@ -25,5 +25,11 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.aurora-server-stack {
+  max-width: 1160px;
+}
 
+.aurora-server-stack > .row {
+  margin-bottom: 18px;
+}
 </style>

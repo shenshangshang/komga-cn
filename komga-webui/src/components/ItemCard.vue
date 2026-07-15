@@ -478,24 +478,22 @@ export default Vue.extend({
 .item-card-surface {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--k-text-primary);
-  border-inline-start: 5px solid var(--k-accent-progress);
+  border: 1px solid color-mix(in srgb, var(--k-primary) 14%, transparent);
   border-radius: var(--k-radius-card) !important;
   background: var(--k-surface-card);
-  box-shadow: var(--k-shadow-card);
+  box-shadow: 0 14px 36px rgba(3, 10, 30, 0.2);
   transition: transform var(--k-motion-standard) var(--k-ease-standard), box-shadow var(--k-motion-standard) var(--k-ease-standard);
 }
 
 .item-card-surface:focus-within,
 .item-card-surface--selected {
-  border-color: var(--k-primary);
-  border-inline-start-color: var(--k-primary);
-  box-shadow: var(--k-shadow-card-active);
+  border-color: color-mix(in srgb, var(--k-primary) 72%, white 8%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--k-primary) 22%, transparent), 0 18px 44px rgba(3, 10, 30, 0.3);
+  outline: none;
 }
 
 .item-card__cover {
   aspect-ratio: var(--k-cover-aspect-ratio);
-  border-block-end: 1px solid var(--k-text-primary);
   background: var(--k-surface-muted);
 }
 
@@ -509,9 +507,9 @@ export default Vue.extend({
 .item-card__unread-count {
   position: absolute;
   inset-inline-end: 0;
-  border: 1px solid var(--k-accent-progress);
-  background: var(--k-surface-card);
-  color: var(--k-text-primary);
+  border-radius: 0 0 0 12px;
+  background: color-mix(in srgb, var(--k-primary) 86%, #10203f);
+  color: white;
   font-weight: 700;
 }
 
@@ -538,7 +536,7 @@ export default Vue.extend({
 }
 
 .item-border-darken {
-  border: 3px solid var(--k-text-primary);
+  border: 3px solid color-mix(in srgb, var(--k-primary) 55%, transparent);
 }
 
 .overlay-full ::v-deep .v-overlay__content {
@@ -548,7 +546,7 @@ export default Vue.extend({
 
 .unread {
   border-left: 25px solid transparent;
-  border-right: 25px solid var(--k-accent-progress);
+  border-right: 25px solid var(--k-primary);
   border-bottom: 25px solid transparent;
   height: 0;
   width: 0;
@@ -563,12 +561,20 @@ export default Vue.extend({
 
 @media (hover: hover) {
   .item-card-surface:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--k-shadow-card-active);
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--k-primary) 38%, transparent);
+    box-shadow: 0 20px 52px rgba(3, 10, 30, 0.34), 0 0 24px color-mix(in srgb, var(--k-primary) 12%, transparent);
   }
 
   .item-card-surface:hover ::v-deep .v-image__image {
     transform: scale(1.035);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-card-surface,
+  .item-card-surface ::v-deep .v-image__image { transition: none; }
+
+  .item-card-surface:hover { transform: none; }
 }
 </style>

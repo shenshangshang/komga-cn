@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-0 pa-0 full-height reader-shell" fluid v-if="pages.length > 0"
+  <v-container class="ma-0 pa-0 full-height reader-shell aurora-reader" fluid v-if="pages.length > 0"
                 :style="`width: 100%; background: ${actualBackgroundColor}`"
   >
     <div>
@@ -2042,6 +2042,37 @@ export default Vue.extend({
 <style scoped>
 .settings {
   z-index: 2;
+  border: 1px solid rgba(107, 219, 255, .18) !important;
+  background: rgba(10, 20, 42, .88) !important;
+  box-shadow: 0 16px 48px rgba(0, 5, 18, .36) !important;
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+.aurora-reader ::v-deep .v-toolbar__title {
+  max-width: min(52vw, 680px);
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aurora-reader ::v-deep .v-navigation-drawer,
+.aurora-reader ::v-deep .v-bottom-sheet .v-card {
+  border: 1px solid rgba(107, 219, 255, .16);
+  background: linear-gradient(155deg, rgba(24, 39, 70, .98), rgba(9, 18, 38, .98));
+  box-shadow: -20px 0 70px rgba(0, 5, 18, .42);
+}
+
+.aurora-reader ::v-deep .v-btn:focus-visible {
+  outline: 2px solid #73ddff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-reader ::v-deep .v-btn,
+  .aurora-reader ::v-deep .v-navigation-drawer {
+    transition: none !important;
+  }
 }
 
 .full-height {

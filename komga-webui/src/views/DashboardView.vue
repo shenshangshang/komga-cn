@@ -48,16 +48,16 @@
     />
 
 
-    <v-container fluid class="inkframe-dashboard">
-      <header class="inkframe-masthead">
-        <div class="inkframe-masthead__copy">
-          <span class="inkframe-masthead__kicker">KOMGA · PERSONAL ARCHIVE</span>
+    <v-container fluid class="aurora-dashboard">
+      <header class="aurora-hero">
+        <div class="aurora-hero__copy">
+          <span class="aurora-hero__kicker">AURORA · PERSONAL LIBRARY</span>
           <h1>{{ library ? library.name : $t('common.all_libraries') }}</h1>
           <p>{{ $t('navigation.home') }} / {{ sections.length.toString().padStart(2, '0') }}</p>
         </div>
-        <div class="inkframe-masthead__mark" aria-hidden="true">
-          <span>READ</span>
-          <strong>01</strong>
+        <div class="aurora-hero__orb" aria-hidden="true">
+          <span>{{ sections.length.toString().padStart(2, '0') }}</span>
+          <small>ACTIVE SHELVES</small>
         </div>
       </header>
 
@@ -72,14 +72,14 @@
         <horizontal-scroller
           v-bind:key="i"
           v-if="section.loader && section.loader.items.length !== 0"
-          class="inkframe-shelf mb-8"
+          class="aurora-shelf mb-8"
           :tick="section.loader.tick"
           @scroll-changed="(percent) => scrollChanged(section.loader, percent)"
         >
           <template v-slot:prepend>
-            <div class="inkframe-shelf__heading">
-              <span class="inkframe-shelf__index">{{ (i + 1).toString().padStart(2, '0') }}</span>
-              <span class="inkframe-shelf__title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</span>
+            <div class="aurora-shelf__heading">
+              <span class="aurora-shelf__index">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <span class="aurora-shelf__title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</span>
             </div>
           </template>
           <template v-slot:content>
@@ -628,12 +628,12 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.inkframe-dashboard {
+.aurora-dashboard {
   max-width: 112rem;
   padding: clamp(1rem, 2.5vw, 3rem) !important;
 }
 
-.inkframe-masthead {
+.aurora-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   min-height: 15rem;
@@ -642,28 +642,28 @@ export default Vue.extend({
   background: var(--k-surface-card);
 }
 
-.inkframe-masthead__copy {
+.aurora-hero__copy {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: clamp(1.5rem, 4vw, 4rem);
 }
 
-.inkframe-masthead__kicker,
-.inkframe-masthead__copy p,
-.inkframe-shelf__index {
+.aurora-hero__kicker,
+.aurora-hero__copy p,
+.aurora-shelf__index {
   font-family: var(--k-font-data);
   letter-spacing: .12em;
   text-transform: uppercase;
 }
 
-.inkframe-masthead__kicker {
+.aurora-hero__kicker {
   color: var(--k-primary);
   font-size: .75rem;
   font-weight: 800;
 }
 
-.inkframe-masthead h1 {
+.aurora-hero h1 {
   max-width: 18ch;
   margin: .5rem 0;
   font-family: var(--k-font-display);
@@ -673,13 +673,13 @@ export default Vue.extend({
   letter-spacing: -.055em;
 }
 
-.inkframe-masthead__copy p {
+.aurora-hero__copy p {
   margin: 0;
   color: var(--k-text-secondary);
   font-size: .75rem;
 }
 
-.inkframe-masthead__mark {
+.aurora-hero__orb {
   display: flex;
   width: clamp(6rem, 14vw, 13rem);
   flex-direction: column;
@@ -690,23 +690,23 @@ export default Vue.extend({
   font-family: var(--k-font-data);
 }
 
-.inkframe-masthead__mark span {
+.aurora-hero__orb span {
   writing-mode: vertical-rl;
   letter-spacing: .18em;
 }
 
-.inkframe-masthead__mark strong {
+.aurora-hero__orb small {
   align-self: flex-end;
   font-size: clamp(2rem, 4vw, 4rem);
 }
 
-.inkframe-shelf {
+.aurora-shelf {
   position: relative;
   padding-block: 1rem 2rem;
   border-block-start: 1px solid var(--k-text-primary);
 }
 
-.inkframe-shelf__heading {
+.aurora-shelf__heading {
   display: flex;
   align-items: baseline;
   gap: 1rem;
@@ -714,13 +714,13 @@ export default Vue.extend({
   padding-block: .5rem 1.5rem;
 }
 
-.inkframe-shelf__index {
+.aurora-shelf__index {
   color: var(--k-accent-progress);
   font-size: .75rem;
   font-weight: 800;
 }
 
-.inkframe-shelf__title {
+.aurora-shelf__title {
   font-family: var(--k-font-display);
   font-size: clamp(1.5rem, 2.5vw, 2.25rem);
   font-weight: 700;
@@ -728,11 +728,35 @@ export default Vue.extend({
 }
 
 @media (max-width: 47.9375rem) {
-  .inkframe-dashboard { padding: 1rem !important; }
-  .inkframe-masthead { min-height: 11rem; margin-block-end: 2rem; }
-  .inkframe-masthead__copy { padding: 1.25rem; }
-  .inkframe-masthead__mark { width: 4.5rem; }
-  .inkframe-masthead__mark span { font-size: .65rem; }
+  .aurora-dashboard { padding: 1rem !important; }
+  .aurora-hero { min-height: 12rem; margin-block-end: 2rem; }
+  .aurora-hero__copy { padding: 1.25rem; }
+  .aurora-hero__orb { width: 5rem; margin: 1rem; }
+  .aurora-hero__orb small { display: none; }
 }
+
+.aurora-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--k-border-soft);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background: linear-gradient(120deg, var(--k-surface-card) 0%, var(--k-surface-card) 55%, color-mix(in srgb, var(--k-purple) 22%, var(--k-surface-card)) 100%);
+  box-shadow: var(--k-shadow-card);
+}
+.aurora-hero__kicker { color: var(--k-mint); }
+.aurora-hero__orb {
+  align-items: center;
+  justify-content: center;
+  margin: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid color-mix(in srgb, var(--k-cyan) 35%, transparent);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--k-cyan) 42%, transparent), color-mix(in srgb, var(--k-purple) 24%, transparent) 58%, transparent 74%);
+  box-shadow: inset 0 0 30px color-mix(in srgb, var(--k-cyan) 14%, transparent), 0 0 70px color-mix(in srgb, var(--k-purple) 18%, transparent);
+}
+.aurora-hero__orb span { writing-mode: initial; font-size: clamp(2.25rem, 4vw, 4.25rem); font-weight: 800; line-height: 1; }
+.aurora-hero__orb small { align-self: auto; margin-top: .5rem; color: var(--k-text-secondary); font-size: .625rem; letter-spacing: .12em; }
+.aurora-shelf { padding: 1.25rem; border: 1px solid var(--k-border-soft); border-radius: var(--k-radius-sheet); background: color-mix(in srgb, var(--k-surface-card) 90%, transparent); box-shadow: var(--k-shadow-card); }
+.aurora-shelf__index { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--k-primary) 16%, transparent); color: var(--k-primary); }
 
 </style>

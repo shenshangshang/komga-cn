@@ -517,6 +517,7 @@
       "field_scan_interval": "Scan interval",
       "field_series_grouping_mode": "Series folder structure",
       "field_scanner_empty_trash_after_scan": "Empty trash automatically after every scan",
+      "hint_scanner_empty_trash_after_scan": "Permanently removes missing items after a successful scan. Disable this if the library may be temporarily unavailable.",
       "field_scanner_force_directory_modified_time": "Force directory modified time",
       "field_scanner_scan_startup": "Scan on startup",
       "field_series_cover": "Series cover",
@@ -782,6 +783,7 @@
     "scan_interval": {
       "DAILY": "Daily",
       "DISABLED": "Disabled",
+      "EVERY_15M": "Every 15 minutes",
       "EVERY_12H": "Every 12 hours",
       "EVERY_6H": "Every 6 hours",
       "HOURLY": "Hourly",

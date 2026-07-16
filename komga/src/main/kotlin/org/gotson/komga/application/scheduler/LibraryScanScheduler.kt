@@ -6,6 +6,7 @@ import org.gotson.komga.domain.model.Library
 import org.gotson.komga.domain.model.Library.ScanInterval.DAILY
 import org.gotson.komga.domain.model.Library.ScanInterval.DISABLED
 import org.gotson.komga.domain.model.Library.ScanInterval.EVERY_12H
+import org.gotson.komga.domain.model.Library.ScanInterval.EVERY_15M
 import org.gotson.komga.domain.model.Library.ScanInterval.EVERY_6H
 import org.gotson.komga.domain.model.Library.ScanInterval.HOURLY
 import org.gotson.komga.domain.model.Library.ScanInterval.WEEKLY
@@ -34,7 +35,7 @@ class LibraryScanScheduler(
     }
 
   fun scheduleScan(library: Library) {
-    registry.remove(library.id)?.cancel(false)
+    unscheduleScan(library.id)
     if (library.scanInterval != DISABLED) {
       registrar
         .scheduleFixedRateTask(
@@ -50,13 +51,18 @@ class LibraryScanScheduler(
     }
   }
 
+  fun unscheduleScan(libraryId: String) {
+    registry.remove(libraryId)?.cancel(false)
+  }
+
   // the '/actuator/scheduledtasks' endpoint will pick up any ScheduledTaskHolder and display its tasks
   override fun getScheduledTasks(): MutableSet<ScheduledTask> = registry.values.toMutableSet()
 }
 
-private fun Library.ScanInterval.toDuration(): Duration =
+internal fun Library.ScanInterval.toDuration(): Duration =
   when (this) {
     DISABLED -> throw IllegalArgumentException("Cannot convert DISABLED to Duration")
+    EVERY_15M -> Duration.ofMinutes(15)
     HOURLY -> Duration.ofHours(1)
     EVERY_6H -> Duration.ofHours(6)
     EVERY_12H -> Duration.ofHours(12)

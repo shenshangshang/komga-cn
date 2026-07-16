@@ -489,7 +489,8 @@
       "field_root_folder": "根資料夾",
       "field_scan_interval": "掃描間隔",
       "field_series_grouping_mode": "系列目錄結構",
-      "field_scanner_empty_trash_after_scan": "每次掃描後自動清理垃圾",
+      "field_scanner_empty_trash_after_scan": "每次成功掃描後自動清理已刪除記錄",
+      "hint_scanner_empty_trash_after_scan": "清理後無法復原；如果書庫可能暫時離線，請關閉此選項。",
       "field_scanner_force_directory_modified_time": "強制目錄修改時間",
       "field_scanner_scan_startup": "啟動時掃描",
       "field_series_cover": "系列封面",
@@ -749,6 +750,7 @@
     "scan_interval": {
       "DAILY": "每日",
       "DISABLED": "禁用",
+      "EVERY_15M": "每 15 分鐘",
       "EVERY_12H": "每 12 小時",
       "EVERY_6H": "每 6 小時",
       "HOURLY": "每小時",

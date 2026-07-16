@@ -4,6 +4,7 @@ import org.gotson.komga.domain.model.Library
 
 enum class ScanIntervalDto {
   DISABLED,
+  EVERY_15M,
   HOURLY,
   EVERY_6H,
   EVERY_12H,
@@ -14,6 +15,7 @@ enum class ScanIntervalDto {
 fun Library.ScanInterval.toDto() =
   when (this) {
     Library.ScanInterval.DISABLED -> ScanIntervalDto.DISABLED
+    Library.ScanInterval.EVERY_15M -> ScanIntervalDto.EVERY_15M
     Library.ScanInterval.HOURLY -> ScanIntervalDto.HOURLY
     Library.ScanInterval.EVERY_6H -> ScanIntervalDto.EVERY_6H
     Library.ScanInterval.EVERY_12H -> ScanIntervalDto.EVERY_12H
@@ -24,6 +26,7 @@ fun Library.ScanInterval.toDto() =
 fun ScanIntervalDto.toDomain() =
   when (this) {
     ScanIntervalDto.DISABLED -> Library.ScanInterval.DISABLED
+    ScanIntervalDto.EVERY_15M -> Library.ScanInterval.EVERY_15M
     ScanIntervalDto.HOURLY -> Library.ScanInterval.HOURLY
     ScanIntervalDto.EVERY_6H -> Library.ScanInterval.EVERY_6H
     ScanIntervalDto.EVERY_12H -> Library.ScanInterval.EVERY_12H

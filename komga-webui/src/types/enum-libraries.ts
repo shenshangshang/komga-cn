@@ -7,6 +7,7 @@ export enum SeriesCoverDto {
 
 export enum ScanIntervalDto {
   DISABLED = 'DISABLED',
+  EVERY_15M = 'EVERY_15M',
   HOURLY = 'HOURLY',
   EVERY_6H = 'EVERY_6H',
   EVERY_12H = 'EVERY_12H',

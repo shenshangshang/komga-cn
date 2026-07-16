@@ -92,7 +92,8 @@
                       <v-checkbox
                         v-model="form.emptyTrashAfterScan"
                         :label="$t('dialog.edit_library.field_scanner_empty_trash_after_scan')"
-                        hide-details
+                        :hint="$t('dialog.edit_library.hint_scanner_empty_trash_after_scan')"
+                        persistent-hint
                         class="mx-4"
                       />
 
@@ -495,7 +496,7 @@ export default Vue.extend({
         importLocalArtwork: true,
         importBarcodeIsbn: false,
         scanForceModifiedTime: false,
-        scanInterval: ScanIntervalDto.EVERY_6H,
+        scanInterval: ScanIntervalDto.EVERY_15M,
         scanOnStartup: false,
         seriesGroupingMode: SeriesGroupingModeDto.TOP_LEVEL as SeriesGroupingModeDto,
         scanTypes: [],
@@ -662,7 +663,7 @@ export default Vue.extend({
       this.form.importLocalArtwork = library ? library.importLocalArtwork : true
       this.form.importBarcodeIsbn = library ? library.importBarcodeIsbn : false
       this.form.scanForceModifiedTime = library ? library.scanForceModifiedTime : false
-      this.form.scanInterval = library ? library.scanInterval : ScanIntervalDto.EVERY_6H
+      this.form.scanInterval = library ? library.scanInterval : ScanIntervalDto.EVERY_15M
       this.form.scanOnStartup = library ? library.scanOnStartup : false
       this.form.seriesGroupingMode = library ? library.seriesGroupingMode : SeriesGroupingModeDto.TOP_LEVEL
       this.form.scanTypes = []

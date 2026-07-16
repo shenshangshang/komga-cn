@@ -44,6 +44,7 @@ class LibraryLifecycle(
     checkLibraryValidity(library, existing)
 
     libraryRepository.insert(library)
+    libraryScanScheduler.scheduleScan(library)
     taskEmitter.scanLibrary(library.id)
 
     eventPublisher.publishEvent(DomainEvent.LibraryAdded(library))
@@ -128,6 +129,8 @@ class LibraryLifecycle(
 
       libraryRepository.delete(library.id)
     }
+
+    libraryScanScheduler.unscheduleScan(library.id)
 
     eventPublisher.publishEvent(DomainEvent.LibraryDeleted(library))
   }

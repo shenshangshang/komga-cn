@@ -21,7 +21,7 @@ data class Library(
   val importBarcodeIsbn: Boolean = true,
   val scanForceModifiedTime: Boolean = false,
   val scanOnStartup: Boolean = false,
-  val scanInterval: ScanInterval = ScanInterval.EVERY_6H,
+  val scanInterval: ScanInterval = ScanInterval.EVERY_15M,
   val scanCbx: Boolean = true,
   val scanPdf: Boolean = true,
   val scanEpub: Boolean = true,
@@ -52,6 +52,7 @@ data class Library(
 
   enum class ScanInterval {
     DISABLED,
+    EVERY_15M,
     HOURLY,
     EVERY_6H,
     EVERY_12H,

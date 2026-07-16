@@ -23,6 +23,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.io.path.exists
 import kotlin.io.path.extension
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
@@ -31,6 +33,9 @@ import kotlin.io.path.readAttributes
 import kotlin.time.measureTime
 
 private val logger = KotlinLogging.logger {}
+
+private val imageFileExtensions =
+  setOf("jpg", "jpeg", "png", "webp", "gif", "bmp", "tif", "tiff", "avif", "jxl")
 
 @Service
 class FileSystemScanner(
@@ -79,6 +84,7 @@ class FileSystemScanner(
         forceDirectoryModifiedTime = forceDirectoryModifiedTime,
         oneshotsDir = oneshotsDir,
         directoryExclusions = directoryExclusions,
+        scanImageDirectories = scanCbx,
       )
     }
 
@@ -92,6 +98,7 @@ class FileSystemScanner(
       // path is the book's parent directory, ie the series directory
       val pathToBooks = mutableMapOf<Path, MutableList<Book>>()
       val pathToBookSidecars = mutableMapOf<Path, MutableList<TempSidecar>>()
+      val imageFilesByDirectory = mutableMapOf<Path, MutableList<Path>>()
 
       Files.walkFileTree(
         root,
@@ -135,13 +142,19 @@ class FileSystemScanner(
                 }
               }
 
-              sidecarSeriesConsumers
-                .firstOrNull { consumer ->
-                  consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) }
-                }?.let {
-                  val sidecar = Sidecar(file.toUri().toURL(), file.parent.toUri().toURL(), attrs.getUpdatedTime(), it.getSidecarSeriesType(), Sidecar.Source.SERIES)
-                  pathToSeriesSidecars.merge(file.parent, mutableListOf(sidecar)) { prev, one -> prev.union(one).toMutableList() }
-                }
+              val seriesSidecarConsumer =
+                sidecarSeriesConsumers
+                  .firstOrNull { consumer ->
+                    consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) }
+                  }
+              seriesSidecarConsumer?.let {
+                val sidecar = Sidecar(file.toUri().toURL(), file.parent.toUri().toURL(), attrs.getUpdatedTime(), it.getSidecarSeriesType(), Sidecar.Source.SERIES)
+                pathToSeriesSidecars.merge(file.parent, mutableListOf(sidecar)) { prev, one -> prev.union(one).toMutableList() }
+              }
+
+              if (scanCbx && file.isImageFile() && seriesSidecarConsumer == null) {
+                imageFilesByDirectory.getOrPut(file.parent) { mutableListOf() }.add(file)
+              }
 
               // book sidecars can't be exactly matched during a file visit
               // this prefilters files to reduce the candidates
@@ -167,6 +180,9 @@ class FileSystemScanner(
             exc: IOException?,
           ): FileVisitResult {
             logger.trace { "postVisit: $dir" }
+            imageFilesByDirectory[dir]?.takeIf { it.isNotEmpty() }?.let {
+              pathToBooks.getOrPut(dir) { mutableListOf() }.add(pathToDirectoryBook(dir))
+            }
             val books = pathToBooks[dir]
             val tempSeries = pathToSeries[dir]
             if (!books.isNullOrEmpty() && tempSeries !== null) {
@@ -229,10 +245,12 @@ class FileSystemScanner(
     forceDirectoryModifiedTime: Boolean,
     oneshotsDir: String?,
     directoryExclusions: Set<String>,
+    scanImageDirectories: Boolean,
   ): ScanResult {
     val booksBySeriesPath = mutableMapOf<Path, MutableList<Book>>()
     val seriesSidecarsByPath = mutableMapOf<Path, MutableList<Sidecar>>()
     val bookSidecarsByPath = mutableMapOf<Path, MutableList<TempSidecar>>()
+    val imageFilesByDirectory = mutableMapOf<Path, MutableList<Path>>()
 
     measureTime {
       Files.walkFileTree(
@@ -272,14 +290,21 @@ class FileSystemScanner(
                 .add(pathToBook(file, attrs).copy(directoryPath = directoryPath))
             }
 
-            if (file.parent == seriesPath) {
-              sidecarSeriesConsumers
-                .firstOrNull { consumer -> consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) } }
-                ?.let { consumer ->
-                  seriesSidecarsByPath
-                    .getOrPut(seriesPath) { mutableListOf() }
-                    .add(Sidecar(file.toUri().toURL(), seriesPath.toUri().toURL(), attrs.getUpdatedTime(), consumer.getSidecarSeriesType(), Sidecar.Source.SERIES))
-                }
+            val seriesSidecarConsumer =
+              if (file.parent == seriesPath) {
+                sidecarSeriesConsumers
+                  .firstOrNull { consumer -> consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) } }
+              } else {
+                null
+              }
+            seriesSidecarConsumer?.let { consumer ->
+              seriesSidecarsByPath
+                .getOrPut(seriesPath) { mutableListOf() }
+                .add(Sidecar(file.toUri().toURL(), seriesPath.toUri().toURL(), attrs.getUpdatedTime(), consumer.getSidecarSeriesType(), Sidecar.Source.SERIES))
+            }
+
+            if (scanImageDirectories && file.isImageFile() && seriesSidecarConsumer == null) {
+              imageFilesByDirectory.getOrPut(file.parent) { mutableListOf() }.add(file)
             }
 
             if (sidecarBookPrefilter.any { it.matches(file.name) }) {
@@ -301,7 +326,24 @@ class FileSystemScanner(
           override fun postVisitDirectory(
             dir: Path,
             exc: IOException?,
-          ): FileVisitResult = FileVisitResult.CONTINUE
+          ): FileVisitResult {
+            imageFilesByDirectory[dir]?.takeIf { it.isNotEmpty() }?.let {
+              val seriesPath = dir.toTopLevelSeriesPath(root)
+              val directoryPath =
+                if (dir == seriesPath) {
+                  ""
+                } else {
+                  seriesPath
+                    .relativize(dir.parent)
+                    .map { it.toString() }
+                    .joinToString("/")
+                }
+              booksBySeriesPath
+                .getOrPut(seriesPath) { mutableListOf() }
+                .add(pathToDirectoryBook(dir).copy(directoryPath = directoryPath))
+            }
+            return FileVisitResult.CONTINUE
+          }
         },
       )
     }.also { logger.info { "Scanned top-level series layout in $it" } }
@@ -343,8 +385,7 @@ class FileSystemScanner(
             bookSidecarsByPath[parent]
               ?.mapNotNull { sidecar ->
                 sidecarBookConsumers.firstOrNull { it.isSidecarBookMatch(book.name, sidecar.name) }?.let { sidecar to it.getSidecarBookType() }
-              }
-              ?.toMap()
+              }?.toMap()
               .orEmpty()
           bookSidecarsByPath[parent]?.minusAssign(matched.keys)
           matched.mapTo(scannedSidecars) { (sidecar, type) ->
@@ -360,6 +401,14 @@ class FileSystemScanner(
 
   fun scanFile(path: Path): Book? {
     if (!path.exists()) return null
+
+    if (path.isDirectory()) {
+      val containsImages =
+        path
+          .listDirectoryEntries()
+          .any { it.isRegularFile() && !it.name.startsWith(".") && it.isImageFile() }
+      return if (containsImages) pathToDirectoryBook(path) else null
+    }
 
     return pathToBook(path, path.readAttributes())
   }
@@ -387,6 +436,26 @@ class FileSystemScanner(
       fileLastModified = attrs.getUpdatedTime(),
       fileSize = attrs.size(),
     )
+
+  private fun pathToDirectoryBook(path: Path): Book {
+    val attrs = path.readAttributes<BasicFileAttributes>()
+    val files = path.listDirectoryEntries().filter { it.isRegularFile() && !it.name.startsWith(".") }
+    val updatedTime = files.map { it.readAttributes<BasicFileAttributes>().getUpdatedTime() }.maxOrNull()
+    return Book(
+      name = path.name.ifBlank { path.pathString },
+      url = path.toUri().toURL(),
+      fileLastModified = maxOf(attrs.getUpdatedTime(), updatedTime ?: attrs.getUpdatedTime()),
+      fileSize = files.sumOf { Files.size(it) },
+    )
+  }
+}
+
+private fun Path.isImageFile(): Boolean = extension.lowercase() in imageFileExtensions
+
+private fun Path.toTopLevelSeriesPath(root: Path): Path {
+  if (this == root) return root
+  val relative = root.relativize(this)
+  return root.resolve(relative.getName(0))
 }
 
 fun BasicFileAttributes.getUpdatedTime(): LocalDateTime = maxOf(creationTime(), lastModifiedTime()).toLocalDateTime()

@@ -213,8 +213,7 @@ class FileSystemScannerTest {
           .scanRootFolder(
             root = root,
             seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
-          )
-          .series
+          ).series
 
       assertThat(scan).hasSize(2)
       val nested = scan.entries.first { it.key.name == "漫画" }
@@ -228,6 +227,56 @@ class FileSystemScannerTest {
         )
       val rootSeries = scan.entries.first { it.key.url == root.toUri().toURL() }
       assertThat(rootSeries.value.single().directoryPath).isEmpty()
+    }
+  }
+
+  @Test
+  fun `given image folders in top level mode when scanning then treat each folder as a book`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val root = fs.getPath("/root")
+      Files.createDirectories(root.resolve("漫画/第一部/第一集"))
+      Files.createDirectories(root.resolve("漫画/第二部/第二集"))
+      Files.createFile(root.resolve("漫画/第一部/第一集/001.jpg"))
+      Files.createFile(root.resolve("漫画/第一部/第一集/002.PNG"))
+      Files.createFile(root.resolve("漫画/第二部/第二集/001.webp"))
+
+      val scan =
+        scanner
+          .scanRootFolder(
+            root = root,
+            seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
+          ).series
+
+      assertThat(scan).hasSize(1)
+      val books = scan.entries.single().value
+      assertThat(books.map { it.name }).containsExactlyInAnyOrder("第一集", "第二集")
+      assertThat(books.associate { it.name to it.directoryPath })
+        .containsExactlyInAnyOrderEntriesOf(
+          mapOf(
+            "第一集" to "第一部",
+            "第二集" to "第二部",
+          ),
+        )
+      assertThat(books.map { it.path }).allMatch { Files.isDirectory(it) }
+    }
+  }
+
+  @Test
+  fun `given image folder when cbx scanning is disabled then do not create directory book`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val root = fs.getPath("/root")
+      Files.createDirectories(root.resolve("漫画/第一集"))
+      Files.createFile(root.resolve("漫画/第一集/001.jpg"))
+
+      val scan =
+        scanner
+          .scanRootFolder(
+            root = root,
+            scanCbx = false,
+            seriesGroupingMode = Library.SeriesGroupingMode.TOP_LEVEL,
+          ).series
+
+      assertThat(scan).isEmpty()
     }
   }
 

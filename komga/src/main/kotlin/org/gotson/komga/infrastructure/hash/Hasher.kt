@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.nio.file.Path
 import kotlin.io.path.inputStream
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
 private val logger = KotlinLogging.logger {}
 
@@ -16,6 +20,16 @@ private const val SEED = 0
 class Hasher {
   fun computeHash(path: Path): String {
     logger.debug { "Hashing: $path" }
+
+    if (path.isDirectory()) {
+      val directorySignature =
+        path
+          .listDirectoryEntries()
+          .filter { it.isRegularFile() && !it.name.startsWith(".") }
+          .sortedBy { it.name }
+          .joinToString("\n") { "${it.name}\u0000${computeHash(it)}" }
+      return computeHash(directorySignature)
+    }
 
     return computeHash(path.inputStream())
   }

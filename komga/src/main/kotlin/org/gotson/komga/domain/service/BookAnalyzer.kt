@@ -36,6 +36,7 @@ import java.nio.file.AccessDeniedException
 import java.nio.file.NoSuchFileException
 import javax.imageio.ImageIO
 import kotlin.io.path.extension
+import kotlin.io.path.isDirectory
 
 private val logger = KotlinLogging.logger {}
 
@@ -69,11 +70,12 @@ class BookAnalyzer(
   ): Media {
     logger.info { "Trying to analyze book: $book" }
     return try {
+      val detectedMediaType =
+        if (book.path.isDirectory()) MediaType.DIRECTORY.type else contentDetector.detectMediaType(book.path)
+      logger.info { "Detected media type: $detectedMediaType" }
       var mediaType =
-        contentDetector.detectMediaType(book.path).let {
-          logger.info { "Detected media type: $it" }
-          MediaType.fromMediaType(it) ?: return Media(mediaType = it, status = Media.Status.UNSUPPORTED, comment = "ERR_1001", bookId = book.id)
-        }
+        MediaType.fromMediaType(detectedMediaType)
+          ?: return Media(mediaType = detectedMediaType, status = Media.Status.UNSUPPORTED, comment = "ERR_1001", bookId = book.id)
 
       if (book.path.extension.lowercase() == "epub" && mediaType != MediaType.EPUB) {
         if (epubExtractor.isEpub(book.path)) {

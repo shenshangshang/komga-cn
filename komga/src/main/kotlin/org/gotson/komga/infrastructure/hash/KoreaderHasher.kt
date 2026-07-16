@@ -5,15 +5,18 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import java.io.RandomAccessFile
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
 
 private val logger = KotlinLogging.logger {}
 
 @Component
-class KoreaderHasher {
+class KoreaderHasher(
+  private val hasher: Hasher,
+) {
   fun computeHash(path: Path): String {
     logger.debug { "Koreader hashing: $path" }
 
-    return partialMd5(path)
+    return if (path.isDirectory()) hasher.computeHash(path) else partialMd5(path)
   }
 
   /**

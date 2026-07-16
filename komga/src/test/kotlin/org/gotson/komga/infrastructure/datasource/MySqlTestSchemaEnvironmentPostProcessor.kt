@@ -18,6 +18,11 @@ internal object MySqlTestSchemaUrls {
     tasksUrl: String,
   ): MySqlTestSchemas {
     val suffix = UUID.randomUUID().toString().replace("-", "")
+    if (mainUrl == tasksUrl) {
+      val shared = withSchema(mainUrl, "komga_test_$suffix")
+      return MySqlTestSchemas(shared, shared)
+    }
+
     return MySqlTestSchemas(
       withSchema(mainUrl, "komga_test_$suffix"),
       withSchema(tasksUrl, "komga_tasks_test_$suffix"),

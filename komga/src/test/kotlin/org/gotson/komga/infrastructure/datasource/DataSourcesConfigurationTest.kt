@@ -18,5 +18,51 @@ class DataSourcesConfigurationTest(
   fun `read and write aliases use the same MySQL pools`() {
     assertThat(dataSourceRW).isSameAs(dataSourceRO)
     assertThat(tasksDataSourceRW).isSameAs(tasksDataSourceRO)
+    assertThat(dataSourceRW).isNotSameAs(tasksDataSourceRW)
+  }
+
+  @Test
+  fun `tasks migrations use an independent Flyway history table`() {
+    tasksDataSourceRW.connection.use { connection ->
+      connection.prepareStatement(
+        """
+        SELECT COUNT(*)
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = ?
+        """.trimIndent(),
+      ).use { statement ->
+        statement.setString(1, TASKS_FLYWAY_HISTORY_TABLE)
+        statement.executeQuery().use { result ->
+          assertThat(result.next()).isTrue()
+          assertThat(result.getInt(1)).isEqualTo(1)
+        }
+      }
+
+      connection.prepareStatement(
+        "SELECT COUNT(*) FROM $TASKS_FLYWAY_HISTORY_TABLE WHERE SUCCESS = TRUE AND VERSION IN ('1', '2')",
+      ).use { statement ->
+        statement.executeQuery().use { result ->
+          assertThat(result.next()).isTrue()
+          assertThat(result.getInt(1)).isEqualTo(2)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun `tasks migrations are idempotent in a shared schema`() {
+    FlywaySecondaryMigrationInitializer(tasksDataSourceRW).afterPropertiesSet()
+
+    tasksDataSourceRW.connection.use { connection ->
+      connection.prepareStatement(
+        "SELECT COUNT(*) FROM $TASKS_FLYWAY_HISTORY_TABLE WHERE SUCCESS = TRUE AND VERSION IN ('1', '2')",
+      ).use { statement ->
+        statement.executeQuery().use { result ->
+          assertThat(result.next()).isTrue()
+          assertThat(result.getInt(1)).isEqualTo(2)
+        }
+      }
+    }
   }
 }

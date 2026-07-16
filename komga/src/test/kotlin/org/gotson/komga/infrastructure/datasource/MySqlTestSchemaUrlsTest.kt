@@ -19,4 +19,12 @@ class MySqlTestSchemaUrlsTest {
     assertThat(first.main).doesNotContain("/komga?")
     assertThat(first.tasks).doesNotContain("/komga_tasks?")
   }
+
+  @Test
+  fun `identical database urls allocate one shared schema`() {
+    val schemas = MySqlTestSchemaUrls.allocate("jdbc:mysql://localhost/komga", "jdbc:mysql://localhost/komga")
+
+    assertThat(schemas.main).isEqualTo(schemas.tasks)
+    assertThat(schemas.main).contains("/komga_test_")
+  }
 }

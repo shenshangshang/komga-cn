@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
+internal const val TASKS_FLYWAY_HISTORY_TABLE = "flyway_tasks_schema_history"
+
 @Component
 class FlywaySecondaryMigrationInitializer(
   @Qualifier("tasksDataSourceRW")
@@ -16,6 +18,9 @@ class FlywaySecondaryMigrationInitializer(
     Flyway
       .configure()
       .locations("classpath:tasks/migration/mysql")
+      .table(TASKS_FLYWAY_HISTORY_TABLE)
+      .baselineOnMigrate(true)
+      .baselineVersion("0")
       .dataSource(tasksDataSource)
       .load()
       .apply {

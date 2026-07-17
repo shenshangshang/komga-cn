@@ -470,6 +470,7 @@
         :current-path="directoryListing.currentPath"
         :breadcrumbs="directoryListing.breadcrumbs"
         :directories="directoryListing.directories"
+        :show-cards="false"
         @navigate="navigateToDirectory"
       />
 
@@ -491,12 +492,27 @@
           :length="totalPages"
         />
 
-        <item-browser :items="books"
-                      :item-context="itemContext"
-                      :selected.sync="selectedBooks"
-                      :edit-function="isAdmin ? editSingleBook : undefined"
-        />
+      </template>
 
+      <item-browser
+        v-if="totalPages > 0 || directoryListing.directories.length > 0"
+        :items="books"
+        :item-context="itemContext"
+        :selected.sync="selectedBooks"
+        :edit-function="isAdmin ? editSingleBook : undefined"
+      >
+        <template v-slot:prepend="{itemWidth}">
+          <series-directory-card
+            v-for="directory in directoryListing.directories"
+            :key="`directory-${directory.path}`"
+            :directory="directory"
+            :width="itemWidth"
+            @navigate="navigateToDirectory"
+          />
+        </template>
+      </item-browser>
+
+      <template v-if="totalPages > 0">
         <v-pagination
           v-if="totalPages > 1"
           v-model="page"
@@ -519,6 +535,7 @@ import ItemBrowser from '@/components/ItemBrowser.vue'
 import ItemCard from '@/components/ItemCard.vue'
 import SeriesActionsMenu from '@/components/menus/SeriesActionsMenu.vue'
 import SeriesDirectoryBrowser from '@/components/SeriesDirectoryBrowser.vue'
+import SeriesDirectoryCard from '@/components/SeriesDirectoryCard.vue'
 import PageSizeSelect from '@/components/PageSizeSelect.vue'
 import {parseQuerySort} from '@/functions/query-params'
 import {seriesFileUrl, seriesThumbnailUrl} from '@/functions/urls'
@@ -612,6 +629,7 @@ export default Vue.extend({
     PageSizeSelect,
     SeriesActionsMenu,
     SeriesDirectoryBrowser,
+    SeriesDirectoryCard,
     ItemCard,
     EmptyState,
     MultiSelectBar,

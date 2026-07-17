@@ -18,6 +18,7 @@
                           :name="transitions ? 'flip-list' : null"
                           :class="flexClass"
         >
+          <slot name="prepend" :item-width="itemWidth"/>
           <v-item
             v-for="item in localItems"
             :key="item.id"
@@ -194,7 +195,7 @@ export default Vue.extend({
       return this.nowrap ? 'd-flex flex-nowrap' : 'd-flex flex-wrap'
     },
     hasItems(): boolean {
-      return this.items.length > 0
+      return this.items.length > 0 || !!this.$scopedSlots.prepend || !!this.$slots.prepend
     },
     itemWidth(): number {
       return this.fixedItemWidth ? this.fixedItemWidth : this.width

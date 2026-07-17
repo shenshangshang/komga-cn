@@ -29,12 +29,18 @@
       </template>
     </nav>
 
-    <div v-if="directories.length" class="series-directories__grid">
+    <div
+      v-if="directories.length"
+      ref="content"
+      v-resize="onResize"
+      class="series-directories__grid"
+    >
       <button
         v-for="directory in directories"
         :key="directory.path"
         type="button"
         class="series-directory-card"
+        :style="{width: `${cardWidth}px`}"
         :aria-label="$t('browse_series.open_directory', {name: directory.name})"
         @click="$emit('navigate', directory.path)"
       >
@@ -42,21 +48,19 @@
           <v-img
             v-if="directory.thumbnailBookId"
             :src="bookThumbnailUrl(directory.thumbnailBookId)"
-            aspect-ratio="1.6"
+            aspect-ratio="0.7071"
             class="series-directory-card__cover"
           >
             <template v-slot:placeholder>
-              <span class="series-directory-card__placeholder"><v-icon size="34">mdi-folder-image</v-icon></span>
+              <span class="series-directory-card__placeholder"/>
             </template>
           </v-img>
-          <span v-else class="series-directory-card__placeholder"><v-icon size="38">mdi-folder-outline</v-icon></span>
-          <span class="series-directory-card__folder"><v-icon size="24">mdi-folder</v-icon></span>
+          <span v-else class="series-directory-card__placeholder"/>
         </span>
         <span class="series-directory-card__body">
           <strong>{{ directory.name }}</strong>
           <span>{{ $tc('common.books_n', directory.descendantBooksCount, {count: directory.descendantBooksCount}) }}</span>
         </span>
-        <v-icon class="series-directory-card__arrow" size="22" aria-hidden="true">mdi-chevron-right</v-icon>
       </button>
     </div>
   </section>
@@ -66,9 +70,13 @@
 import Vue from 'vue'
 import {bookThumbnailUrl} from '@/functions/urls'
 import {SeriesDirectoryBreadcrumbDto, SeriesDirectoryDto} from '@/types/komga-directories'
+import {computeCardWidth} from '@/functions/grid-utilities'
 
 export default Vue.extend({
   name: 'SeriesDirectoryBrowser',
+  data: () => ({
+    cardWidth: 150,
+  }),
   props: {
     rootLabel: {
       type: String,
@@ -89,6 +97,10 @@ export default Vue.extend({
   },
   methods: {
     bookThumbnailUrl,
+    onResize() {
+      const content = this.$refs.content as HTMLElement | undefined
+      if (content) this.cardWidth = computeCardWidth(content.clientWidth, this.$vuetify.breakpoint.name.toString())
+    },
   },
 })
 </script>
@@ -143,43 +155,41 @@ export default Vue.extend({
 }
 
 .series-directories__grid {
-  display: grid;
-  gap: var(--k-space-3);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--k-space-2) clamp(0px, 1vw, var(--k-space-3));
 }
 
 .series-directory-card {
-  align-items: center;
   background: var(--k-surface-card);
-  border: 1px solid var(--k-border-soft);
+  border: 1px solid color-mix(in srgb, var(--k-primary) 14%, transparent);
   border-radius: var(--k-radius-card);
-  box-shadow: var(--k-shadow-card);
+  box-shadow: 0 14px 36px rgba(3, 10, 30, 0.2);
   color: var(--k-text-primary);
   cursor: pointer;
-  display: grid;
-  gap: var(--k-space-3);
-  grid-template-columns: 5rem minmax(0, 1fr) var(--k-target-min);
-  min-height: 6.25rem;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  margin: var(--k-space-2);
   overflow: hidden;
-  padding: var(--k-space-2);
+  padding: 0;
   text-align: start;
-  transition: border-color var(--k-motion-fast) var(--k-ease-standard), transform var(--k-motion-fast) var(--k-ease-standard);
-  width: 100%;
+  transition: border-color var(--k-motion-standard) var(--k-ease-standard), box-shadow var(--k-motion-standard) var(--k-ease-standard), transform var(--k-motion-standard) var(--k-ease-standard);
 }
 
 .series-directory-card:hover {
-  border-color: var(--k-primary);
-  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--k-primary) 38%, transparent);
+  box-shadow: 0 20px 52px rgba(3, 10, 30, 0.34), 0 0 24px color-mix(in srgb, var(--k-primary) 12%, transparent);
+  transform: translateY(-5px);
 }
 
 .series-directory-card__visual {
   background: var(--k-surface-muted);
-  border-radius: calc(var(--k-radius-card) - .25rem);
   display: block;
-  height: 5rem;
+  aspect-ratio: var(--k-cover-aspect-ratio);
   overflow: hidden;
   position: relative;
-  width: 5rem;
+  width: 100%;
 }
 
 .series-directory-card__cover,
@@ -189,36 +199,26 @@ export default Vue.extend({
 }
 
 .series-directory-card__placeholder {
-  align-items: center;
-  color: var(--k-primary);
-  display: flex;
-  justify-content: center;
-}
-
-.series-directory-card__folder {
-  align-items: center;
-  background: var(--k-surface-card);
-  border-radius: var(--k-radius-pill);
-  bottom: .25rem;
-  color: var(--k-primary);
-  display: flex;
-  height: 2rem;
-  justify-content: center;
-  position: absolute;
-  right: .25rem;
-  width: 2rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--k-primary) 18%, var(--k-surface-muted)), var(--k-surface-muted));
+  display: block;
 }
 
 .series-directory-card__body {
   display: grid;
   gap: var(--k-space-1);
   min-width: 0;
+  min-height: 5rem;
+  padding: var(--k-space-3) var(--k-space-2) var(--k-space-2);
 }
 
 .series-directory-card__body strong {
+  display: -webkit-box;
+  font-family: var(--k-font-display);
+  font-weight: 700;
+  line-height: 1.25;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .series-directory-card__body span {
@@ -226,21 +226,10 @@ export default Vue.extend({
   font-size: var(--k-font-size-meta);
 }
 
-.series-directory-card__arrow {
-  color: var(--k-text-secondary);
-  justify-self: center;
-}
-
 @media (max-width: 37.5rem) {
-  .series-directory-card {
-    grid-template-columns: 4rem minmax(0, 1fr) var(--k-target-min);
-    min-height: 5.25rem;
-  }
+  .series-directories__grid { padding-inline: 0; }
 
-  .series-directory-card__visual {
-    height: 4rem;
-    width: 4rem;
-  }
+  .series-directory-card { margin-inline: 6px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

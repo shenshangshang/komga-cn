@@ -19,6 +19,7 @@ import org.gotson.komga.domain.model.BookWithMedia
 import org.gotson.komga.domain.model.EntryNotFoundException
 import org.gotson.komga.domain.model.ImageConversionException
 import org.gotson.komga.domain.model.Media
+import org.gotson.komga.domain.model.MediaType as KomgaMediaType
 import org.gotson.komga.domain.model.MediaNotReadyException
 import org.gotson.komga.domain.model.MediaProfile
 import org.gotson.komga.domain.model.MediaProfile.DIVINA
@@ -63,6 +64,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.FileNotFoundException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import kotlin.io.path.name
 
@@ -78,6 +80,7 @@ class CommonBookController(
   private val bookDtoRepository: BookDtoRepository,
   private val seriesMetadataRepository: SeriesMetadataRepository,
   private val bookLifecycle: BookLifecycle,
+  private val directoryBookArchive: DirectoryBookArchive,
   private val bookAnalyzer: BookAnalyzer,
   private val contentRestrictionChecker: ContentRestrictionChecker,
   private val contentDetector: ContentDetector,
@@ -367,6 +370,25 @@ class CommonBookController(
       contentRestrictionChecker.checkContentRestriction(principal.user, book)
       try {
         val media = mediaRepository.findById(book.id)
+        if (media.mediaType == KomgaMediaType.DIRECTORY.type) {
+          if (!Files.isDirectory(book.path)) throw FileNotFoundException(book.path.toString())
+          val stream =
+            StreamingResponseBody { os: OutputStream ->
+              directoryBookArchive.write(book.path, os)
+            }
+          return@let ResponseEntity
+            .ok()
+            .headers(
+              HttpHeaders().apply {
+                contentDisposition =
+                  ContentDisposition
+                    .builder("attachment")
+                    .filename("${book.path.name}.cbz", StandardCharsets.UTF_8)
+                    .build()
+              },
+            ).contentType(getMediaTypeOrDefault(KomgaMediaType.DIRECTORY.exportType))
+            .body(stream)
+        }
         with(FileSystemResource(book.path)) {
           if (!exists()) throw FileNotFoundException(path)
           val stream =

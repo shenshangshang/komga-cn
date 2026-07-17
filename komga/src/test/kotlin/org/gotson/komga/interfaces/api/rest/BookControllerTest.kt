@@ -8,6 +8,7 @@ import org.gotson.komga.domain.model.Dimension
 import org.gotson.komga.domain.model.KomgaUser
 import org.gotson.komga.domain.model.MarkSelectedPreference
 import org.gotson.komga.domain.model.Media
+import org.gotson.komga.domain.model.MediaType as KomgaMediaType
 import org.gotson.komga.domain.model.ThumbnailBook
 import org.gotson.komga.domain.model.makeBook
 import org.gotson.komga.domain.model.makeLibrary
@@ -1477,6 +1478,29 @@ class BookControllerTest(
       ).andExpect(
         jsonPath("$.totalElements").value(2),
       )
+  }
+
+  @Test
+  @WithMockCustomUser
+  fun `given directory book when downloading file then returns a cbz attachment`() {
+    val directory = Files.createTempDirectory("download-directory-book")
+    Files.write(directory.resolve("001.jpg"), byteArrayOf(1, 2, 3))
+    makeSeries(name = "series", libraryId = library.id).let { series ->
+      seriesLifecycle.createSeries(series).let { created ->
+        seriesLifecycle.addBooks(created, listOf(makeBook("directory-book", libraryId = library.id, url = directory.toUri().toURL())))
+      }
+    }
+    val book = bookRepository.findAll().first()
+    mediaRepository.update(mediaRepository.findById(book.id).copy(status = Media.Status.READY, mediaType = KomgaMediaType.DIRECTORY.type))
+
+    mockMvc
+      .get("/api/v1/books/${book.id}/file")
+      .andExpect {
+        status { isOk() }
+        request { asyncStarted() }
+        header { string(HttpHeaders.CONTENT_DISPOSITION, containsString("directory-book.cbz")) }
+        content { contentType(KomgaMediaType.DIRECTORY.exportType) }
+      }
   }
 
   @Test

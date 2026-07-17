@@ -41,14 +41,18 @@ class LibraryScanScheduler(
         .scheduleFixedRateTask(
           FixedRateTask(
             {
-              logger.info { "Periodic scan for library: ${library.name}" }
-              taskEmitter.scanLibrary(library.id)
+              runPeriodicScan(library)
             },
             library.scanInterval.toDuration(),
             library.scanInterval.toDuration(),
           ),
         )?.let { registry[library.id] = it }
     }
+  }
+
+  internal fun runPeriodicScan(library: Library) {
+    logger.info { "Periodic deep scan and analysis for library: ${library.name}" }
+    taskEmitter.scanLibrary(library.id, scanDeep = true)
   }
 
   fun unscheduleScan(libraryId: String) {

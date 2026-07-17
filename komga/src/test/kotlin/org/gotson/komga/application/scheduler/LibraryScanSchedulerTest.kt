@@ -1,6 +1,7 @@
 package org.gotson.komga.application.scheduler
 
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.gotson.komga.application.tasks.TaskEmitter
 import org.gotson.komga.domain.model.Library
@@ -30,5 +31,17 @@ class LibraryScanSchedulerTest {
     } finally {
       taskScheduler.shutdown()
     }
+  }
+
+  @Test
+  fun `periodic scan is deep so nested changes are discovered and analyzed`() {
+    val taskScheduler = mockk<ThreadPoolTaskScheduler>(relaxed = true)
+    val taskEmitter = mockk<TaskEmitter>(relaxed = true)
+    val scheduler = LibraryScanScheduler(taskScheduler, taskEmitter)
+    val library = makeLibrary().copy(scanInterval = Library.ScanInterval.EVERY_15M)
+
+    scheduler.runPeriodicScan(library)
+
+    verify(exactly = 1) { taskEmitter.scanLibrary(library.id, scanDeep = true) }
   }
 }

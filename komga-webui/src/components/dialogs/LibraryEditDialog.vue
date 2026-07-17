@@ -89,6 +89,20 @@
                 <v-container fluid>
                   <v-row>
                     <v-col>
+                      <div class="mx-4 mb-2 text-subtitle-1 font-weight-medium">
+                        <v-icon left color="primary">mdi-calendar-sync</v-icon>
+                        {{ $t('dialog.edit_library.label_automation_schedule') }}
+                      </div>
+
+                      <v-select :items="scanInterval"
+                                v-model="form.scanInterval"
+                                :label="$t('dialog.edit_library.field_scan_interval')"
+                                :hint="$t('dialog.edit_library.hint_scan_interval')"
+                                persistent-hint
+                                flat
+                                class="mx-4 mb-2"
+                      />
+
                       <v-checkbox
                         v-model="form.emptyTrashAfterScan"
                         :label="$t('dialog.edit_library.field_scanner_empty_trash_after_scan')"
@@ -118,14 +132,6 @@
                         :label="$t('dialog.edit_library.field_scanner_scan_startup')"
                         hide-details
                         class="mx-4"
-                      />
-
-                      <v-select :items="scanInterval"
-                                v-model="form.scanInterval"
-                                :label="$t('dialog.edit_library.field_scan_interval')"
-                                flat
-                                hide-details
-                                class="mx-4 mt-3"
                       />
 
                       <v-select

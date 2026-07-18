@@ -7,6 +7,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
 import org.apache.commons.io.IOUtils
 import org.gotson.komga.domain.model.Book
 import org.springframework.stereotype.Component
+import java.io.FilterOutputStream
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -48,13 +49,10 @@ class SeriesBookArchive(
   ) {
     val entryName = archiveEntryName(book, baseDirectoryPath, "${book.path.name}.cbz")
     logger.debug { "Adding directory book to series archive: ${book.path} as $entryName" }
-    val temporaryBook = Files.createTempFile("komga-series-download-", ".cbz")
-    try {
-      Files.newOutputStream(temporaryBook).use { directoryBookArchive.write(book.path, it) }
-      addFile(zipStream, temporaryBook, entryName)
-    } finally {
-      Files.deleteIfExists(temporaryBook)
-    }
+    zipStream.putArchiveEntry(ZipArchiveEntry(entryName))
+    zipStream.flush()
+    directoryBookArchive.write(book.path, NonClosingOutputStream(zipStream))
+    zipStream.closeArchiveEntry()
   }
 
   private fun addRegularBook(
@@ -74,6 +72,7 @@ class SeriesBookArchive(
   ) {
     Files.newInputStream(path).use {
       zipStream.putArchiveEntry(ZipArchiveEntry(entryName).apply { size = Files.size(path) })
+      zipStream.flush()
       IOUtils.copyLarge(it, zipStream, ByteArray(DEFAULT_BUFFER_SIZE))
       zipStream.closeArchiveEntry()
     }
@@ -92,4 +91,10 @@ class SeriesBookArchive(
       }
     return listOf(relativeDirectory, fileName).filter { it.isNotEmpty() }.joinToString("/")
   }
+}
+
+private class NonClosingOutputStream(
+  output: OutputStream,
+) : FilterOutputStream(output) {
+  override fun close() = flush()
 }

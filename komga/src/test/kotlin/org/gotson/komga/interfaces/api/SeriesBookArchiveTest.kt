@@ -1,14 +1,40 @@
 package org.gotson.komga.interfaces.api
 
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.gotson.komga.domain.model.makeBook
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
+import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 class SeriesBookArchiveTest {
+  @Test
+  fun `directory book starts the outer archive before generating its cbz`() {
+    val root = Files.createTempDirectory("series-book-streaming")
+    val directoryBook = Files.createDirectories(root.resolve("01"))
+    val book = makeBook("01", url = directoryBook.toUri().toURL())
+    val output = ByteArrayOutputStream()
+    val directoryBookArchive = mockk<DirectoryBookArchive>()
+    every { directoryBookArchive.write(directoryBook, any()) } answers {
+      assertThat(output.size()).isGreaterThan(0)
+      ZipOutputStream(secondArg()).use { innerZip ->
+        innerZip.putNextEntry(ZipEntry("001.jpg"))
+        innerZip.write(byteArrayOf(1, 2, 3))
+        innerZip.closeEntry()
+      }
+    }
+
+    SeriesBookArchive(directoryBookArchive).write(listOf(book), "", output)
+
+    val innerArchive = readZip(readZip(output.toByteArray()).getValue("01.cbz"))
+    assertThat(innerArchive["001.jpg"]).containsExactly(1, 2, 3)
+  }
+
   @Test
   fun `series archive preserves directories and converts directory books to cbz`() {
     val root = Files.createTempDirectory("series-book-archive")

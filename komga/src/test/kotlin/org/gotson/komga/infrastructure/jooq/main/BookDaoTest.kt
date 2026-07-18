@@ -78,6 +78,19 @@ class BookDaoTest(
   }
 
   @Test
+  fun `given book URLs differ only by case when inserting then both are persisted and found exactly`() {
+    val lower = makeBook("lower", url = URL("file:/library/book"), libraryId = library.id, seriesId = series.id)
+    val upper = makeBook("upper", url = URL("file:/library/Book"), libraryId = library.id, seriesId = series.id)
+
+    bookDao.insert(lower)
+    bookDao.insert(upper)
+
+    assertThat(bookDao.findAll()).hasSize(2)
+    assertThat(bookDao.findNotDeletedByLibraryIdAndUrlOrNull(library.id, lower.url)?.id).isEqualTo(lower.id)
+    assertThat(bookDao.findNotDeletedByLibraryIdAndUrlOrNull(library.id, upper.url)?.id).isEqualTo(upper.id)
+  }
+
+  @Test
   fun `given existing book when updating then it is persisted`() {
     val book =
       Book(

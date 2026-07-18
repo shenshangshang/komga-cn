@@ -259,13 +259,17 @@ class SeriesControllerTest(
 
   @Nested
   inner class ContentRestrictedUser {
+    private var bookPathSequence = 0
+
+    private fun makeRestrictedBook() = makeBook("restricted-${bookPathSequence++}", libraryId = library.id)
+
     @Test
     @WithMockCustomUser(allowAgeUnder = 10)
     fun `given user only allowed content with specific age rating when getting series then only gets series that satisfies this criteria`() {
       val series10 =
         makeSeries(name = "series_10", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -276,7 +280,7 @@ class SeriesControllerTest(
       val series5 =
         makeSeries(name = "series_5", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -287,7 +291,7 @@ class SeriesControllerTest(
       val series15 =
         makeSeries(name = "series_15", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -298,7 +302,7 @@ class SeriesControllerTest(
       val series =
         makeSeries(name = "series_no", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
         }
@@ -324,7 +328,7 @@ class SeriesControllerTest(
       val series10 =
         makeSeries(name = "series_10", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -335,7 +339,7 @@ class SeriesControllerTest(
       val series18 =
         makeSeries(name = "series_18", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -346,7 +350,7 @@ class SeriesControllerTest(
       val series16 =
         makeSeries(name = "series_16", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -357,7 +361,7 @@ class SeriesControllerTest(
       val series =
         makeSeries(name = "series_no", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
         }
@@ -383,7 +387,7 @@ class SeriesControllerTest(
       val seriesKids =
         makeSeries(name = "series_kids", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -394,7 +398,7 @@ class SeriesControllerTest(
       val seriesCute =
         makeSeries(name = "series_cute", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -405,7 +409,7 @@ class SeriesControllerTest(
       val seriesAdult =
         makeSeries(name = "series_adult", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -416,7 +420,7 @@ class SeriesControllerTest(
       val series =
         makeSeries(name = "series_no", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
         }
@@ -442,7 +446,7 @@ class SeriesControllerTest(
       val seriesKids =
         makeSeries(name = "series_kids", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -453,7 +457,7 @@ class SeriesControllerTest(
       val seriesCute =
         makeSeries(name = "series_cute", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -464,7 +468,7 @@ class SeriesControllerTest(
       val seriesAdult =
         makeSeries(name = "series_adult", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -475,7 +479,7 @@ class SeriesControllerTest(
       val series =
         makeSeries(name = "series_no", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
         }
@@ -501,7 +505,7 @@ class SeriesControllerTest(
       val seriesKids =
         makeSeries(name = "series_kids", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -512,7 +516,7 @@ class SeriesControllerTest(
       val seriesCute =
         makeSeries(name = "series_cute", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -523,7 +527,7 @@ class SeriesControllerTest(
       val seriesAdult =
         makeSeries(name = "series_adult", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {
@@ -534,7 +538,7 @@ class SeriesControllerTest(
       val series =
         makeSeries(name = "series_no", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
         }
@@ -560,7 +564,7 @@ class SeriesControllerTest(
       val seriesTeen16 =
         makeSeries(name = "series_teen_16", libraryId = library.id).also { series ->
           seriesLifecycle.createSeries(series).also { created ->
-            val books = listOf(makeBook("1", libraryId = library.id))
+            val books = listOf(makeRestrictedBook())
             seriesLifecycle.addBooks(created, books)
           }
           seriesMetadataRepository.findById(series.id).let {

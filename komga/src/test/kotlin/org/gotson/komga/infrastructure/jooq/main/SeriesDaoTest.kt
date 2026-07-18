@@ -62,6 +62,25 @@ class SeriesDaoTest(
   }
 
   @Test
+  fun `given series URLs differ only by case when inserting then both are persisted and found exactly`() {
+    val lower =
+      Series(
+        name = "lower",
+        url = URL("file:/library/series"),
+        fileLastModified = LocalDateTime.now(),
+        libraryId = library.id,
+      )
+    val upper = lower.copy(id = "case-sensitive-series", name = "upper", url = URL("file:/library/Series"))
+
+    seriesDao.insert(lower)
+    seriesDao.insert(upper)
+
+    assertThat(seriesDao.findAll()).hasSize(2)
+    assertThat(seriesDao.findNotDeletedByLibraryIdAndUrlOrNull(library.id, lower.url)?.id).isEqualTo(lower.id)
+    assertThat(seriesDao.findNotDeletedByLibraryIdAndUrlOrNull(library.id, upper.url)?.id).isEqualTo(upper.id)
+  }
+
+  @Test
   fun `given a series when updating then it is persisted`() {
     val now = LocalDateTime.now()
     val series =

@@ -57,6 +57,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    directoryPath: {
+      type: String,
+      default: '',
+    },
   },
   watch: {
     menuState(val) {
@@ -80,7 +84,7 @@ export default Vue.extend({
       return this.$store.getters.meFileDownload && !this.unavailable
     },
     fileUrl(): string {
-      return seriesFileUrl(this.series.id)
+      return seriesFileUrl(this.series.id, this.directoryPath)
     },
   },
   methods: {

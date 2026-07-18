@@ -9,10 +9,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
-import org.apache.commons.compress.archivers.zip.Zip64Mode
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
-import org.apache.commons.io.IOUtils
 import org.gotson.komga.application.tasks.HIGHEST_PRIORITY
 import org.gotson.komga.application.tasks.HIGH_PRIORITY
 import org.gotson.komga.application.tasks.TaskEmitter
@@ -55,16 +51,17 @@ import org.gotson.komga.infrastructure.web.Authors
 import org.gotson.komga.infrastructure.web.DelimitedPair
 import org.gotson.komga.infrastructure.web.getMediaTypeOrDefault
 import org.gotson.komga.interfaces.api.ContentRestrictionChecker
+import org.gotson.komga.interfaces.api.SeriesBookArchive
 import org.gotson.komga.interfaces.api.persistence.BookDtoRepository
 import org.gotson.komga.interfaces.api.persistence.ReadProgressDtoRepository
 import org.gotson.komga.interfaces.api.persistence.SeriesDtoRepository
 import org.gotson.komga.interfaces.api.rest.dto.BookDto
 import org.gotson.komga.interfaces.api.rest.dto.CollectionDto
 import org.gotson.komga.interfaces.api.rest.dto.GroupCountDto
-import org.gotson.komga.interfaces.api.rest.dto.SeriesDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryBreadcrumbDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesDirectoryListingDto
+import org.gotson.komga.interfaces.api.rest.dto.SeriesDto
 import org.gotson.komga.interfaces.api.rest.dto.SeriesMetadataUpdateDto
 import org.gotson.komga.interfaces.api.rest.dto.TachiyomiReadProgressUpdateV2Dto
 import org.gotson.komga.interfaces.api.rest.dto.TachiyomiReadProgressV2Dto
@@ -101,9 +98,9 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.OutputStream
 import java.net.URI
 import java.nio.charset.StandardCharsets.UTF_8
+import java.nio.file.Files
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.util.zip.Deflater
 
 private val logger = KotlinLogging.logger {}
 
@@ -126,6 +123,7 @@ class SeriesController(
   private val imageAnalyzer: ImageAnalyzer,
   private val thumbnailsSeriesRepository: ThumbnailSeriesRepository,
   private val contentRestrictionChecker: ContentRestrictionChecker,
+  private val seriesBookArchive: SeriesBookArchive,
 ) {
   @Operation(summary = "List series", description = "Use POST /api/v1/series/list instead. Deprecated since 1.19.0.", tags = [OpenApiConfiguration.TagNames.SERIES, OpenApiConfiguration.TagNames.DEPRECATED])
   @Deprecated("use /v1/series/list instead")
@@ -888,14 +886,29 @@ class SeriesController(
   fun downloadSeriesAsZip(
     @AuthenticationPrincipal principal: KomgaPrincipal,
     @PathVariable seriesId: String,
+    @RequestParam(required = false, defaultValue = "") directoryPath: String,
   ): ResponseEntity<StreamingResponseBody> {
     principal.user.checkContentRestriction(seriesId)
 
-    val books = bookRepository.findAllBySeriesId(seriesId)
+    val normalizedDirectoryPath =
+      try {
+        normalizeSeriesDirectoryPath(directoryPath)
+      } catch (e: IllegalArgumentException) {
+        throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+      }
+    val books =
+      bookRepository
+        .findAllBySeriesId(seriesId)
+        .filter { it.deletedDate == null }
+        .filter {
+          normalizedDirectoryPath.isEmpty() ||
+            it.directoryPath == normalizedDirectoryPath ||
+            it.directoryPath.startsWith("$normalizedDirectoryPath/")
+        }
     val firstBook = books.firstOrNull() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
     val responseEntity =
-      if (firstBook.oneshot) {
+      if (firstBook.oneshot && books.size == 1 && normalizedDirectoryPath.isEmpty() && Files.isRegularFile(firstBook.path)) {
         val file = FileSystemResource(firstBook.path)
         if (!file.exists()) {
           logger.warn { "Book file not found, returning empty response: ${firstBook.path}" }
@@ -908,51 +921,41 @@ class SeriesController(
             file.inputStream.transferTo(responseStream)
           }
 
-        ResponseEntity.ok()
+        ResponseEntity
+          .ok()
           .headers(
             HttpHeaders().apply {
               contentDisposition =
-                ContentDisposition.builder("attachment")
+                ContentDisposition
+                  .builder("attachment")
                   .filename(file.filename, UTF_8)
                   .build()
             },
-          )
-          .contentType(getMediaTypeOrDefault(media.mediaType))
+          ).contentType(getMediaTypeOrDefault(media.mediaType))
           .body(streamingResponse)
       } else {
         val streamingResponse =
           StreamingResponseBody { responseStream: OutputStream ->
-            ZipArchiveOutputStream(responseStream).use { zipStream ->
-              zipStream.setMethod(ZipArchiveOutputStream.DEFLATED)
-              zipStream.setLevel(Deflater.NO_COMPRESSION)
-              zipStream.setUseZip64(Zip64Mode.Always)
-              books.forEach { book ->
-                val file = FileSystemResource(book.path)
-                if (!file.exists()) {
-                  logger.warn { "Book file not found, skipping archive entry: ${file.path}" }
-                  return@forEach
-                }
-
-                logger.debug { "Adding file to zip archive: ${file.path}" }
-                file.inputStream.use {
-                  zipStream.putArchiveEntry(ZipArchiveEntry(file.filename))
-                  IOUtils.copyLarge(it, zipStream, ByteArray(8192))
-                  zipStream.closeArchiveEntry()
-                }
-              }
-            }
+            seriesBookArchive.write(books, normalizedDirectoryPath, responseStream)
           }
 
-        ResponseEntity.ok()
+        ResponseEntity
+          .ok()
           .headers(
             HttpHeaders().apply {
               contentDisposition =
-                ContentDisposition.builder("attachment")
-                  .filename(seriesMetadataRepository.findById(seriesId).title + ".zip", UTF_8)
-                  .build()
+                ContentDisposition
+                  .builder("attachment")
+                  .filename(
+                    if (normalizedDirectoryPath.isEmpty()) {
+                      seriesMetadataRepository.findById(seriesId).title + ".zip"
+                    } else {
+                      normalizedDirectoryPath.substringAfterLast('/') + ".zip"
+                    },
+                    UTF_8,
+                  ).build()
             },
-          )
-          .contentType(MediaType.parseMediaType(ZIP.type))
+          ).contentType(MediaType.parseMediaType(ZIP.type))
           .body(streamingResponse)
       }
 

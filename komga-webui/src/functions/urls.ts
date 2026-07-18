@@ -45,8 +45,11 @@ export function bookManifestUrl(bookId: string): string {
 export function bookPositionsUrl(bookId: string): string {
   return `${urls.originNoSlash}/api/v1/books/${bookId}/positions`
 }
-export function seriesFileUrl(seriesId: string): string {
-  return `${urls.originNoSlash}/api/v1/series/${seriesId}/file`
+export function seriesFileUrl(seriesId: string, directoryPath = ''): string {
+  const url = `${urls.originNoSlash}/api/v1/series/${seriesId}/file`
+  return directoryPath
+    ? `${url}?directoryPath=${encodeURIComponent(directoryPath)}`
+    : url
 }
 
 export function seriesThumbnailUrl(seriesId: string): string {

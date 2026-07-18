@@ -19,6 +19,7 @@
 
       <series-actions-menu v-if="series"
                            :series="series"
+                           :directory-path="currentDirectoryPath"
       />
       <v-toolbar-title>
         <span v-if="$_.get(series, 'metadata.title')">{{ series.metadata.title }}</span>
@@ -788,7 +789,7 @@ export default Vue.extend({
       return this.$store.getters.meFileDownload && !this.unavailable
     },
     fileUrl(): string {
-      return seriesFileUrl(this.seriesId)
+      return seriesFileUrl(this.seriesId, this.currentDirectoryPath)
     },
     thumbnailUrl(): string {
       return seriesThumbnailUrl(this.seriesId)

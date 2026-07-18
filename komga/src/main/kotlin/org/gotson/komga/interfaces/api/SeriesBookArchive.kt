@@ -96,5 +96,11 @@ class SeriesBookArchive(
 private class NonClosingOutputStream(
   output: OutputStream,
 ) : FilterOutputStream(output) {
+  override fun write(
+    bytes: ByteArray,
+    offset: Int,
+    length: Int,
+  ) = out.write(bytes, offset, length)
+
   override fun close() = flush()
 }

@@ -41,7 +41,10 @@ class DataSourcesConfiguration(
         driverClassName = "com.mysql.cj.jdbc.Driver"
         this.poolName = poolName
         this.maximumPoolSize = poolSize
-        this.maxLifetime = 240000
+        this.minimumIdle = poolSize.coerceAtMost(2)
+        // Avoid synchronized four-minute pool recycling and keep idle links healthy.
+        this.maxLifetime = 30 * 60 * 1000L
+        this.keepaliveTime = 2 * 60 * 1000L
         this.leakDetectionThreshold = 60000
       },
     )

@@ -41,6 +41,8 @@ class DataSourcesConfiguration(
         driverClassName = "com.mysql.cj.jdbc.Driver"
         this.poolName = poolName
         this.maximumPoolSize = poolSize
+        this.maxLifetime = 240000
+        this.leakDetectionThreshold = 60000
       },
     )
   }

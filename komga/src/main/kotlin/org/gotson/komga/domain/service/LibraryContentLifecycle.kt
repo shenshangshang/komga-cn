@@ -37,9 +37,13 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
 import java.nio.file.Paths
 import java.time.LocalDateTime
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.time.measureTime
 
 private val logger = KotlinLogging.logger {}
+
+private val libraryScanLocks = ConcurrentHashMap<String, ReentrantLock>()
 
 @Service
 class LibraryContentLifecycle(
@@ -67,6 +71,19 @@ class LibraryContentLifecycle(
   private val thumbnailSeriesRepository: ThumbnailSeriesRepository,
 ) {
   fun scanRootFolder(
+    library: Library,
+    scanDeep: Boolean = false,
+  ) {
+    val lock = libraryScanLocks.computeIfAbsent(library.id) { ReentrantLock() }
+    lock.lock()
+    try {
+      _scanRootFolder(library, scanDeep)
+    } finally {
+      lock.unlock()
+    }
+  }
+
+  private fun _scanRootFolder(
     library: Library,
     scanDeep: Boolean = false,
   ) {

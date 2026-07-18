@@ -150,8 +150,9 @@ class SeriesLifecycle(
   }
 
   fun createSeries(series: Series): Series {
-    transactionTemplate.executeWithoutResult {
-      seriesRepository.insert(series)
+    try {
+      transactionTemplate.executeWithoutResult {
+        seriesRepository.insert(series)
 
       val titleSort = if (series.name.matches(Regex("^\\w"))) series.name else HanLP.convertToPinyinString(series.name, "", false)
 
@@ -163,9 +164,13 @@ class SeriesLifecycle(
         ),
       )
 
-      bookMetadataAggregationRepository.insert(
-        BookMetadataAggregation(seriesId = series.id),
-      )
+        bookMetadataAggregationRepository.insert(
+          BookMetadataAggregation(seriesId = series.id),
+        )
+      }
+    } catch (e: org.springframework.dao.DuplicateKeyException) {
+      logger.warn { "Series already exists (concurrent insert), fetching existing: ${series.url}" }
+      return seriesRepository.findNotDeletedByLibraryIdAndUrlOrNull(series.libraryId, series.url) ?: throw e
     }
 
     eventPublisher.publishEvent(DomainEvent.SeriesAdded(series))

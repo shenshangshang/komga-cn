@@ -9,8 +9,7 @@ import java.util.Comparator
  * Supports internationalization and natural ordering of numbers.
  */
 object NaturalSortComparator : Comparator<String> {
-
-  private val collator: RuleBasedCollator by lazy {
+  private val collator = ThreadLocal.withInitial {
     val baseCollator = Collator.getInstance() as RuleBasedCollator
     baseCollator.apply {
       strength = Collator.SECONDARY // Case insensitive (ignores case but considers accents)
@@ -23,6 +22,6 @@ object NaturalSortComparator : Comparator<String> {
     if (o1 == null && o2 == null) return 0
     if (o1 == null) return -1
     if (o2 == null) return 1
-    return collator.compare(o1, o2)
+    return collator.get().compare(o1, o2)
   }
 }

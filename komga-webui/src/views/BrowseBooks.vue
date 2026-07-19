@@ -590,7 +590,7 @@ export default Vue.extend({
       if (this.books.some(b => b.id === event.seriesId)) this.reloadPage()
     },
     async loadLibrary(libraryId: string) {
-      if (this.library != undefined) document.title = `Komga - ${this.library.name}`
+      if (this.library != undefined) document.title = `神殇漫画 - ${this.library.name}`
 
       await this.loadPage(libraryId, this.page, this.sortActive)
     },

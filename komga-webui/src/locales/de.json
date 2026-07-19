@@ -68,7 +68,7 @@
     "button_select_series": "Serie auswählen",
     "field_import_path": "Aus Ordner importieren",
     "info_part1": "Diese Option ermöglicht das Importieren von Dateien welche ausserhalb der bestehende Bibliothek existieren.Es können nur Dateien in eine vorhandene Serie importiert werden. Beim Einlesen wird die Datei entweder in das bestehende Verzeichnis kopiert oder verschoben.",
-    "info_part2": "Sollte ein Buch mit einer Nummer versehen werden, die in Komga schon existiert, dann bekommen Sie die Möglichkeit die Bücher zu vergleichen. Sollten Sie sich entscheiden das Buch dennoch zu importieren, wird Komga das bestehende Buch durch das neue ersetzen.",
+    "info_part2": "Sollte ein Buch mit einer Nummer versehen werden, die in 神殇漫画 schon existiert, dann bekommen Sie die Möglichkeit die Bücher zu vergleichen. Sollten Sie sich entscheiden das Buch dennoch zu importieren, wird 神殇漫画 das bestehende Buch durch das neue ersetzen.",
     "no_files_found": "Keine Dateien gefunden",
     "notification": {
       "go_to_book": "Zum Buch",
@@ -299,7 +299,7 @@
     "book_series": "Serie: {name}",
     "button_import": "Importieren",
     "button_match": "Übereinstimmung",
-    "comicrack_preambule_html": "Es ist möglich ComicRack Leselisten im Format <code>.cbl</code> zu übernehmen.<br>Komga versucht die übernommenen Serien und Buchnummern mit den Serien und Büchern in der Bibliothek abzugleichen.",
+    "comicrack_preambule_html": "Es ist möglich ComicRack Leselisten im Format <code>.cbl</code> zu übernehmen.<br>神殇漫画 versucht die übernommenen Serien und Buchnummern mit den Serien und Büchern in der Bibliothek abzugleichen.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} Bücher haben keine Übereinstimmung",
       "body2": "{duplicates} / {total} Bücher sind doppelt",
@@ -363,7 +363,7 @@
       "button_confirm": "Löschen",
       "confirm_delete": "Ich akzeptiere, dass der API Schlüssel \"{name}\" gelöscht wird",
       "dialog_title": "Lösche API Schlüssel",
-      "warning_html": "Alle Applikationen oder Skripte, welche den API Schlüssel nutzen, werden nicht mehr in der Lage sein mit diesem Schlüssel die Komga API aufzurufen. Dieser Schritt ist nicht mehr rückgängig zu machen."
+      "warning_html": "Alle Applikationen oder Skripte, welche den API Schlüssel nutzen, werden nicht mehr in der Lage sein mit diesem Schlüssel die 神殇漫画 API aufzurufen. Dieser Schritt ist nicht mehr rückgängig zu machen."
     },
     "delete_book": {
       "button_confirm": "Löschen",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Herunterfahren",
-      "confirmation_message": "Sind Sie sicher das Sie Komga beenden wollen?",
+      "confirmation_message": "Sind Sie sicher das Sie 神殇漫画 beenden wollen?",
       "dialog_title": "Server herunterfahren"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Benutzerkonto erstellen",
     "login": "Anmelden",
-    "unclaimed_html": "Dieser Komga-Server ist noch nicht bereit. Sie müssen zuerst einen Benutzerkonto anlegen, um sich anmelden zu können.<br><br>Hinterlegen Sie eine <strong>E-Mail-Adresse</strong> und vergeben Sie ein <strong>Passwort</strong>. Klicken Sie dann auf <strong>Benutzerkonto erstellen</strong>."
+    "unclaimed_html": "Dieser 神殇漫画-Server ist noch nicht bereit. Sie müssen zuerst einen Benutzerkonto anlegen, um sich anmelden zu können.<br><br>Hinterlegen Sie eine <strong>E-Mail-Adresse</strong> und vergeben Sie ein <strong>Passwort</strong>. Klicken Sie dann auf <strong>Benutzerkonto erstellen</strong>."
   },
   "media_analysis": {
     "comment": "Kommentar",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Aktuallisierung ist verfügbar",
-    "latest_installed": "Die neueste Version von Komga ist schon installiert"
+    "latest_installed": "Die neueste Version von 神殇漫画 ist schon installiert"
   },
   "user_roles": {
     "ADMIN": "Systemverwalter",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Bibliothek hinzufügen",
     "no_libraries_yet": "Es wurden bisher noch keine Bibliothken hinzugefügt!",
-    "welcome_message": "Willkommen zu Komga"
+    "welcome_message": "Willkommen zu 神殇漫画"
   }
 }

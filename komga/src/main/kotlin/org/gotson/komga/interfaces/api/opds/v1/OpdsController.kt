@@ -116,7 +116,7 @@ class OpdsController(
   @Qualifier("pdfImageType")
   private val pdfImageType: ImageType,
 ) {
-  private val komgaAuthor = OpdsAuthor("Komga", URI("https://github.com/gotson/komga"))
+  private val komgaAuthor = OpdsAuthor("神殇漫画", URI("https://github.com/gotson/komga"))
 
   private val decimalFormat = DecimalFormat("0.#")
 
@@ -151,7 +151,7 @@ class OpdsController(
   fun getCatalog(): OpdsFeed =
     OpdsFeedNavigation(
       id = "root",
-      title = "Komga OPDS catalog",
+      title = "神殇漫画 OPDS 目录",
       updated = ZonedDateTime.now(),
       author = komgaAuthor,
       links =

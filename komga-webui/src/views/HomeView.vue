@@ -24,9 +24,9 @@
         v-if="!isMobile"
         :to="{name: 'home'}"
         class="app-shell__wordmark link-none"
-        aria-label="Komga"
+        aria-label="神殇漫画"
       >
-        Komga
+        神殇漫画
       </router-link>
 
       <search-box class="app-shell__search flex-fill"/>
@@ -50,7 +50,7 @@
       <v-list-item
         inactive
         class="app-shell__brand pb-2"
-        aria-label="Komga"
+        aria-label="神殇漫画"
         @click="$router.push({name: 'home'})"
       >
         <v-list-item-avatar>
@@ -59,7 +59,7 @@
 
         <v-list-item-content>
           <v-list-item-title class="app-shell__brand-title">
-            KOMGA
+            神殇漫画
           </v-list-item-title>
           <v-list-item-subtitle class="app-shell__brand-subtitle">个人漫画书库</v-list-item-subtitle>
         </v-list-item-content>

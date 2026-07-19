@@ -218,7 +218,7 @@ export default Vue.extend({
       }
     },
     async loadLibrary(libraryId: string) {
-      if (this.library != undefined) document.title = `Komga - ${this.library.name}`
+      if (this.library != undefined) document.title = `神殇漫画 - ${this.library.name}`
       await this.loadPage(libraryId, this.page)
 
       if (this.totalElements === 0) {

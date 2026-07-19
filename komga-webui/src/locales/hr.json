@@ -67,8 +67,8 @@
     "button_scan": "Pretraži",
     "button_select_series": "Odaberi seriju",
     "field_import_path": "Uvezi iz mape",
-    "info_part1": "Ovaj ekran omogućuje uvoz datoteka koje se ne nalaze u tvojim postojećim bibliotekama. Datoteke možeš uvesti samo u postojeću seriju. U tom slučaju će Komga premjestiti ili kopirati datoteke u mapu odabrane serije.",
-    "info_part2": "Ako odabereš broj za knjigu, a knjiga s tim brojem već postoji, tada ćeš moći usporediti te dvije knjige. Ako odlučiš uvesti knjigu, Komga će nadograditi postojeću knjigu s novomknjigom i zamijeniti staru datoteku s novom datotekom.",
+    "info_part1": "Ovaj ekran omogućuje uvoz datoteka koje se ne nalaze u tvojim postojećim bibliotekama. Datoteke možeš uvesti samo u postojeću seriju. U tom slučaju će 神殇漫画 premjestiti ili kopirati datoteke u mapu odabrane serije.",
+    "info_part2": "Ako odabereš broj za knjigu, a knjiga s tim brojem već postoji, tada ćeš moći usporediti te dvije knjige. Ako odlučiš uvesti knjigu, 神殇漫画 će nadograditi postojeću knjigu s novomknjigom i zamijeniti staru datoteku s novom datotekom.",
     "no_files_found": "Nije pronađena nijedna datoteka",
     "notification": {
       "go_to_book": "Idi na knjigu",
@@ -299,7 +299,7 @@
     "book_series": "Serija: {name}",
     "button_import": "Uvezi",
     "button_match": "Usporedi",
-    "comicrack_preambule_html": "Postojeće ComicRack liste čitanja možeš uvesti u <code>.cbl</code> formatu.<br>Komga će pokušati uskladiti danu seriju i broj knjige sa serijama i knjigama u tvojim bibliotekema.",
+    "comicrack_preambule_html": "Postojeće ComicRack liste čitanja možeš uvesti u <code>.cbl</code> formatu.<br>神殇漫画 će pokušati uskladiti danu seriju i broj knjige sa serijama i knjigama u tvojim bibliotekema.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} knjiga se ne podudaraju",
       "body2": "{duplicates} / {total} knjiga je duplicirano",
@@ -363,7 +363,7 @@
       "button_confirm": "Izbriši",
       "confirm_delete": "Razumijem, izbriši API ključ „{name}”",
       "dialog_title": "Izbriši API ključ",
-      "warning_html": "Sve aplikacije ili skripta koje koriste ovaj API ključ više neće moći pristupiti Komga API-ju. Ovo je nepovratna radnja."
+      "warning_html": "Sve aplikacije ili skripta koje koriste ovaj API ključ više neće moći pristupiti 神殇漫画 API-ju. Ovo je nepovratna radnja."
     },
     "delete_book": {
       "button_confirm": "Izbriši",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Prekini",
-      "confirmation_message": "Stvarno želiš prekinuti Komga?",
+      "confirmation_message": "Stvarno želiš prekinuti 神殇漫画?",
       "dialog_title": "Isključi server"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Stvori korisnički račun",
     "login": "Prijavi se",
-    "unclaimed_html": "Ovaj Komga server još nije aktivan. Za pristup serveru moraš stvoriti korisnički račun.<br><br>Odaberi <strong>e-mail adresu</strong> i <strong>lozinku</strong> i pritisni na <strong>Stvori korisnički račun</strong>."
+    "unclaimed_html": "Ovaj 神殇漫画 server još nije aktivan. Za pristup serveru moraš stvoriti korisnički račun.<br><br>Odaberi <strong>e-mail adresu</strong> i <strong>lozinku</strong> i pritisni na <strong>Stvori korisnički račun</strong>."
   },
   "media_analysis": {
     "comment": "Komentar",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Postoje nove verzije",
-    "latest_installed": "Najnovija Komga verzija je već instalirana"
+    "latest_installed": "Najnovija 神殇漫画 verzija je već instalirana"
   },
   "user_roles": {
     "ADMIN": "Administrator",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Dodaj biblioteku",
     "no_libraries_yet": "Još nije dodana nijedna biblioteka!",
-    "welcome_message": "Dobro došao, dobro došla u Komga"
+    "welcome_message": "Dobro došao, dobro došla u 神殇漫画"
   }
 }

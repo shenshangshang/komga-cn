@@ -53,8 +53,8 @@
     "button_scan": "Quét",
     "button_select_series": "Chọn sê-ri",
     "field_import_path": "Nhập từ thư mục",
-    "info_part1": "Màn hình này cho phép bạn nhập các tệp nằm ngoài các thư viện hiện có của bạn. Bạn chỉ có thể nhập tệp vào Sê-ri hiện có, trong trường hợp đó, Komga sẽ di chuyển hoặc sao chép tệp vào thư mục của Sê-ri đã chọn.",
-    "info_part2": "Nếu bạn chọn một số cho một cuốn sách và một cuốn sách đã tồn tại với con số đó, thì bạn sẽ có thể so sánh 2 cuốn sách. Nếu bạn quyết định nhập cuốn sách, Komga sẽ nâng cấp cuốn sách hiện có với cuốn sách mới, thay thế hiệu quả tệp cũ bằng tệp mới.",
+    "info_part1": "Màn hình này cho phép bạn nhập các tệp nằm ngoài các thư viện hiện có của bạn. Bạn chỉ có thể nhập tệp vào Sê-ri hiện có, trong trường hợp đó, 神殇漫画 sẽ di chuyển hoặc sao chép tệp vào thư mục của Sê-ri đã chọn.",
+    "info_part2": "Nếu bạn chọn một số cho một cuốn sách và một cuốn sách đã tồn tại với con số đó, thì bạn sẽ có thể so sánh 2 cuốn sách. Nếu bạn quyết định nhập cuốn sách, 神殇漫画 sẽ nâng cấp cuốn sách hiện có với cuốn sách mới, thay thế hiệu quả tệp cũ bằng tệp mới.",
     "no_files_found": "Không tìm thấy tập tin",
     "notification": {
       "go_to_book": "Đi đến sách",
@@ -250,7 +250,7 @@
     "book_number": "Số sách: {name}",
     "book_series": "Sê-ri: {name}",
     "button_import": "Nhập",
-    "comicrack_preambule_html": "Bạn có thể nhập Danh sách Đọc ComicRack hiện có ở định dạng <code>.cbl</code>. <br> Komga sẽ cố gắng kết hợp sê-ri và số sách được cung cấp với sê-ri và sách trong thư viện của bạn.",
+    "comicrack_preambule_html": "Bạn có thể nhập Danh sách Đọc ComicRack hiện có ở định dạng <code>.cbl</code>. <br> 神殇漫画 sẽ cố gắng kết hợp sê-ri và số sách được cung cấp với sê-ri và sách trong thư viện của bạn.",
     "field_files_label": "Danh sách đọc ComicRack (.cbl)",
     "import_read_lists": "Nhập danh sách đọc",
     "imported_as": "Đã nhập là {name}",
@@ -512,7 +512,7 @@
     },
     "server_stop": {
       "button_confirm": "Dừng",
-      "confirmation_message": "Bạn có chắc chắn muốn dừng Komga không?",
+      "confirmation_message": "Bạn có chắc chắn muốn dừng 神殇漫画 không?",
       "dialog_title": "Tắt máy chủ"
     },
     "shortcut_help": {
@@ -680,7 +680,7 @@
   "login": {
     "create_user_account": "Tạo tài khoản người dùng",
     "login": "Đăng nhập",
-    "unclaimed_html": "Máy chủ Komga này chưa hoạt động, bạn cần tạo tài khoản người dùng để có thể truy cập. <br><br> Chọn <strong> email </strong> và <strong> mật khẩu </strong> và nhấp vào <strong> Tạo tài khoản người dùng </strong>."
+    "unclaimed_html": "Máy chủ 神殇漫画 này chưa hoạt động, bạn cần tạo tài khoản người dùng để có thể truy cập. <br><br> Chọn <strong> email </strong> và <strong> mật khẩu </strong> và nhấp vào <strong> Tạo tài khoản người dùng </strong>."
   },
   "media_analysis": {
     "comment": "Ghi chú",
@@ -813,6 +813,6 @@
   "welcome": {
     "add_library": "Thêm thư viện",
     "no_libraries_yet": "Chưa có thư viện nào được thêm vào!",
-    "welcome_message": "Chào mừng đến với Komga"
+    "welcome_message": "Chào mừng đến với 神殇漫画"
   }
 }

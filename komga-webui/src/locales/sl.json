@@ -46,8 +46,8 @@
     "button_scan": "Skeniraj",
     "button_select_series": "Izberi serijo",
     "field_import_path": "Uvozi iz mape",
-    "info_part1": "Ta zaslon dovoljuje uvoz datotek izven obstoječe knjižnice. Uvoziš lahko le v obstoječe serije, Komga pa bo premaknil ali kopiral datoteke v mapo izbrane serije.",
-    "info_part2": "Če izbereš številko knjige, ki že obstaja boš lahko primerjali obe knjigi. Če boš knjigo uvozili bo Komga nadgradil obstoječo knjigo in efektivno nadomestil staro datoteko z novo.",
+    "info_part1": "Ta zaslon dovoljuje uvoz datotek izven obstoječe knjižnice. Uvoziš lahko le v obstoječe serije, 神殇漫画 pa bo premaknil ali kopiral datoteke v mapo izbrane serije.",
+    "info_part2": "Če izbereš številko knjige, ki že obstaja boš lahko primerjali obe knjigi. Če boš knjigo uvozili bo 神殇漫画 nadgradil obstoječo knjigo in efektivno nadomestil staro datoteko z novo.",
     "no_files_found": "Ne najdem datotek",
     "notification": {
       "go_to_book": "Pojdi na knjigo",
@@ -215,7 +215,7 @@
     "book_number": "Številka knjige: {name}",
     "book_series": "Serija: {name}",
     "button_import": "Uvozi",
-    "comicrack_preambule_html": "Uvoziš lahko ComicRack bralne sezname v <code>.cbl</code> obliki.<br>Komga bo poskusil upariti serije in knjige s serijami in knjigami v tvojih knjižnicah.",
+    "comicrack_preambule_html": "Uvoziš lahko ComicRack bralne sezname v <code>.cbl</code> obliki.<br>神殇漫画 bo poskusil upariti serije in knjige s serijami in knjigami v tvojih knjižnicah.",
     "field_files_label": "ComicRack bralni seznami (.cbl)",
     "import_read_lists": "Uvozi bralne sezname",
     "imported_as": "Uvozi kot {name}"

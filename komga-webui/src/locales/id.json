@@ -67,8 +67,8 @@
     "button_scan": "Pindai",
     "button_select_series": "Pilih Seri",
     "field_import_path": "Impor dari folder",
-    "info_part1": "Layar ini memungkinkan Anda untuk mengimpor berkas yang berada di luar pustaka yang ada. Anda hanya dapat mengimpor berkas tersebut pada Seri yang telah ada, dalam hal ini Komga akan memindahkan atau menyalin berkas ini pada direktori Seri yang dipilih.",
-    "info_part2": "Jika Anda memilih nomor untuk sebuah buku, dan sebuah buku sudah ada dengan nomor tersebut, maka Anda akan dapat membandingkan 2 buku tersebut. Jika Anda memutuskan untuk mengimpor buku, Komga akan memperbarui buku yang ada dengan yang baru, secara efektif menggantikan berkas lama dengan yang baru.",
+    "info_part1": "Layar ini memungkinkan Anda untuk mengimpor berkas yang berada di luar pustaka yang ada. Anda hanya dapat mengimpor berkas tersebut pada Seri yang telah ada, dalam hal ini 神殇漫画 akan memindahkan atau menyalin berkas ini pada direktori Seri yang dipilih.",
+    "info_part2": "Jika Anda memilih nomor untuk sebuah buku, dan sebuah buku sudah ada dengan nomor tersebut, maka Anda akan dapat membandingkan 2 buku tersebut. Jika Anda memutuskan untuk mengimpor buku, 神殇漫画 akan memperbarui buku yang ada dengan yang baru, secara efektif menggantikan berkas lama dengan yang baru.",
     "no_files_found": "Tidak ada berkas yang ditemukan",
     "notification": {
       "go_to_book": "Menuju buku",
@@ -299,7 +299,7 @@
     "book_series": "Seri: {name}",
     "button_import": "Impor",
     "button_match": "Kecocokan",
-    "comicrack_preambule_html": "Anda dapat mengimpor Daftar Bacaan ComicRack yang ada dalam format <code>.cbl</code>.<br>Komga akan mencoba mencocokkan seri dan nomor buku yang disediakan dengan seri dan buku di perpustakaan Anda.",
+    "comicrack_preambule_html": "Anda dapat mengimpor Daftar Bacaan ComicRack yang ada dalam format <code>.cbl</code>.<br>神殇漫画 akan mencoba mencocokkan seri dan nomor buku yang disediakan dengan seri dan buku di perpustakaan Anda.",
     "dialog_confirmation": {
       "body": "Tidak ditemukan kecocokan pada {unmatched} dari {total} buku",
       "body2": "{duplicates} dari {total} telah digandakan",
@@ -363,7 +363,7 @@
       "button_confirm": "Hapus",
       "confirm_delete": "Saya mengerti, hapus kunci API \"{name}\"",
       "dialog_title": "Hapus kunci API",
-      "warning_html": "Seluruh aplikasi yang menggunakan kunci API ini akan kehilangan akses ke API Komga. Anda tidak dapat membatalkan tindakan ini."
+      "warning_html": "Seluruh aplikasi yang menggunakan kunci API ini akan kehilangan akses ke API 神殇漫画. Anda tidak dapat membatalkan tindakan ini."
     },
     "delete_book": {
       "button_confirm": "Hapus",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Berhenti",
-      "confirmation_message": "Apakah Anda yakin ingin menghentikan Komga?",
+      "confirmation_message": "Apakah Anda yakin ingin menghentikan 神殇漫画?",
       "dialog_title": "Matikan server"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Buat akun pengguna",
     "login": "Masuk",
-    "unclaimed_html": "Server Komga ini belum aktif, Anda perlu membuat akun pengguna untuk dapat mengaksesnya.<br><br>Pilih <strong>email</strong> dan <strong>sandi</strong> lalu klik <strong> Buat akun pengguna</strong>."
+    "unclaimed_html": "Server 神殇漫画 ini belum aktif, Anda perlu membuat akun pengguna untuk dapat mengaksesnya.<br><br>Pilih <strong>email</strong> dan <strong>sandi</strong> lalu klik <strong> Buat akun pengguna</strong>."
   },
   "media_analysis": {
     "comment": "Komentar",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Pembaruan tersedia",
-    "latest_installed": "Anda sudah memasang Komga versi terbaru"
+    "latest_installed": "Anda sudah memasang 神殇漫画 versi terbaru"
   },
   "user_roles": {
     "ADMIN": "Administrator",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Tambah Pustaka",
     "no_libraries_yet": "Belum ada pustaka yang ditambahkan!",
-    "welcome_message": "Selamat datang di Komga"
+    "welcome_message": "Selamat datang di 神殇漫画"
   }
 }

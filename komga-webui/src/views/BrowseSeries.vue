@@ -871,7 +871,7 @@ export default Vue.extend({
   watch: {
     series(val) {
       if (this.$_.has(val, 'metadata.title')) {
-        document.title = `Komga - ${val.metadata.title}`
+        document.title = `神殇漫画 - ${val.metadata.title}`
       }
     },
   },

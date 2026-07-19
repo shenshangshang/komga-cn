@@ -67,8 +67,8 @@
     "button_scan": "Skenovať",
     "button_select_series": "Vybrať sériu",
     "field_import_path": "Importovať z priečinka",
-    "info_part1": "Na tejto obrazovke môžete importovať súbory, ktoré nie sú súčasťou vašich existujúcich knižníc. Súbory môžete importovať iba do existujúcich sérií, pričom Komga presunie alebo skopíruje súbory do priečinka zvolenej série.",
-    "info_part2": "Ak vyberiete číslo pre knihu a kniha s týmto číslom už existuje, budete môcť porovnať obe knihy. Ak sa rozhodnete knihu importovať, Komga aktualizuje existujúcu knihu novou verziou, čím efektívne nahradí starý súbor novým.",
+    "info_part1": "Na tejto obrazovke môžete importovať súbory, ktoré nie sú súčasťou vašich existujúcich knižníc. Súbory môžete importovať iba do existujúcich sérií, pričom 神殇漫画 presunie alebo skopíruje súbory do priečinka zvolenej série.",
+    "info_part2": "Ak vyberiete číslo pre knihu a kniha s týmto číslom už existuje, budete môcť porovnať obe knihy. Ak sa rozhodnete knihu importovať, 神殇漫画 aktualizuje existujúcu knihu novou verziou, čím efektívne nahradí starý súbor novým.",
     "no_files_found": "Nenašli sa žiadne súbory",
     "notification": {
       "go_to_book": "Prejsť na knihu",
@@ -299,7 +299,7 @@
     "book_series": "Séria: {name}",
     "button_import": "Importovať",
     "button_match": "Porovnať",
-    "comicrack_preambule_html": "Existujúce zoznamy čítania ComicRack môžete importovať vo formáte <code>.cbl</code>.<br>Komga sa pokúsi priradiť zadané čísla sérií a kníh k sériám a knihám vo vašich knižniciach.",
+    "comicrack_preambule_html": "Existujúce zoznamy čítania ComicRack môžete importovať vo formáte <code>.cbl</code>.<br>神殇漫画 sa pokúsi priradiť zadané čísla sérií a kníh k sériám a knihám vo vašich knižniciach.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} kníh je neporovnaných",
       "body2": "{duplicates} / {total} kníh je duplicitných",
@@ -363,7 +363,7 @@
       "button_confirm": "Odstrániť",
       "confirm_delete": "Rozumiem, odstrániť kľúč API \"{name}\"",
       "dialog_title": "Odstrániť API kľúč",
-      "warning_html": "Aplikácie alebo skripty používajúce tento kľúč API už nebudú mať prístup ku Komga API. Tuto akciu nemožno vrátiť späť."
+      "warning_html": "Aplikácie alebo skripty používajúce tento kľúč API už nebudú mať prístup ku 神殇漫画 API. Tuto akciu nemožno vrátiť späť."
     },
     "delete_book": {
       "button_confirm": "Odstrániť",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Stop",
-      "confirmation_message": "Naozaj chcete zastaviť Komga?",
+      "confirmation_message": "Naozaj chcete zastaviť 神殇漫画?",
       "dialog_title": "Vypnúť server"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Vytvoriť používateľský účet",
     "login": "Prihlásiť sa",
-    "unclaimed_html": "Tento server Komga ešte nie je aktívny, aby ste mali k nemu prístup, musíte si vytvoriť používateľský účet. <br><br>Zvoľte si <strong>e-mailovú adresu</strong> a <strong>heslo</strong> a kliknite na <strong>Vytvoriť používateľský účet</strong>."
+    "unclaimed_html": "Tento server 神殇漫画 ešte nie je aktívny, aby ste mali k nemu prístup, musíte si vytvoriť používateľský účet. <br><br>Zvoľte si <strong>e-mailovú adresu</strong> a <strong>heslo</strong> a kliknite na <strong>Vytvoriť používateľský účet</strong>."
   },
   "media_analysis": {
     "comment": "Komentár",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Aktualizácie sú k dispozícii",
-    "latest_installed": "Najnovšia verzia Komga je už nainštalovaná"
+    "latest_installed": "Najnovšia verzia 神殇漫画 je už nainštalovaná"
   },
   "user_roles": {
     "ADMIN": "Administrátor",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Pridať knižnicu",
     "no_libraries_yet": "Zatiaľ neboli pridané žiadne knižnice!",
-    "welcome_message": "Vitajte v Komga"
+    "welcome_message": "Vitajte v 神殇漫画"
   }
 }

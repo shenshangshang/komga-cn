@@ -58,8 +58,8 @@
     "button_scan": "Skann",
     "button_select_series": "Velg serie",
     "field_import_path": "Importer fra mappe",
-    "info_part1": "Denne siden lar deg importere filer som finnes utenfor dine eksisterende bibliotek. Du kan kun importere filer inn i eksisterende serier, og da vil Komga flytte eller kopiere filer inn i mappene tilhørende valgte serier.",
-    "info_part2": "Hvis du velger et nummer for en bok, og en bok allerede finnes med det nummeret, vil du kunne sammenligne de to bøkene. Hvis du velger å importere boken, vil Komga oppgradere eksisterende bok med den nye, noe som erstatter den gamle filen med den nye.",
+    "info_part1": "Denne siden lar deg importere filer som finnes utenfor dine eksisterende bibliotek. Du kan kun importere filer inn i eksisterende serier, og da vil 神殇漫画 flytte eller kopiere filer inn i mappene tilhørende valgte serier.",
+    "info_part2": "Hvis du velger et nummer for en bok, og en bok allerede finnes med det nummeret, vil du kunne sammenligne de to bøkene. Hvis du velger å importere boken, vil 神殇漫画 oppgradere eksisterende bok med den nye, noe som erstatter den gamle filen med den nye.",
     "no_files_found": "Fant ingen filer",
     "notification": {
       "go_to_book": "Gå til boken",
@@ -269,7 +269,7 @@
     "book_series": "Serie: {name}",
     "button_import": "Importer",
     "button_match": "Match",
-    "comicrack_preambule_html": "Du kan importere eksisterende ComicRack-leselister i <code>.cbl</code>-format.<br>Komga vil prøve å jamføre angitt serie og boknummer med serier og bøker i bibliotekene dine.",
+    "comicrack_preambule_html": "Du kan importere eksisterende ComicRack-leselister i <code>.cbl</code>-format.<br>神殇漫画 vil prøve å jamføre angitt serie og boknummer med serier og bøker i bibliotekene dine.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} bøker er ikke matchet",
       "create": "Lag uansett",
@@ -559,7 +559,7 @@
     },
     "server_stop": {
       "button_confirm": "Stopp",
-      "confirmation_message": "Er du sikker på at du vil stoppe Komga?",
+      "confirmation_message": "Er du sikker på at du vil stoppe 神殇漫画?",
       "dialog_title": "Slå av tjener"
     },
     "shortcut_help": {
@@ -807,7 +807,7 @@
   "login": {
     "create_user_account": "Opprett brukerkonto",
     "login": "Logg inn",
-    "unclaimed_html": "Denne Komga-tjeneren er ikke aktiv enda. Du må opprette en brukerkonto for å få tilgang til den.<br><br>Velg en<strong>e-post</strong> og et <strong>passord</strong> og klikk så på <strong>Opprett brukerkonto</strong>."
+    "unclaimed_html": "Denne 神殇漫画-tjeneren er ikke aktiv enda. Du må opprette en brukerkonto for å få tilgang til den.<br><br>Velg en<strong>e-post</strong> og et <strong>passord</strong> og klikk så på <strong>Opprett brukerkonto</strong>."
   },
   "media_analysis": {
     "comment": "Kommentar",
@@ -971,6 +971,6 @@
   "welcome": {
     "add_library": "Legg til bibliotek",
     "no_libraries_yet": "Ingen bibliotek lagt til enda!",
-    "welcome_message": "Velkommen til Komga"
+    "welcome_message": "Velkommen til 神殇漫画"
   }
 }

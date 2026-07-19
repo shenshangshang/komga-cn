@@ -67,8 +67,8 @@
     "button_scan": "扫描",
     "button_select_series": "选择系列",
     "field_import_path": "从文件夹导入",
-    "info_part1": "此屏幕允许您导入现有库之外的文件。您只能将文件导入到现有系列中，在这种情况下，Komga 会将文件移动或复制到所选系列的目录中。",
-    "info_part2": "如果您为一本书选择了一个编号，并且已经存在一本带有该编号的书，您可以比较这两本书。如果您决定导入该书。Komga 将使用新文件更新现有的书，有效的使用新文件替换旧文件。",
+    "info_part1": "此屏幕允许您导入现有库之外的文件。您只能将文件导入到现有系列中，在这种情况下，神殇漫画 会将文件移动或复制到所选系列的目录中。",
+    "info_part2": "如果您为一本书选择了一个编号，并且已经存在一本带有该编号的书，您可以比较这两本书。如果您决定导入该书。神殇漫画 将使用新文件更新现有的书，有效的使用新文件替换旧文件。",
     "no_files_found": "未找到文件",
     "notification": {
       "go_to_book": "转到书籍",
@@ -332,7 +332,7 @@
     "book_series": "系列：{name}",
     "button_import": "导入",
     "button_match": "匹配",
-    "comicrack_preambule_html": "您可以导入现有的 ComicRack 阅读列表，其为 <code>.cbl</code>格式。<br>Komga 会试着将您提供的系列和书号与你库中的相匹配。",
+    "comicrack_preambule_html": "您可以导入现有的 ComicRack 阅读列表，其为 <code>.cbl</code>格式。<br>神殇漫画 会试着将您提供的系列和书号与你库中的相匹配。",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} 本书匹配失败",
       "body2": "{duplicates} / {total} 本书籍重复",
@@ -396,7 +396,7 @@
       "button_confirm": "删除",
       "confirm_delete": "我明白，删除 API 密钥“{name}”",
       "dialog_title": "删除 API 密钥",
-      "warning_html": "任何使用此 API 密钥的应用程序或脚本将无法再访问 Komga API。此操作无法撤消。"
+      "warning_html": "任何使用此 API 密钥的应用程序或脚本将无法再访问 神殇漫画 API。此操作无法撤消。"
     },
     "delete_book": {
       "button_confirm": "删除",
@@ -653,7 +653,7 @@
     },
     "server_stop": {
       "button_confirm": "停止",
-      "confirmation_message": "您确定要关闭 Komga 服务器吗？",
+      "confirmation_message": "您确定要关闭 神殇漫画 服务器吗？",
       "dialog_title": "关闭服务器"
     },
     "shortcut_help": {
@@ -982,7 +982,7 @@
   "login": {
     "create_user_account": "创建帐户",
     "login": "登录",
-    "unclaimed_html": "该 Komga 服务器尚未激活，您需要创建一个用户帐户才能访问它。<br><br>选择一个 <strong>邮箱</strong> 和 <strong>密码</strong> 然后点击 <strong>创建账户</strong>。"
+    "unclaimed_html": "该 神殇漫画 服务器尚未激活，您需要创建一个用户帐户才能访问它。<br><br>选择一个 <strong>邮箱</strong> 和 <strong>密码</strong> 然后点击 <strong>创建账户</strong>。"
   },
   "media_analysis": {
     "comment": "注释",
@@ -1180,7 +1180,7 @@
   },
   "updates": {
     "available": "有可用更新",
-    "latest_installed": "Komga 最新版本已安装"
+    "latest_installed": "神殇漫画 最新版本已安装"
   },
   "user_roles": {
     "ADMIN": "管理员",
@@ -1270,6 +1270,6 @@
   "welcome": {
     "add_library": "添加库",
     "no_libraries_yet": "还没有添加任何库！",
-    "welcome_message": "欢迎使用 Komga"
+    "welcome_message": "欢迎使用 神殇漫画"
   }
 }

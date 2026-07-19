@@ -87,7 +87,7 @@ class OpdsGenerator(
           .pathSegment(*pathSegments.toTypedArray())
           .path(ROUTE_AUTH)
           .toUriString(),
-      title = "Komga",
+      title = "神殇漫画",
       description = "Enter your email and password to authenticate.",
       links =
         listOf(

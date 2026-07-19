@@ -67,8 +67,8 @@
     "button_scan": "스캔",
     "button_select_series": "시리즈 선택",
     "field_import_path": "폴더에서 가져오기",
-    "info_part1": "이 화면에서 기존 라이브러리 외부에 있는 파일을 가져올 수 있습니다. 기존 시리즈로만 파일을 가져올 수 있으며, 이 경우 Komga는 선택한 시리즈의 디렉토리로 파일을 이동하거나 복사합니다.",
-    "info_part2": "책의 번호를 선택하고 해당 번호를 가진 책이 이미 있는 경우 두 책을 비교할 수 있습니다. 책을 가져오기로 결정하면 Komga는 기존 책을 새 책으로 업그레이드하여 이전 파일을 새 파일로 효과적으로 교체합니다.",
+    "info_part1": "이 화면에서 기존 라이브러리 외부에 있는 파일을 가져올 수 있습니다. 기존 시리즈로만 파일을 가져올 수 있으며, 이 경우 神殇漫画는 선택한 시리즈의 디렉토리로 파일을 이동하거나 복사합니다.",
+    "info_part2": "책의 번호를 선택하고 해당 번호를 가진 책이 이미 있는 경우 두 책을 비교할 수 있습니다. 책을 가져오기로 결정하면 神殇漫画는 기존 책을 새 책으로 업그레이드하여 이전 파일을 새 파일로 효과적으로 교체합니다.",
     "no_files_found": "파일이 없습니다",
     "notification": {
       "go_to_book": "책으로 이동",
@@ -299,7 +299,7 @@
     "book_series": "시리즈: {name}",
     "button_import": "가져오기",
     "button_match": "일치",
-    "comicrack_preambule_html": "기존 ComicRack 읽기 목록을 <code>.cbl</code> 형식으로 가져올 수 있습니다.<br>Komga는 제공된 시리즈 및 책 번호를 귀하의 서재에 있는 시리즈 및 책과 일치시킵니다.",
+    "comicrack_preambule_html": "기존 ComicRack 읽기 목록을 <code>.cbl</code> 형식으로 가져올 수 있습니다.<br>神殇漫画는 제공된 시리즈 및 책 번호를 귀하의 서재에 있는 시리즈 및 책과 일치시킵니다.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} 권 불일치",
       "body2": "{duplicates} / {total} 권이 중복됨",
@@ -363,7 +363,7 @@
       "button_confirm": "삭제",
       "confirm_delete": "이해합니다, \"{name}\" API 키를 삭제합니다",
       "dialog_title": "API 키 삭제하기",
-      "warning_html": "이 API 키를 사용하는 모든 애플리케이션 또는 스크립트가 Komga API를 사용 할 수 없게 됩니다. 이 동작은 되돌릴 수 없습니다."
+      "warning_html": "이 API 키를 사용하는 모든 애플리케이션 또는 스크립트가 神殇漫画 API를 사용 할 수 없게 됩니다. 이 동작은 되돌릴 수 없습니다."
     },
     "delete_book": {
       "button_confirm": "삭제",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "중지",
-      "confirmation_message": "정말로 Komga를 중지하시겠습니까?",
+      "confirmation_message": "정말로 神殇漫画를 중지하시겠습니까?",
       "dialog_title": "시스템 종료"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "사용자 계정 만들기",
     "login": "로그인",
-    "unclaimed_html": "Komga 서버가 아직 활성화 되지 않았습니다. 접속하려면 사용자 계정을 만들어야 합니다.<strong>이메일과 암호</strong>를 설정하고 <strong>사용자 계정 만들기</strong>를 클릭합니다."
+    "unclaimed_html": "神殇漫画 서버가 아직 활성화 되지 않았습니다. 접속하려면 사용자 계정을 만들어야 합니다.<strong>이메일과 암호</strong>를 설정하고 <strong>사용자 계정 만들기</strong>를 클릭합니다."
   },
   "media_analysis": {
     "comment": "설명",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "업데이트가 사용 가능합니다",
-    "latest_installed": "최신 버전의 Komga가 이미 설치되어 있습니다"
+    "latest_installed": "최신 버전의 神殇漫画가 이미 설치되어 있습니다"
   },
   "user_roles": {
     "ADMIN": "관리자",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "서재 추가",
     "no_libraries_yet": "서재가 아직 추가되지 않았습니다!",
-    "welcome_message": "Komga에 오신걸 환영합니다"
+    "welcome_message": "神殇漫画에 오신걸 환영합니다"
   }
 }

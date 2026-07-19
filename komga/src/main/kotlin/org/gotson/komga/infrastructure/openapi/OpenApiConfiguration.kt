@@ -79,17 +79,17 @@ class OpenApiConfiguration(
     return OpenAPI()
       .info(
         Info()
-          .title("Komga API")
+          .title("神殇漫画 API")
           .version(appVersion)
           .description(
             """
-            Komga REST API.
+            神殇漫画 REST API.
 
             ## Reference
 
             Check the API reference:
-            - on the [Komga website](https://komga.org/docs/openapi/komga-api)
-            - on any running Komga instance at `/swagger-ui.html`
+            - on the [神殇漫画 website](https://komga.org/docs/openapi/komga-api)
+            - on any running 神殇漫画 instance at `/swagger-ui.html`
             - on [GitHub](https://raw.githubusercontent.com/gotson/komga/refs/heads/master/komga/docs/openapi.json)
 
             ## Authentication
@@ -122,7 +122,7 @@ class OpenApiConfiguration(
           ).license(License().name("MIT").url("https://github.com/gotson/komga/blob/master/LICENSE")),
       ).externalDocs(
         ExternalDocumentation()
-          .description("Komga documentation")
+          .description("神殇漫画 API documentation")
           .url("https://komga.org"),
       ).components(
         Components()
@@ -429,23 +429,23 @@ class OpenApiConfiguration(
       Tag().name(READLISTS).description("Manage readlists."),
       Tag().name(READLIST_POSTER).description("Manage posters for readlists."),
       Tag().name(READLIST_BOOKS),
-      Tag().name(REFERENTIAL).description("Retrieve referential metadata from all items in the Komga server."),
+      Tag().name(REFERENTIAL).description("Retrieve referential metadata from all items in the 神殇漫画 server."),
       Tag().name(CURRENT_USER).description("Manage current user."),
       Tag().name(USERS).description("Manage users."),
       Tag().name(API_KEYS).description("Manage API Keys"),
       Tag().name(USER_SESSION),
       Tag().name(OAUTH2).description("List registered OAuth2 providers"),
       Tag().name(SYNCPOINTS).description("Sync points are automatically created during a Kobo sync."),
-      Tag().name(CLAIM).description("Claim a freshly installed Komga server."),
+      Tag().name(CLAIM).description("Claim a freshly installed 神殇漫画 server."),
       Tag().name(TASKS).description("Manage server tasks"),
       Tag().name(HISTORY).description("Server events history"),
       Tag().name(FILE_SYSTEM).description("List files from the host server's file system"),
       Tag().name(SERVER_SETTINGS).description("Store and retrieve server settings"),
       Tag().name(RELEASES).description("Retrieve releases information"),
-      Tag().name(ANNOUNCEMENTS).description("Retrieve announcements from the Komga website"),
+      Tag().name(ANNOUNCEMENTS).description("Retrieve announcements from the 神殇漫画 website"),
       Tag().name(MANAGEMENT).description("Manage server"),
       Tag().name(MIHON),
       Tag().name(COMICRACK),
-      Tag().name(CLIENT_SETTINGS).description("Store and retrieve global and per-user settings. Those settings are not used by Komga itself, but can be stored for convenience by client applications."),
+      Tag().name(CLIENT_SETTINGS).description("Store and retrieve global and per-user settings. Those settings are not used by 神殇漫画 itself, but can be stored for convenience by client applications."),
     )
 }

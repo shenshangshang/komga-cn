@@ -482,7 +482,7 @@ export default Vue.extend({
     },
     loadAll(reload: boolean = false) {
       this.loading = true
-      if (this.library != undefined) document.title = `Komga - ${this.library.name}`
+      if (this.library != undefined) document.title = `神殇漫画 - ${this.library.name}`
       this.selectedSeries = []
       this.selectedBooks = []
 

@@ -447,7 +447,7 @@ export default Vue.extend({
       this.$komgaReadLists.getOneReadList(readListId)
         .then(v => {
           this.readList = v
-          document.title = `Komga - ${v.name}`
+          document.title = `神殇漫画 - ${v.name}`
         })
 
       await this.loadPage(readListId, this.page)

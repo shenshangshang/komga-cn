@@ -67,8 +67,8 @@
     "button_scan": "Skanuj",
     "button_select_series": "Wybierz cykl",
     "field_import_path": "Importuj z folderu",
-    "info_part1": "Ten ekran umożliwia importowanie plików, które nie znajdują się w istniejących bibliotekach. Pliki można importować tylko do istniejących cykli, w tym przypadku Komga przeniesie lub skopiuje pliki do katalogu wybranego cyklu.",
-    "info_part2": "Jeśli wybierzesz numer dla książki, a książka o tym numerze już istnieje, będziesz mógł porównać obie książki. Jeśli zdecydujesz się na import książki, Komga zaktualizuje istniejącą książkę do nowej, zastępując w ten sposób stary plik nowym.",
+    "info_part1": "Ten ekran umożliwia importowanie plików, które nie znajdują się w istniejących bibliotekach. Pliki można importować tylko do istniejących cykli, w tym przypadku 神殇漫画 przeniesie lub skopiuje pliki do katalogu wybranego cyklu.",
+    "info_part2": "Jeśli wybierzesz numer dla książki, a książka o tym numerze już istnieje, będziesz mógł porównać obie książki. Jeśli zdecydujesz się na import książki, 神殇漫画 zaktualizuje istniejącą książkę do nowej, zastępując w ten sposób stary plik nowym.",
     "no_files_found": "Nie znaleziono żadnych plików",
     "notification": {
       "go_to_book": "Przejdź do książki",
@@ -293,7 +293,7 @@
     "book_series": "Seria: {name}",
     "button_import": "Importuj",
     "button_match": "Dopasowanie",
-    "comicrack_preambule_html": "Importowanie istniejących list z programu ComicRack w formacie <code>.cbl</code>. <br>Komga spróbuje dopasować cykle i tomy do cykli i tomów znajdujących się w bibliotekach.",
+    "comicrack_preambule_html": "Importowanie istniejących list z programu ComicRack w formacie <code>.cbl</code>. <br>神殇漫画 spróbuje dopasować cykle i tomy do cykli i tomów znajdujących się w bibliotekach.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} zeszytów nie dopasowanych",
       "body2": "{duplicates} / {total} zeszytów to duplikaty",
@@ -860,7 +860,7 @@
   "login": {
     "create_user_account": "Utwórz konto użytkownika",
     "login": "Zaloguj się",
-    "unclaimed_html": "Serwer Komga nie jest jeszcze aktywny, musisz utworzyć konto użytkownika, by móc uzyskać do niego dostęp.<br><br>Wybierz <strong>e-mail</strong> oraz <strong>hasło</strong> i kliknij na <strong>Utwórz konto użytkownika</strong>."
+    "unclaimed_html": "Serwer 神殇漫画 nie jest jeszcze aktywny, musisz utworzyć konto użytkownika, by móc uzyskać do niego dostęp.<br><br>Wybierz <strong>e-mail</strong> oraz <strong>hasło</strong> i kliknij na <strong>Utwórz konto użytkownika</strong>."
   },
   "media_analysis": {
     "comment": "Komentarz",
@@ -1035,6 +1035,6 @@
   "welcome": {
     "add_library": "Dodaj bibliotekę",
     "no_libraries_yet": "Nie dodano jeszcze żadnych bibliotek!",
-    "welcome_message": "Witamy w Komga"
+    "welcome_message": "Witamy w 神殇漫画"
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <main class="login-page">
     <section class="login-shell" aria-labelledby="login-title">
-      <aside class="brand-panel" aria-label="Komga 漫画书库">
+      <aside class="brand-panel" aria-label="神殇漫画">
         <div class="brand-visual" role="img" aria-label="漫画书库">
           <span class="brand-visual__halo brand-visual__halo--outer" aria-hidden="true"></span>
           <span class="brand-visual__halo brand-visual__halo--inner" aria-hidden="true"></span>

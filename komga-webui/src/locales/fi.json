@@ -67,8 +67,8 @@
     "button_scan": "Skannaa",
     "button_select_series": "Valitse Sarja",
     "field_import_path": "Tuo kansiosta",
-    "info_part1": "Tämän ikkunan avulla voit tuoda tiedostoja, jotka ovat olemassa olevien kirjastojesi ulkopuolella. Voit tuoda tiedostoja vain olemassa oleviin sarjoihin, jolloin Komga siirtää tai kopioi tiedostot valitun sarjan hakemistoon.",
-    "info_part2": "Jos valitset kirjalle numeron ja samalla numerolla on jo olemassa oleva kirja, voit vertailla näitä kahta kirjaa keskenään. Jos päätät tuoda kirjan, Komga päivittää olemassa olevan kirjan uudella, käytännössä korvaten vanhan tiedoston uudella.",
+    "info_part1": "Tämän ikkunan avulla voit tuoda tiedostoja, jotka ovat olemassa olevien kirjastojesi ulkopuolella. Voit tuoda tiedostoja vain olemassa oleviin sarjoihin, jolloin 神殇漫画 siirtää tai kopioi tiedostot valitun sarjan hakemistoon.",
+    "info_part2": "Jos valitset kirjalle numeron ja samalla numerolla on jo olemassa oleva kirja, voit vertailla näitä kahta kirjaa keskenään. Jos päätät tuoda kirjan, 神殇漫画 päivittää olemassa olevan kirjan uudella, käytännössä korvaten vanhan tiedoston uudella.",
     "no_files_found": "Tiedostoja ei löytynyt",
     "notification": {
       "go_to_book": "Siirry kirjaan",
@@ -299,7 +299,7 @@
     "book_series": "Sarja: {name}",
     "button_import": "Tuo",
     "button_match": "Sovita",
-    "comicrack_preambule_html": "Voit tuoda valmiita ComicRack -lukulistoja <code>.cbl</code> -formaatissa.<br>Komga yrittää sovittaa annetun sarjan ja kirjan numeron kirjastossasi oleviin sarjoihin ja kirjoihin.",
+    "comicrack_preambule_html": "Voit tuoda valmiita ComicRack -lukulistoja <code>.cbl</code> -formaatissa.<br>神殇漫画 yrittää sovittaa annetun sarjan ja kirjan numeron kirjastossasi oleviin sarjoihin ja kirjoihin.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} kirjoista ei ole sovitettu",
       "body2": "{duplicates} / {total} kirjaa on kaksoiskappaleita",
@@ -363,7 +363,7 @@
       "button_confirm": "Poista",
       "confirm_delete": "Ymmärrän, poista API-avain \"{name}\"",
       "dialog_title": "Poista API-avain",
-      "warning_html": "Minkään ohjelma tai skripti, jotka käyttävät tätä API-avainta, ei enää pääse käyttämään Komgan API-rajapintaa. Tätä toimintoa ei voi perua."
+      "warning_html": "Minkään ohjelma tai skripti, jotka käyttävät tätä API-avainta, ei enää pääse käyttämään 神殇漫画n API-rajapintaa. Tätä toimintoa ei voi perua."
     },
     "delete_book": {
       "button_confirm": "Poista",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Pysäytä",
-      "confirmation_message": "Oletko varma, että haluat lopettaa Komgan?",
+      "confirmation_message": "Oletko varma, että haluat lopettaa 神殇漫画n?",
       "dialog_title": "Sammuta palvelin"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Luo käyttäjätili",
     "login": "Kirjaudu sisään",
-    "unclaimed_html": "Tämä Komga-palvelin ei ole vielä aktiivinen. Sinun täytyy luoda käyttäjätili voidaksesi käyttää sitä.<br><br>Valitse <strong>sähköpostiosoite</strong> ja <strong>salasana</strong>, sitten klikkaa <strong>Luo käyttäjätunnus</strong>."
+    "unclaimed_html": "Tämä 神殇漫画-palvelin ei ole vielä aktiivinen. Sinun täytyy luoda käyttäjätili voidaksesi käyttää sitä.<br><br>Valitse <strong>sähköpostiosoite</strong> ja <strong>salasana</strong>, sitten klikkaa <strong>Luo käyttäjätunnus</strong>."
   },
   "media_analysis": {
     "comment": "Kommentti",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Päivityksiä on saatavilla",
-    "latest_installed": "Uusin Komgan versio on jo asennettu"
+    "latest_installed": "Uusin 神殇漫画n versio on jo asennettu"
   },
   "user_roles": {
     "ADMIN": "Järjestelmänvalvoja",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Lisää kirjasto",
     "no_libraries_yet": "Kirjastoja ei ole vielä lisätty!",
-    "welcome_message": "Tervetuloa Komgaan"
+    "welcome_message": "Tervetuloa 神殇漫画an"
   }
 }

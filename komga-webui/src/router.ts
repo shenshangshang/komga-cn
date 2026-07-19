@@ -310,7 +310,7 @@ router.beforeEach((to, from, next) => {
   if (!['read-book', 'read-epub', 'browse-book', 'browse-oneshot', 'browse-series', 'browse-libraries', 'browse-books',
     'recommended-libraries', 'browse-collection', 'browse-collections', 'browse-readlist', 'browse-readlists'].includes(<string>to.name)
   ) {
-    document.title = 'Komga'
+    document.title = '神殇漫画'
   }
 
   if (window.opener !== null &&

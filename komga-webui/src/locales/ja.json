@@ -67,8 +67,8 @@
     "button_scan": "スキャン",
     "button_select_series": "シリーズを選択",
     "field_import_path": "フォルダからインポート",
-    "info_part1": "この画面では、既存のライブラリ以外のファイルをインポートすることができます。既存のシリーズにしかファイルをインポートできませんが、その場合、Komgaはファイルを選択したシリーズのディレクトリに移動またはコピーします。",
-    "info_part2": "書籍番号を選択すると、その番号の書籍がすでに存在している場合、2つの書籍を比較することができます。また、書籍をインポートする場合、Komgaは既存の書籍を新しい書籍にアップグレードし、古いファイルを新しいファイルに置き換えます。",
+    "info_part1": "この画面では、既存のライブラリ以外のファイルをインポートすることができます。既存のシリーズにしかファイルをインポートできませんが、その場合、神殇漫画はファイルを選択したシリーズのディレクトリに移動またはコピーします。",
+    "info_part2": "書籍番号を選択すると、その番号の書籍がすでに存在している場合、2つの書籍を比較することができます。また、書籍をインポートする場合、神殇漫画は既存の書籍を新しい書籍にアップグレードし、古いファイルを新しいファイルに置き換えます。",
     "no_files_found": "ファイルが見つかりません",
     "notification": {
       "go_to_book": "書籍へ移動",
@@ -299,7 +299,7 @@
     "book_series": "シリーズ: {name}",
     "button_import": "インポート",
     "button_match": "マッチ",
-    "comicrack_preambule_html": "既存のComicRackの読書リストを<code>.cbl</code>形式でインポートすることができます。<br>Komgaは指定されたシリーズと書籍番号を、あなたのライブラリにあるシリーズと本に一致させようとします。",
+    "comicrack_preambule_html": "既存のComicRackの読書リストを<code>.cbl</code>形式でインポートすることができます。<br>神殇漫画は指定されたシリーズと書籍番号を、あなたのライブラリにあるシリーズと本に一致させようとします。",
     "dialog_confirmation": {
       "body": "{total} 冊のうち {unmatched} 冊が一致しませんでした",
       "body2": "{total} 冊のうち {duplicates} 冊が重複しています",
@@ -363,7 +363,7 @@
       "button_confirm": "削除",
       "confirm_delete": "APIキー\"{name}\"を削除することを了解しました",
       "dialog_title": "APIキーを削除",
-      "warning_html": "このAPIキーを使用するアプリケーションまたはスクリプトは、Komga APIにアクセスできなくなります。この操作を元に戻すことはできません。"
+      "warning_html": "このAPIキーを使用するアプリケーションまたはスクリプトは、神殇漫画 APIにアクセスできなくなります。この操作を元に戻すことはできません。"
     },
     "delete_book": {
       "button_confirm": "削除",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "停止",
-      "confirmation_message": "本当に Komga を停止しますか？",
+      "confirmation_message": "本当に 神殇漫画 を停止しますか？",
       "dialog_title": "サーバをシャットダウン"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "ユーザアカウントを作成",
     "login": "ログイン",
-    "unclaimed_html": "この Komga サーバはまだ有効になっておらず、アクセスするためのユーザアカウントを作成する必要があります。<br><br><strong>メールアドレス</strong>と<strong>パスワード</strong>を選んで<strong>ユーザアカウントの作成</strong>を押してください。"
+    "unclaimed_html": "この 神殇漫画 サーバはまだ有効になっておらず、アクセスするためのユーザアカウントを作成する必要があります。<br><br><strong>メールアドレス</strong>と<strong>パスワード</strong>を選んで<strong>ユーザアカウントの作成</strong>を押してください。"
   },
   "media_analysis": {
     "comment": "コメント",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "アップデートが利用可能です",
-    "latest_installed": "既に最新バージョンのKomgaがインストールされています"
+    "latest_installed": "既に最新バージョンの神殇漫画がインストールされています"
   },
   "user_roles": {
     "ADMIN": "管理者",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "ライブラリを追加",
     "no_libraries_yet": "まだライブラリが追加されていません！",
-    "welcome_message": "Komga へようこそ"
+    "welcome_message": "神殇漫画 へようこそ"
   }
 }

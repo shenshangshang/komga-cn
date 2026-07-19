@@ -1,11 +1,11 @@
 {
-  "name": "Komga",
-  "short_name": "Komga",
+  "name": "神殇漫画",
+  "short_name": "神殇漫画",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#08397f",
   "theme_color": "#424242",
-  "description": "Free and open source comics/mangas media server",
+  "description": "神殇漫画 - 漫画媒体服务器",
   "icons": [{
     "src": "favicon-32x32.png",
     "sizes": "32x32",

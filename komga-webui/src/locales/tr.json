@@ -67,8 +67,8 @@
     "button_scan": "Tara",
     "button_select_series": "Seri Seç",
     "field_import_path": "Klasörden içe aktar",
-    "info_part1": "Bu ekran dosyaları içeri aktarmanıza ve var olan kütüphanelerinizi dışarı çıkartmanıza olanak tanır. Sadece var olan serileri içeri aktarabilirsiniz, bu durumda Komga dosyaları seçilen serilere kopyalacak veya taşıyacaktır.",
-    "info_part2": "Bir kitap için bir numara seçerseniz ve bu numaraya sahip bir kitap zaten mevcutsa, 2 kitabı karşılaştırabilirsiniz. Kitabı içe aktarmaya karar verirseniz, Komga mevcut kitabı yenisiyle değiştirecektir.",
+    "info_part1": "Bu ekran dosyaları içeri aktarmanıza ve var olan kütüphanelerinizi dışarı çıkartmanıza olanak tanır. Sadece var olan serileri içeri aktarabilirsiniz, bu durumda 神殇漫画 dosyaları seçilen serilere kopyalacak veya taşıyacaktır.",
+    "info_part2": "Bir kitap için bir numara seçerseniz ve bu numaraya sahip bir kitap zaten mevcutsa, 2 kitabı karşılaştırabilirsiniz. Kitabı içe aktarmaya karar verirseniz, 神殇漫画 mevcut kitabı yenisiyle değiştirecektir.",
     "no_files_found": "Herhangi bir dosya bulunamadı",
     "notification": {
       "go_to_book": "Kitaba git",
@@ -293,7 +293,7 @@
     "book_series": "Seri: {name}",
     "button_import": "İçeri Aktar",
     "button_match": "Eşleşme",
-    "comicrack_preambule_html": "ComickRack Okuma Listelerini <code>.cbl</code> formatında içeri aktarabilirsiniz. <br>Komga seri ve kitap sayısını kütüphanenizdeki seri ve kitap sayılarıyla eşleştirmeye çalışacak.",
+    "comicrack_preambule_html": "ComickRack Okuma Listelerini <code>.cbl</code> formatında içeri aktarabilirsiniz. <br>神殇漫画 seri ve kitap sayısını kütüphanenizdeki seri ve kitap sayılarıyla eşleştirmeye çalışacak.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} kitap eşleşti",
       "create": "Yine de oluştur",
@@ -356,7 +356,7 @@
       "button_confirm": "Sil",
       "confirm_delete": "Anladım, \"{name}\" API anahtarını sil",
       "dialog_title": "API anahtarını sil",
-      "warning_html": "Bu API anahtarını kullanan uygulamalar Komga API'a erişimi kaybedecek. Bunu işlemi geri alamazsınız."
+      "warning_html": "Bu API anahtarını kullanan uygulamalar 神殇漫画 API'a erişimi kaybedecek. Bunu işlemi geri alamazsınız."
     },
     "delete_book": {
       "button_confirm": "Sil",
@@ -601,7 +601,7 @@
     },
     "server_stop": {
       "button_confirm": "Durdur",
-      "confirmation_message": "Komga'yı durdurmak istediğinizden emin misiniz ?",
+      "confirmation_message": "神殇漫画'yı durdurmak istediğinizden emin misiniz ?",
       "dialog_title": "Sunucuyu kapat"
     },
     "shortcut_help": {
@@ -852,7 +852,7 @@
   "login": {
     "create_user_account": "Kullanıcı hesabı oluştur",
     "login": "Giriş yap",
-    "unclaimed_html": "Bu Komga sunucusu henüz aktif değil, ulaşmak için bir kullanıcı hesabı oluşturmalısınız.<br><br><strong>e-Posta</strong> ve güçlü bir <strong>şifre</strong> seçin, sonrasında <strong>Kullanıcı hesabı oluştur</strong> butonuna tıklayın."
+    "unclaimed_html": "Bu 神殇漫画 sunucusu henüz aktif değil, ulaşmak için bir kullanıcı hesabı oluşturmalısınız.<br><br><strong>e-Posta</strong> ve güçlü bir <strong>şifre</strong> seçin, sonrasında <strong>Kullanıcı hesabı oluştur</strong> butonuna tıklayın."
   },
   "media_analysis": {
     "comment": "Yorum",
@@ -1008,7 +1008,7 @@
   },
   "updates": {
     "available": "Yeni güncellemeler mevcut",
-    "latest_installed": "Komga'nın güncel sürümü yüklü"
+    "latest_installed": "神殇漫画'nın güncel sürümü yüklü"
   },
   "user_roles": {
     "ADMIN": "Yönetici",
@@ -1031,6 +1031,6 @@
   "welcome": {
     "add_library": "Kütüphane ekle",
     "no_libraries_yet": "Henüz bir kütüphane eklenmemiş!",
-    "welcome_message": "Komga'ya Hoş Geldiniz"
+    "welcome_message": "神殇漫画'ya Hoş Geldiniz"
   }
 }

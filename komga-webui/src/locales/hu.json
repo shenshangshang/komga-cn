@@ -67,8 +67,8 @@
     "button_scan": "Beolvasás",
     "button_select_series": "Sorozat kiválasztása",
     "field_import_path": "Importálás mappából",
-    "info_part1": "Ez az ablak a meglévő könyvtáraidban nem található fájlokat engedi importálni. Csak meglévő sorozatokba tudsz fájlokat importálni, ekkor a Komga áthelyezi vagy átmásolja a kiválasztott sorozat mappájába a fájlokat.",
-    "info_part2": "Ha olyan számot választasz a könyvnek, ami már létezik, össze fogod tudni hasonlítani a két könyvet. Ha ezt követően mégis importálni szeretnéd a könyvet, a Komga lefrissíti a meglévő könyvet az újjal, ezzel lecserélve az eredeti fájlt az újra.",
+    "info_part1": "Ez az ablak a meglévő könyvtáraidban nem található fájlokat engedi importálni. Csak meglévő sorozatokba tudsz fájlokat importálni, ekkor a 神殇漫画 áthelyezi vagy átmásolja a kiválasztott sorozat mappájába a fájlokat.",
+    "info_part2": "Ha olyan számot választasz a könyvnek, ami már létezik, össze fogod tudni hasonlítani a két könyvet. Ha ezt követően mégis importálni szeretnéd a könyvet, a 神殇漫画 lefrissíti a meglévő könyvet az újjal, ezzel lecserélve az eredeti fájlt az újra.",
     "no_files_found": "Nem találtunk fájlokat",
     "notification": {
       "go_to_book": "Tovább a könyvhöz",
@@ -299,7 +299,7 @@
     "book_series": "Sorozat: {name}",
     "button_import": "Importálás",
     "button_match": "Megegyeztetés",
-    "comicrack_preambule_html": "Meglévő ComicRack olvasólistát a <code>.cbl</code> formátumban importálhatsz.<br>A Komga megpróbálja hozzákapcsolni a megkapott sorozatokat és könyvszámokat a te könyvtáradban található sorozatokhoz és könyvekhez.",
+    "comicrack_preambule_html": "Meglévő ComicRack olvasólistát a <code>.cbl</code> formátumban importálhatsz.<br>A 神殇漫画 megpróbálja hozzákapcsolni a megkapott sorozatokat és könyvszámokat a te könyvtáradban található sorozatokhoz és könyvekhez.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} könyv nem egyezik meg",
       "body2": "{duplicates} / {total} könyv duplikált",
@@ -363,7 +363,7 @@
       "button_confirm": "Törlés",
       "confirm_delete": "Megértettem, \"{name}\" API-kulcs törlése",
       "dialog_title": "API-kulcs törlése",
-      "warning_html": "Semelyik alkalmazás vagy script, ami ezt az API-kulcsot használta, nem fogja tudni a Komga API-t használni. Ez a művelet ne visszavonható."
+      "warning_html": "Semelyik alkalmazás vagy script, ami ezt az API-kulcsot használta, nem fogja tudni a 神殇漫画 API-t használni. Ez a művelet ne visszavonható."
     },
     "delete_book": {
       "button_confirm": "Törlés",
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Felhasználói fiók létrehozása",
     "login": "Bejelentkezés",
-    "unclaimed_html": "Ez a Komga szerver még nem aktív, létre kell hoznod egy felhasználói fiókot az eléréshez.<br><br>Válassz egy <strong>e-mail címet</strong> és egy <strong>jelszót</strong> majd kattings a <strong>Felhasználói fiók létrehozása</strong> gombra."
+    "unclaimed_html": "Ez a 神殇漫画 szerver még nem aktív, létre kell hoznod egy felhasználói fiókot az eléréshez.<br><br>Válassz egy <strong>e-mail címet</strong> és egy <strong>jelszót</strong> majd kattings a <strong>Felhasználói fiók létrehozása</strong> gombra."
   },
   "media_analysis": {
     "comment": "Megjegyzés",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Frissítések elérhetőek",
-    "latest_installed": "Már telepítve van a Komga legújabb verziója"
+    "latest_installed": "Már telepítve van a 神殇漫画 legújabb verziója"
   },
   "user_roles": {
     "ADMIN": "Adminisztrátor",

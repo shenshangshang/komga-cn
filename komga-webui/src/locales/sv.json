@@ -67,8 +67,8 @@
     "button_scan": "Skanna",
     "button_select_series": "Välj serie",
     "field_import_path": "Importera från mapp",
-    "info_part1": "Den här skärmen låter dig importera filer som ligger utanför dina befintliga bibliotek. Du kan bara importera filer till befintlig serie, i vilket fall Komga flyttar eller kopierar filerna till katalogen för den valda serien.",
-    "info_part2": "Om du väljer ett nummer för en bok och det redan finns en bok med det numret du kommer att kunna jämföra de två böckerna. Om du väljer att importera boken kommer Komga att uppgradera den befintliga boken med den nya, ersätter effektivt den gamla filen med den nya.",
+    "info_part1": "Den här skärmen låter dig importera filer som ligger utanför dina befintliga bibliotek. Du kan bara importera filer till befintlig serie, i vilket fall 神殇漫画 flyttar eller kopierar filerna till katalogen för den valda serien.",
+    "info_part2": "Om du väljer ett nummer för en bok och det redan finns en bok med det numret du kommer att kunna jämföra de två böckerna. Om du väljer att importera boken kommer 神殇漫画 att uppgradera den befintliga boken med den nya, ersätter effektivt den gamla filen med den nya.",
     "no_files_found": "Inga filer funna",
     "notification": {
       "go_to_book": "Gå till boken",
@@ -297,7 +297,7 @@
     "book_series": "Serie: {name}",
     "button_import": "Importera",
     "button_match": "Träff",
-    "comicrack_preambule_html": "Du kan importera existerande ComicRack Läslistor i <code>.cbl</code>-format.<br>Komga kommer att försöka matcha innehållet med serier och böker i dina bibliotek.",
+    "comicrack_preambule_html": "Du kan importera existerande ComicRack Läslistor i <code>.cbl</code>-format.<br>神殇漫画 kommer att försöka matcha innehållet med serier och böker i dina bibliotek.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} böcker är ej matchade",
       "create": "Skapa ändå",
@@ -357,7 +357,7 @@
       "button_confirm": "Radera",
       "confirm_delete": "Jag förstår, radera API-nyckel \"{name}\"",
       "dialog_title": "Radera API-nyckel",
-      "warning_html": "Applikationer eller skript som använder denna API-nyckel kommer inte längre kunna nyttja Komga API:et. Det går ej att ångra denna åtgärd."
+      "warning_html": "Applikationer eller skript som använder denna API-nyckel kommer inte längre kunna nyttja 神殇漫画 API:et. Det går ej att ångra denna åtgärd."
     },
     "delete_book": {
       "button_confirm": "Ta bort",
@@ -601,7 +601,7 @@
     },
     "server_stop": {
       "button_confirm": "Stopp",
-      "confirmation_message": "Är du säker på att du vill stoppa Komga?",
+      "confirmation_message": "Är du säker på att du vill stoppa 神殇漫画?",
       "dialog_title": "Stäng av servern"
     },
     "shortcut_help": {
@@ -845,7 +845,7 @@
   "login": {
     "create_user_account": "Skapa användarkonto",
     "login": "Logga in",
-    "unclaimed_html": "Denna Komga-server är ännu inte aktiv, du måste skapa ett användarkonto för att få åtkomst till den.<br><br>Välj en <strong>e-post</strong> och ett <strong>lösenord</strong> och klicka på <strong>Skapa användarkonto</strong>."
+    "unclaimed_html": "Denna 神殇漫画-server är ännu inte aktiv, du måste skapa ett användarkonto för att få åtkomst till den.<br><br>Välj en <strong>e-post</strong> och ett <strong>lösenord</strong> och klicka på <strong>Skapa användarkonto</strong>."
   },
   "media_analysis": {
     "comment": "Kommentar",
@@ -990,6 +990,6 @@
   "welcome": {
     "add_library": "Lägg till bibliotek",
     "no_libraries_yet": "Inga bilbiotek har lagts till än!",
-    "welcome_message": "Välkommen till Komga"
+    "welcome_message": "Välkommen till 神殇漫画"
   }
 }

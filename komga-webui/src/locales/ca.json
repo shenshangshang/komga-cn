@@ -58,8 +58,8 @@
     "button_scan": "Escaneja",
     "button_select_series": "Selecciona la sèrie",
     "field_import_path": "Importa des d'una carpeta",
-    "info_part1": "Aquesta pantalla permet importar fitxers que no són a les biblioteques existents. Només podeu importar fitxers per a una sèrie que ja existeix; aleshores, Komga mourà o copiarà els fitxers al directori de la sèrie que heu escollit.",
-    "info_part2": "Si heu triat un nombre per a un llibre i ja n'hi ha un que el té assignat podeu comparar tots dos llibres. Si decidiu importar-lo Komga l'actualitzarà amb el llibre nou i reemplaçarà el fitxer antic amb el nou.",
+    "info_part1": "Aquesta pantalla permet importar fitxers que no són a les biblioteques existents. Només podeu importar fitxers per a una sèrie que ja existeix; aleshores, 神殇漫画 mourà o copiarà els fitxers al directori de la sèrie que heu escollit.",
+    "info_part2": "Si heu triat un nombre per a un llibre i ja n'hi ha un que el té assignat podeu comparar tots dos llibres. Si decidiu importar-lo 神殇漫画 l'actualitzarà amb el llibre nou i reemplaçarà el fitxer antic amb el nou.",
     "no_files_found": "No s'ha trobat cap fitxer",
     "notification": {
       "go_to_book": "Vés al llibre",
@@ -269,7 +269,7 @@
     "book_series": "Sèrie: {name}",
     "button_import": "Importa",
     "button_match": "Fes coincidir",
-    "comicrack_preambule_html": "Podeu importar llistes de lectura de ComicRack amb el format <code>.cbl</code>. <br>Komga provarà de fer coincidir la sèrie i el nombre del llibre amb les sèries i llibres que ja són a les biblioteques.",
+    "comicrack_preambule_html": "Podeu importar llistes de lectura de ComicRack amb el format <code>.cbl</code>. <br>神殇漫画 provarà de fer coincidir la sèrie i el nombre del llibre amb les sèries i llibres que ja són a les biblioteques.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} llibres no coincideixen",
       "create": "Crea igualment",
@@ -559,7 +559,7 @@
     },
     "server_stop": {
       "button_confirm": "Atura",
-      "confirmation_message": "Esteu segur que voleu aturar Komga?",
+      "confirmation_message": "Esteu segur que voleu aturar 神殇漫画?",
       "dialog_title": "Atura el servidor"
     },
     "shortcut_help": {
@@ -804,7 +804,7 @@
   "login": {
     "create_user_account": "Crea un compte d'usuari",
     "login": "Inicia la sessió",
-    "unclaimed_html": "El servidor Komga encara no és actiu, cal crear un compte d'usuari per poder-hi accedir.<br><br>Trieu un <strong>correu electrònic</strong> i una <strong>contrasenya</strong> i feu clic a <strong>Crea un compte d'usuari</strong>."
+    "unclaimed_html": "El servidor 神殇漫画 encara no és actiu, cal crear un compte d'usuari per poder-hi accedir.<br><br>Trieu un <strong>correu electrònic</strong> i una <strong>contrasenya</strong> i feu clic a <strong>Crea un compte d'usuari</strong>."
   },
   "media_analysis": {
     "comment": "Comentari",
@@ -968,6 +968,6 @@
   "welcome": {
     "add_library": "Afegeix una biblioteca",
     "no_libraries_yet": "Encara no s'hi ha afegit cap biblioteca!",
-    "welcome_message": "Benvinguts a Komga"
+    "welcome_message": "Benvinguts a 神殇漫画"
   }
 }

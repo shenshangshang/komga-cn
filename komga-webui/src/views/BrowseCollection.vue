@@ -477,7 +477,7 @@ export default Vue.extend({
       this.$komgaCollections.getOneCollection(collectionId)
         .then(v => {
           this.collection = v
-          document.title = `Komga - ${v.name}`
+          document.title = `神殇漫画 - ${v.name}`
         })
 
       await this.loadPage(collectionId, this.page)

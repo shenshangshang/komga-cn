@@ -67,8 +67,8 @@
     "button_scan": "Escanear",
     "button_select_series": "Escolle a serie",
     "field_import_path": "Importar dende un cartafol",
-    "info_part1": "Esta pantalla permitiralle importar arquivos que están fóra das súas bibliotecas existentes. Só pódese importar arquivos a series que xa existan, nese caso Komga moverá ou copiará os arquivos cara o directorio da serie escollida.",
-    "info_part2": "Se escolles un número para un libro e existe xa algún outro libro con ese número, poderás comparalos. Se decides importar o libro, Komga actualizará o existente co novo, substituindo o ficheiro existente co novo.",
+    "info_part1": "Esta pantalla permitiralle importar arquivos que están fóra das súas bibliotecas existentes. Só pódese importar arquivos a series que xa existan, nese caso 神殇漫画 moverá ou copiará os arquivos cara o directorio da serie escollida.",
+    "info_part2": "Se escolles un número para un libro e existe xa algún outro libro con ese número, poderás comparalos. Se decides importar o libro, 神殇漫画 actualizará o existente co novo, substituindo o ficheiro existente co novo.",
     "no_files_found": "Non se atoparon ficheiros",
     "notification": {
       "go_to_book": "Ir ao libro",

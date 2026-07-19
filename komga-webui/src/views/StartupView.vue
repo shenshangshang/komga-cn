@@ -2,7 +2,7 @@
   <div class="pa-6 k-view-shell k-state-page">
     <v-row align="center" justify="center">
       <v-img src="../assets/logo.svg"
-             alt="Komga"
+             alt="神殇漫画"
              :max-width="logoWidth"
       />
     </v-row>

@@ -879,10 +879,10 @@ export default Vue.extend({
         this.book.context = this.context
         if (this?.context.origin === ContextOrigin.READLIST) {
           this.contextName = (await (this.$komgaReadLists.getOneReadList(this.context.id))).name
-          document.title = `Komga - ${this.contextName} - ${this.book.metadata.title}`
+          document.title = `神殇漫画 - ${this.contextName} - ${this.book.metadata.title}`
         }
       } else {
-        document.title = `Komga - ${this.bookTitle}`
+        document.title = `神殇漫画 - ${this.bookTitle}`
       }
 
       // parse query params to get incognito mode

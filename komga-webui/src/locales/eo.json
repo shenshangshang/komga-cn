@@ -52,8 +52,8 @@
     "button_scan": "Skani",
     "button_select_series": "Elekti Serion",
     "field_import_path": "Enporti el dosierujo",
-    "info_part1": "Ĉi tiu ekrano permesas enporti dosierojn ekster viaj ekzistantaj bibliotekoj. Vi povas nur enporti dosierojn en ekzistantan serion; tiaokaze Komga movos aŭ kopios la dosierojn en la dosierujon de la elektita serio.",
-    "info_part2": "Se vi elektos tiun numeron, kiunumera libro jam ekzistas, do vi povos kompari la du librojn. Se vi decidas enporti la libron malgraŭ tio, Komga anstataŭigos la ekzistantan libron per la nova.",
+    "info_part1": "Ĉi tiu ekrano permesas enporti dosierojn ekster viaj ekzistantaj bibliotekoj. Vi povas nur enporti dosierojn en ekzistantan serion; tiaokaze 神殇漫画 movos aŭ kopios la dosierojn en la dosierujon de la elektita serio.",
+    "info_part2": "Se vi elektos tiun numeron, kiunumera libro jam ekzistas, do vi povos kompari la du librojn. Se vi decidas enporti la libron malgraŭ tio, 神殇漫画 anstataŭigos la ekzistantan libron per la nova.",
     "no_files_found": "Neniu dosiero troviĝis",
     "notification": {
       "go_to_book": "Iri al libro",
@@ -238,7 +238,7 @@
     "book_number": "Numero de libro: {name}",
     "book_series": "Serio: {name}",
     "button_import": "Enporti",
-    "comicrack_preambule_html": "Vi povas enporti ekzistantajn legolistojn ComicRack de la dosiersufikso <code>.cbl</code>.<br>Komga provos identigi la provizitajn seriojn kaj libronumerojn kun la serioj kaj libroj en viaj bibliotekoj.",
+    "comicrack_preambule_html": "Vi povas enporti ekzistantajn legolistojn ComicRack de la dosiersufikso <code>.cbl</code>.<br>神殇漫画 provos identigi la provizitajn seriojn kaj libronumerojn kun la serioj kaj libroj en viaj bibliotekoj.",
     "field_files_label": "Legolistoj ComicRack (.cbl)",
     "import_read_lists": "Enporti Legolistojn",
     "imported_as": "Enportita kiel {name}",
@@ -477,7 +477,7 @@
     },
     "server_stop": {
       "button_confirm": "Ĉesigi",
-      "confirmation_message": "Ĉu vi certe volas ĉesigi Komga?",
+      "confirmation_message": "Ĉu vi certe volas ĉesigi 神殇漫画?",
       "dialog_title": "Haltigi servilon"
     },
     "shortcut_help": {
@@ -630,7 +630,7 @@
   "login": {
     "create_user_account": "Krei konton de uzanto",
     "login": "Saluti",
-    "unclaimed_html": "Ĉi tiu Komga-servilo ankoraŭ ne aktivas; vi devas krei konton de uzanto por uzi ĝin.<br><br>Elektu <strong>retpoŝtan adreson</strong> kaj <strong>pasvorton</strong> kaj alklaku la butonon <strong>Krei konton de uzanto</strong>."
+    "unclaimed_html": "Ĉi tiu 神殇漫画-servilo ankoraŭ ne aktivas; vi devas krei konton de uzanto por uzi ĝin.<br><br>Elektu <strong>retpoŝtan adreson</strong> kaj <strong>pasvorton</strong> kaj alklaku la butonon <strong>Krei konton de uzanto</strong>."
   },
   "media_analysis": {
     "comment": "Komento",
@@ -749,6 +749,6 @@
   "welcome": {
     "add_library": "Aldoni bibliotekon",
     "no_libraries_yet": "Ankoraŭ neniuj bibliotekoj estis aldonitaj!",
-    "welcome_message": "Bonvenon al Komga"
+    "welcome_message": "Bonvenon al 神殇漫画"
   }
 }

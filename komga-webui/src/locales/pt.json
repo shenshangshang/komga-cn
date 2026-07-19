@@ -67,8 +67,8 @@
     "button_scan": "Varredura",
     "button_select_series": "Selecionar série",
     "field_import_path": "Importar a partir de uma pasta",
-    "info_part1": "Este ecrã permite importar ficheiros que estão fora das suas bibliotecas existentes. Só pode importar ficheiros para as séries existentes; nesse caso, o Komga moverá ou copiará os ficheiros para a pasta da série escolhida.",
-    "info_part2": "Se escolher um número para um livro e se já existir um livro com este número, poderá comparar os dois livros. Se decidir importar o livro, o Komga vai atualizar o livro substituindo o ficheiro antigo pelo novo.",
+    "info_part1": "Este ecrã permite importar ficheiros que estão fora das suas bibliotecas existentes. Só pode importar ficheiros para as séries existentes; nesse caso, o 神殇漫画 moverá ou copiará os ficheiros para a pasta da série escolhida.",
+    "info_part2": "Se escolher um número para um livro e se já existir um livro com este número, poderá comparar os dois livros. Se decidir importar o livro, o 神殇漫画 vai atualizar o livro substituindo o ficheiro antigo pelo novo.",
     "no_files_found": "Nenhum ficheiro encontrado",
     "notification": {
       "go_to_book": "Ir para o livro",
@@ -299,7 +299,7 @@
     "book_series": "Série: {name}",
     "button_import": "Importar",
     "button_match": "Corresponder",
-    "comicrack_preambule_html": "Pode importar listas de leitura da ComicRack existentes no formato <code>.cbl</code>.<br>Komga tentará corresponder a série fornecida e o número do livro com as séries e livros nas suas bibliotecas.",
+    "comicrack_preambule_html": "Pode importar listas de leitura da ComicRack existentes no formato <code>.cbl</code>.<br>神殇漫画 tentará corresponder a série fornecida e o número do livro com as séries e livros nas suas bibliotecas.",
     "dialog_confirmation": {
       "body": "{unmatched} / {total} livro(s) não tiveram correspondências",
       "body2": "{duplicates} / {total} livros são duplicados",
@@ -363,7 +363,7 @@
       "button_confirm": "Apagar",
       "confirm_delete": "Compreendo: apagar a chave API \"{name}\"",
       "dialog_title": "Apagar a chave API",
-      "warning_html": "Quaisquer aplicações ou scripts que utilizem esta chave API já não poderão aceder à API Komga. Não poderá anular esta ação."
+      "warning_html": "Quaisquer aplicações ou scripts que utilizem esta chave API já não poderão aceder à API 神殇漫画. Não poderá anular esta ação."
     },
     "delete_book": {
       "button_confirm": "Apagar",
@@ -614,7 +614,7 @@
     },
     "server_stop": {
       "button_confirm": "Parar",
-      "confirmation_message": "Tem a certeza de que deseja parar o Komga?",
+      "confirmation_message": "Tem a certeza de que deseja parar o 神殇漫画?",
       "dialog_title": "Desligar servidor"
     },
     "shortcut_help": {
@@ -883,7 +883,7 @@
   "login": {
     "create_user_account": "Criar conta de utilizador",
     "login": "Entrar",
-    "unclaimed_html": "Este servidor Komga ainda não está ativo, terá de criar uma conta de utilizador para o poder aceder.<br><br>Escolha um <strong>email</strong> e <strong>senha</strong> e clique em <strong>Criar conta de utilizador</strong>."
+    "unclaimed_html": "Este servidor 神殇漫画 ainda não está ativo, terá de criar uma conta de utilizador para o poder aceder.<br><br>Escolha um <strong>email</strong> e <strong>senha</strong> e clique em <strong>Criar conta de utilizador</strong>."
   },
   "media_analysis": {
     "comment": "Comentário",
@@ -1063,7 +1063,7 @@
   },
   "updates": {
     "available": "Estão disponíveis atualizações",
-    "latest_installed": "A versão mais recente do Komga já está instalada"
+    "latest_installed": "A versão mais recente do 神殇漫画 já está instalada"
   },
   "user_roles": {
     "ADMIN": "Administrador",
@@ -1087,6 +1087,6 @@
   "welcome": {
     "add_library": "Adicionar biblioteca",
     "no_libraries_yet": "Ainda não foram adicionadas bibliotecas!",
-    "welcome_message": "Bem-vindo ao Komga"
+    "welcome_message": "Bem-vindo ao 神殇漫画"
   }
 }

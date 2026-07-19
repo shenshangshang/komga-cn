@@ -405,7 +405,8 @@
       "dialog_title": "Delete Book",
       "dialog_title_multiple": "Delete Books",
       "warning_html": "The book <b>{name}</b> will be removed from this server alongside with stored media files. This <b>cannot</b> be undone. Continue?",
-      "warning_multiple_html": "{count} books will be removed from this server alongside with stored media files. This <b>cannot</b> be undone. Continue?"
+      "warning_multiple_html": "{count} books will be removed from this server alongside with stored media files. This <b>cannot</b> be undone. Continue?",
+      "notification_submitted": "Deletion was submitted for {count} book(s); database cleanup will run automatically"
     },
     "delete_collection": {
       "button_confirm": "Delete",

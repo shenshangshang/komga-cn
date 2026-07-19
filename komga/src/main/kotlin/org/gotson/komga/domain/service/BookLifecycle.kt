@@ -45,13 +45,13 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
 import java.io.File
 import java.net.URLDecoder
+import java.nio.file.AccessDeniedException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.isWritable
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.notExists
 import kotlin.io.path.toPath
 import kotlin.math.roundToInt
 
@@ -557,8 +557,9 @@ class BookLifecycle(
   }
 
   fun deleteBookFiles(book: Book) {
-    if (book.path.notExists()) return logger.info { "Cannot delete book file, path does not exist: ${book.path}" }
-    if (!book.path.isWritable()) return logger.info { "Cannot delete book file, path is not writable: ${book.path}" }
+    val bookStorageExists = book.path.exists()
+    if (!bookStorageExists) logger.info { "Book storage is already absent, continue with database cleanup: ${book.path}" }
+    if (bookStorageExists && !book.path.isWritable()) throw AccessDeniedException(book.path.toString(), null, "Book storage is not writable")
 
     val thumbnails =
       thumbnailBookRepository
@@ -566,15 +567,17 @@ class BookLifecycle(
         .mapNotNull { it.url?.toURI()?.toPath() }
         .filter { it.exists() && it.isWritable() }
 
-    if (book.path.deleteIfExists()) {
-      logger.info { "Deleted file: ${book.path}" }
+    if (bookStorageExists) {
+      book.path.deleteBookStorage()
+      logger.info { "Deleted book storage: ${book.path}" }
       historicalEventRepository.insert(HistoricalEvent.BookFileDeleted(book, "File was deleted by user request"))
     }
     thumbnails.forEach {
       if (it.deleteIfExists()) logger.info { "Deleted file: $it" }
     }
 
-    if (book.path.parent
+    if (book.path.parent?.exists() == true &&
+      book.path.parent
         .listDirectoryEntries()
         .isEmpty()
     )

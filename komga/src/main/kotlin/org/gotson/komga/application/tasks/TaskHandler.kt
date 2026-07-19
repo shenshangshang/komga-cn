@@ -165,16 +165,27 @@ class TaskHandler(
 
           is Task.DeleteBook -> {
             bookRepository.findByIdOrNull(task.bookId)?.let { book ->
-              if (book.oneshot)
-                seriesLifecycle.deleteSeriesFiles(seriesRepository.findByIdOrNull(book.seriesId)!!)
-              else
+              val series = seriesRepository.findByIdOrNull(book.seriesId)
+              if (book.oneshot && series != null) {
+                seriesLifecycle.deleteSeriesFiles(series)
+              } else {
                 bookLifecycle.deleteBookFiles(book)
+                bookLifecycle.deleteOne(book)
+                series?.let {
+                  if (bookRepository.findAllBySeriesId(it.id).isEmpty())
+                    seriesLifecycle.deleteMany(listOf(it))
+                  else
+                    seriesLifecycle.sortBooks(it)
+                }
+              }
+              libraryRepository.findByIdOrNull(book.libraryId)?.let { libraryContentLifecycle.emptyTrash(it) }
             }
           }
 
           is Task.DeleteSeries -> {
             seriesRepository.findByIdOrNull(task.seriesId)?.let { series ->
               seriesLifecycle.deleteSeriesFiles(series)
+              libraryRepository.findByIdOrNull(series.libraryId)?.let { libraryContentLifecycle.emptyTrash(it) }
             }
           }
 

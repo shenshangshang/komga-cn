@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -50,31 +49,34 @@ class TasksDao(
       tasksAvailableCondition,
     )
 
-  @Transactional
   override fun takeFirst(owner: String): Task? {
-    val task =
-      dslRW
-        .selectBase()
-        .where(tasksAvailableCondition)
-        .orderBy(t.PRIORITY.desc(), t.LAST_MODIFIED_DATE)
-        .limit(1)
-        .fetchOne()
-        ?.let {
-          try {
-            objectMapper.readValue(it.value2(), Class.forName(it.value1())) as Task
-          } catch (e: Exception) {
-            logger.error(e) { "Could not deserialize object of type: ${it.value1()}" }
-            null
-          }
-        } ?: return null
+    while (true) {
+      val task =
+        dslRW
+          .selectBase()
+          .where(tasksAvailableCondition)
+          .orderBy(t.PRIORITY.desc(), t.LAST_MODIFIED_DATE, t.ID)
+          .limit(1)
+          .fetchOne()
+          ?.let {
+            try {
+              objectMapper.readValue(it.value2(), Class.forName(it.value1())) as Task
+            } catch (e: Exception) {
+              logger.error(e) { "Could not deserialize object of type: ${it.value1()}" }
+              null
+            }
+          } ?: return null
 
-    dslRW
-      .update(t)
-      .set(t.OWNER, owner)
-      .where(t.ID.eq(task.uniqueId))
-      .execute()
+      val claimed =
+        dslRW
+          .update(t)
+          .set(t.OWNER, owner)
+          .where(t.ID.eq(task.uniqueId))
+          .and(t.OWNER.isNull)
+          .execute()
 
-    return task
+      if (claimed == 1) return task
+    }
   }
 
   override fun findAll(): List<Task> =

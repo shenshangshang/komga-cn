@@ -406,7 +406,7 @@
       "dialog_title_multiple": "删除书籍",
       "warning_html": "<b>{name}</b> 连同所存储媒体文件将从此服务器中删除。此操作<b>无法</b>撤销。继续吗？",
       "warning_multiple_html": "{count} 本书连同所存储的媒体文件件从此服务器中删除。此操作<b>无法</b>撤销。继续吗？",
-      "notification_submitted": "已提交 {count} 本书的删除任务，完成后将自动清理数据库"
+      "notification_submitted": "已删除 {count} 本书及其源文件，数据库已完成清理"
     },
     "delete_collection": {
       "button_confirm": "删除",

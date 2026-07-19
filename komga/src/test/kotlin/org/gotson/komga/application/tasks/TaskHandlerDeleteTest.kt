@@ -1,13 +1,8 @@
 package org.gotson.komga.application.tasks
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
-import org.gotson.komga.domain.model.makeBook
-import org.gotson.komga.domain.model.makeLibrary
-import org.gotson.komga.domain.model.makeSeries
 import org.gotson.komga.domain.persistence.BookRepository
 import org.gotson.komga.domain.persistence.LibraryRepository
 import org.gotson.komga.domain.persistence.SeriesRepository
@@ -62,59 +57,16 @@ class TaskHandlerDeleteTest {
     )
 
   @Test
-  fun `deleting a regular book removes files and metadata then cleans the library`() {
-    val library = makeLibrary(id = "library")
-    val series = makeSeries(name = "series", libraryId = library.id)
-    val book = makeBook("book", id = "book", seriesId = series.id, libraryId = library.id)
-    every { bookRepository.findByIdOrNull(book.id) } returns book
-    every { seriesRepository.findByIdOrNull(series.id) } returns series
-    every { libraryRepository.findByIdOrNull(library.id) } returns library
-    every { bookRepository.findAllBySeriesId(series.id) } returns emptyList()
+  fun `delete book tasks delegate to the scan-locked content lifecycle`() {
+    handler.handleTask(Task.DeleteBook("book"))
 
-    handler.handleTask(Task.DeleteBook(book.id))
-
-    verifyOrder {
-      bookLifecycle.deleteBookFiles(book)
-      bookLifecycle.deleteOne(book)
-      seriesLifecycle.deleteMany(listOf(series))
-      libraryContentLifecycle.emptyTrash(library)
-    }
+    verify(exactly = 1) { libraryContentLifecycle.deleteBook("book") }
   }
 
   @Test
-  fun `deleting one book keeps and reorders a non-empty series`() {
-    val library = makeLibrary(id = "library")
-    val series = makeSeries(name = "series", libraryId = library.id)
-    val book = makeBook("book", id = "book", seriesId = series.id, libraryId = library.id)
-    val remaining = makeBook("remaining", id = "remaining", seriesId = series.id, libraryId = library.id)
-    every { bookRepository.findByIdOrNull(book.id) } returns book
-    every { seriesRepository.findByIdOrNull(series.id) } returns series
-    every { libraryRepository.findByIdOrNull(library.id) } returns library
-    every { bookRepository.findAllBySeriesId(series.id) } returns listOf(remaining)
+  fun `delete series tasks delegate to the scan-locked content lifecycle`() {
+    handler.handleTask(Task.DeleteSeries("series"))
 
-    handler.handleTask(Task.DeleteBook(book.id))
-
-    verifyOrder {
-      bookLifecycle.deleteBookFiles(book)
-      bookLifecycle.deleteOne(book)
-      seriesLifecycle.sortBooks(series)
-      libraryContentLifecycle.emptyTrash(library)
-    }
-    verify(exactly = 0) { seriesLifecycle.deleteMany(any()) }
-  }
-
-  @Test
-  fun `deleting a series immediately empties its database trash`() {
-    val library = makeLibrary(id = "library")
-    val series = makeSeries(name = "series", libraryId = library.id)
-    every { seriesRepository.findByIdOrNull(series.id) } returns series
-    every { libraryRepository.findByIdOrNull(library.id) } returns library
-
-    handler.handleTask(Task.DeleteSeries(series.id))
-
-    verifyOrder {
-      seriesLifecycle.deleteSeriesFiles(series)
-      libraryContentLifecycle.emptyTrash(library)
-    }
+    verify(exactly = 1) { libraryContentLifecycle.deleteSeries("series") }
   }
 }

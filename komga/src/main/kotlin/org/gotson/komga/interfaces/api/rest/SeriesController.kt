@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
-import org.gotson.komga.application.tasks.HIGHEST_PRIORITY
 import org.gotson.komga.application.tasks.HIGH_PRIORITY
 import org.gotson.komga.application.tasks.TaskEmitter
 import org.gotson.komga.domain.model.AlternateTitle
@@ -38,6 +37,7 @@ import org.gotson.komga.domain.persistence.SeriesMetadataRepository
 import org.gotson.komga.domain.persistence.SeriesRepository
 import org.gotson.komga.domain.persistence.ThumbnailSeriesRepository
 import org.gotson.komga.domain.service.BookLifecycle
+import org.gotson.komga.domain.service.LibraryContentLifecycle
 import org.gotson.komga.domain.service.SeriesLifecycle
 import org.gotson.komga.infrastructure.image.ImageAnalyzer
 import org.gotson.komga.infrastructure.jooq.UnpagedSorted
@@ -108,6 +108,7 @@ private val logger = KotlinLogging.logger {}
 @RequestMapping("api", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SeriesController(
   private val taskEmitter: TaskEmitter,
+  private val libraryContentLifecycle: LibraryContentLifecycle,
   private val seriesRepository: SeriesRepository,
   private val seriesLifecycle: SeriesLifecycle,
   private val seriesMetadataRepository: SeriesMetadataRepository,
@@ -971,14 +972,11 @@ class SeriesController(
   @Operation(summary = "Delete series files", description = "Delete all of the series' books files on disk.", tags = [OpenApiConfiguration.TagNames.SERIES])
   @DeleteMapping("v1/series/{seriesId}/file")
   @PreAuthorize("hasRole('ADMIN')")
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   fun deleteSeriesFile(
     @PathVariable seriesId: String,
   ) {
-    taskEmitter.deleteSeries(
-      seriesId = seriesId,
-      priority = HIGHEST_PRIORITY,
-    )
+    if (!libraryContentLifecycle.deleteSeries(seriesId)) throw ResponseStatusException(HttpStatus.NOT_FOUND)
   }
 
   /**

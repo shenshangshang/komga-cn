@@ -33,6 +33,7 @@ import org.gotson.komga.domain.persistence.ReadListRepository
 import org.gotson.komga.domain.persistence.ThumbnailBookRepository
 import org.gotson.komga.domain.service.BookAnalyzer
 import org.gotson.komga.domain.service.BookLifecycle
+import org.gotson.komga.domain.service.LibraryContentLifecycle
 import org.gotson.komga.infrastructure.image.ImageAnalyzer
 import org.gotson.komga.infrastructure.jooq.UnpagedSorted
 import org.gotson.komga.infrastructure.mediacontainer.ContentDetector
@@ -101,6 +102,7 @@ private val logger = KotlinLogging.logger {}
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class BookController(
   private val taskEmitter: TaskEmitter,
+  private val libraryContentLifecycle: LibraryContentLifecycle,
   private val bookAnalyzer: BookAnalyzer,
   private val bookLifecycle: BookLifecycle,
   private val bookRepository: BookRepository,
@@ -748,14 +750,11 @@ class BookController(
   @Operation(summary = "Delete book file", tags = [OpenApiConfiguration.TagNames.BOOKS])
   @DeleteMapping("api/v1/books/{bookId}/file")
   @PreAuthorize("hasRole('ADMIN')")
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   fun deleteBookFile(
     @PathVariable bookId: String,
   ) {
-    taskEmitter.deleteBook(
-      bookId = bookId,
-      priority = HIGHEST_PRIORITY,
-    )
+    if (!libraryContentLifecycle.deleteBook(bookId)) throw ResponseStatusException(HttpStatus.NOT_FOUND)
   }
 
   @Operation(summary = "Regenerate books posters", tags = [OpenApiConfiguration.TagNames.BOOK_POSTER])

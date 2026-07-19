@@ -109,7 +109,7 @@ import ReadListAddToDialog from '@/components/dialogs/ReadListAddToDialog.vue'
 import ReadListEditDialog from '@/components/dialogs/ReadListEditDialog.vue'
 import {BookDto} from '@/types/komga-books'
 import {Oneshot, SeriesDto} from '@/types/komga-series'
-import {ERROR, NOTIFICATION, NotificationEvent} from '@/types/events'
+import {BOOK_DELETED, ERROR, NOTIFICATION, NotificationEvent} from '@/types/events'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import {LibraryDto} from '@/types/komga-libraries'
 import BulkEditBooksDialog from '@/components/dialogs/BulkEditBooksDialog.vue'
@@ -349,6 +349,11 @@ export default Vue.extend({
       for (const b of toUpdate) {
         try {
           await this.$komgaBooks.deleteBook(b.id)
+          this.$eventHub.$emit(BOOK_DELETED, {
+            bookId: b.id,
+            seriesId: b.seriesId,
+            libraryId: b.libraryId,
+          })
           submitted++
         } catch (e) {
           this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)

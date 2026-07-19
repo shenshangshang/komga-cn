@@ -70,18 +70,23 @@ class LibraryContentLifecycle(
   private val eventPublisher: ApplicationEventPublisher,
   private val thumbnailSeriesRepository: ThumbnailSeriesRepository,
 ) {
-  fun scanRootFolder(
-    library: Library,
-    scanDeep: Boolean = false,
-  ) {
-    val lock = libraryScanLocks.computeIfAbsent(library.id) { ReentrantLock() }
+  private fun <T> withLibraryScanLock(
+    libraryId: String,
+    block: () -> T,
+  ): T {
+    val lock = libraryScanLocks.computeIfAbsent(libraryId) { ReentrantLock() }
     lock.lock()
-    try {
-      _scanRootFolder(library, scanDeep)
+    return try {
+      block()
     } finally {
       lock.unlock()
     }
   }
+
+  fun scanRootFolder(
+    library: Library,
+    scanDeep: Boolean = false,
+  ) = withLibraryScanLock(library.id) { _scanRootFolder(library, scanDeep) }
 
   private fun _scanRootFolder(
     library: Library,
@@ -529,6 +534,40 @@ class LibraryContentLifecycle(
     }
 
     cleanupEmptySets()
+  }
+
+  fun deleteBook(bookId: String): Boolean {
+    val libraryId = bookRepository.findByIdOrNull(bookId)?.libraryId ?: return false
+    return withLibraryScanLock(libraryId) {
+      val book = bookRepository.findByIdOrNull(bookId) ?: return@withLibraryScanLock false
+      val series = seriesRepository.findByIdOrNull(book.seriesId)
+
+      if (book.oneshot && series != null) {
+        seriesLifecycle.deleteSeriesFiles(series)
+      } else {
+        bookLifecycle.deleteBookFiles(book)
+        bookLifecycle.deleteOne(book)
+        series?.let {
+          if (bookRepository.findAllBySeriesId(it.id).isEmpty())
+            seriesLifecycle.deleteMany(listOf(it))
+          else
+            seriesLifecycle.sortBooks(it)
+        }
+      }
+
+      libraryRepository.findByIdOrNull(libraryId)?.let { emptyTrash(it) }
+      true
+    }
+  }
+
+  fun deleteSeries(seriesId: String): Boolean {
+    val libraryId = seriesRepository.findByIdOrNull(seriesId)?.libraryId ?: return false
+    return withLibraryScanLock(libraryId) {
+      val series = seriesRepository.findByIdOrNull(seriesId) ?: return@withLibraryScanLock false
+      seriesLifecycle.deleteSeriesFiles(series)
+      libraryRepository.findByIdOrNull(libraryId)?.let { emptyTrash(it) }
+      true
+    }
   }
 
   private fun cleanupEmptySets() {

@@ -163,31 +163,9 @@ class TaskHandler(
 
           is Task.UpgradeIndex -> searchIndexLifecycle.upgradeIndex()
 
-          is Task.DeleteBook -> {
-            bookRepository.findByIdOrNull(task.bookId)?.let { book ->
-              val series = seriesRepository.findByIdOrNull(book.seriesId)
-              if (book.oneshot && series != null) {
-                seriesLifecycle.deleteSeriesFiles(series)
-              } else {
-                bookLifecycle.deleteBookFiles(book)
-                bookLifecycle.deleteOne(book)
-                series?.let {
-                  if (bookRepository.findAllBySeriesId(it.id).isEmpty())
-                    seriesLifecycle.deleteMany(listOf(it))
-                  else
-                    seriesLifecycle.sortBooks(it)
-                }
-              }
-              libraryRepository.findByIdOrNull(book.libraryId)?.let { libraryContentLifecycle.emptyTrash(it) }
-            }
-          }
+          is Task.DeleteBook -> libraryContentLifecycle.deleteBook(task.bookId)
 
-          is Task.DeleteSeries -> {
-            seriesRepository.findByIdOrNull(task.seriesId)?.let { series ->
-              seriesLifecycle.deleteSeriesFiles(series)
-              libraryRepository.findByIdOrNull(series.libraryId)?.let { libraryContentLifecycle.emptyTrash(it) }
-            }
-          }
+          is Task.DeleteSeries -> libraryContentLifecycle.deleteSeries(task.seriesId)
 
           is Task.FindBookThumbnailsToRegenerate -> {
             taskEmitter.generateBookThumbnail(bookLifecycle.findBookThumbnailsToRegenerate(task.forBiggerResultOnly), task.priority)

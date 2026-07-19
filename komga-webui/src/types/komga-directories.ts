@@ -15,6 +15,8 @@ export interface SeriesDirectoryDto {
 
 export interface SeriesDirectoryListingDto {
   currentPath: string,
+  directBooksCount: number,
+  descendantBooksCount: number,
   breadcrumbs: SeriesDirectoryBreadcrumbDto[],
   directories: SeriesDirectoryDto[],
 }

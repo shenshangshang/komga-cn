@@ -22,9 +22,9 @@
                            :directory-path="currentDirectoryPath"
       />
       <v-toolbar-title>
-        <span v-if="$_.get(series, 'metadata.title')">{{ series.metadata.title }}</span>
-        <v-chip label class="mx-4" v-if="totalElements">
-          <span style="font-size: 1.1rem">{{ totalElements }}</span>
+        <span v-if="browseIdentity.title">{{ browseIdentity.title }}</span>
+        <v-chip label class="mx-4">
+          <span style="font-size: 1.1rem">{{ browseIdentity.booksCount }}</span>
         </v-chip>
       </v-toolbar-title>
 
@@ -101,7 +101,7 @@
           <v-container>
             <v-row>
               <v-col class="py-1">
-                <span class="text-h5" v-if="$_.get(series, 'metadata.title')">{{ series.metadata.title }}</span>
+                <span class="text-h5" v-if="browseIdentity.title">{{ browseIdentity.title }}</span>
                 <router-link
                   class="caption link-underline"
                   :class="$vuetify.breakpoint.smAndUp ? 'mx-2' : ''"
@@ -163,12 +163,12 @@
             </v-row>
 
             <v-row class="text-caption" align="center">
-              <v-col cols="auto" v-if="series.metadata.totalBookCount">
+              <v-col cols="auto" v-if="!currentDirectoryPath && series.metadata.totalBookCount">
                 {{ $t('common.books_total', {count: series.booksCount, total: series.metadata.totalBookCount}) }}
               </v-col>
 
               <v-col cols="auto" v-else>
-                {{ $tc('common.books_n', series.booksCount) }}
+                {{ $tc('common.books_n', browseIdentity.booksCount) }}
               </v-col>
             </v-row>
 
@@ -614,6 +614,7 @@ import {
   NameValue,
 } from '@/types/filter'
 import {SeriesDirectoryListingDto} from '@/types/komga-directories'
+import {getSeriesBrowseIdentity, SeriesBrowseIdentity} from '@/functions/series-directory-display'
 
 const tags = require('language-tags')
 
@@ -658,6 +659,8 @@ export default Vue.extend({
       currentDirectoryPath: '',
       directoryListing: {
         currentPath: '',
+        directBooksCount: 0,
+        descendantBooksCount: 0,
         breadcrumbs: [],
         directories: [],
       } as SeriesDirectoryListingDto,
@@ -687,6 +690,14 @@ export default Vue.extend({
     }
   },
   computed: {
+    browseIdentity(): SeriesBrowseIdentity {
+      return getSeriesBrowseIdentity(
+        this.$_.get(this.series, 'metadata.title') || this.series.name || '',
+        this.series.booksCount || 0,
+        this.currentDirectoryPath,
+        this.directoryListing.descendantBooksCount || 0,
+      )
+    },
     itemContext(): ItemContext[] {
       if (this.sortActive.key === 'metadata.releaseDate') return [ItemContext.RELEASE_DATE]
       if (this.sortActive.key === 'createdDate') return [ItemContext.DATE_ADDED]
@@ -869,10 +880,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    series(val) {
-      if (this.$_.has(val, 'metadata.title')) {
-        document.title = `神殇漫画 - ${val.metadata.title}`
-      }
+    browseIdentity(val: SeriesBrowseIdentity) {
+      if (val.title) document.title = `神殇漫画 - ${val.title}`
     },
   },
   created() {

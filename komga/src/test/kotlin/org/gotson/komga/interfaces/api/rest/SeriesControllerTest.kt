@@ -584,6 +584,36 @@ class SeriesControllerTest(
   }
 
   @Nested
+  inner class Directories {
+    @Test
+    @WithMockCustomUser
+    fun `given nested directory when listing it then returns its own book counts`() {
+      val createdSeries =
+        makeSeries(name = "series", libraryId = library.id).let { series ->
+          seriesLifecycle.createSeries(series).also { created ->
+            val books =
+              listOf(
+                makeBook("root", libraryId = library.id).copy(directoryPath = ""),
+                makeBook("direct", libraryId = library.id).copy(directoryPath = "volume"),
+                makeBook("nested", libraryId = library.id).copy(directoryPath = "volume/chapter"),
+              )
+            seriesLifecycle.addBooks(created, books)
+          }
+        }
+
+      mockMvc
+        .get("/api/v1/series/${createdSeries.id}/directories") {
+          param("parentPath", "volume")
+        }.andExpect {
+          status { isOk() }
+          jsonPath("$.currentPath") { value("volume") }
+          jsonPath("$.directBooksCount") { value(1) }
+          jsonPath("$.descendantBooksCount") { value(2) }
+        }
+    }
+  }
+
+  @Nested
   inner class UserWithoutLibraryAccess {
     @Test
     @WithMockCustomUser(sharedAllLibraries = false, sharedLibraries = [])

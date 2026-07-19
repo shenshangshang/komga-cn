@@ -2,6 +2,8 @@ package org.gotson.komga.interfaces.api.rest.dto
 
 data class SeriesDirectoryListingDto(
   val currentPath: String,
+  val directBooksCount: Int,
+  val descendantBooksCount: Int,
   val breadcrumbs: List<SeriesDirectoryBreadcrumbDto>,
   val directories: List<SeriesDirectoryDto>,
 )

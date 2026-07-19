@@ -551,7 +551,13 @@ class SeriesController(
           SeriesDirectoryBreadcrumbDto(segment, breadcrumbPath)
         }
 
-    return SeriesDirectoryListingDto(normalizedParent, breadcrumbs, directories)
+    return SeriesDirectoryListingDto(
+      currentPath = normalizedParent,
+      directBooksCount = books.count { it.directoryPath == normalizedParent },
+      descendantBooksCount = books.size,
+      breadcrumbs = breadcrumbs,
+      directories = directories,
+    )
   }
 
   @Operation(summary = "Get series' poster image", tags = [OpenApiConfiguration.TagNames.SERIES_POSTER])

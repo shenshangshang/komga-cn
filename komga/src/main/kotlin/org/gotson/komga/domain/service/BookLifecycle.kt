@@ -575,8 +575,8 @@ class BookLifecycle(
         pageFileNames = mediaRepository.findById(book.id).pages.map { it.fileName },
         protectedDescendantPaths =
           bookRepository
-            .findAllBySeriesId(book.seriesId)
-            .filter { it.id != book.id }
+            .findAll()
+            .filter { it.libraryId == book.libraryId && it.id != book.id && it.deletedDate == null }
             .map { it.path },
       )
       logger.info { "Deleted book storage: ${book.path}" }

@@ -32,6 +32,7 @@ import org.gotson.komga.domain.persistence.LibraryRepository
 import org.gotson.komga.domain.persistence.MediaRepository
 import org.gotson.komga.domain.persistence.ReadListRepository
 import org.gotson.komga.domain.persistence.ReadProgressRepository
+import org.gotson.komga.domain.persistence.SeriesRepository
 import org.gotson.komga.domain.persistence.ThumbnailBookRepository
 import org.gotson.komga.infrastructure.configuration.KomgaSettingsProvider
 import org.gotson.komga.infrastructure.hash.Hasher
@@ -60,6 +61,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class BookLifecycle(
   private val bookRepository: BookRepository,
+  private val seriesRepository: SeriesRepository,
   private val mediaRepository: MediaRepository,
   private val bookMetadataRepository: BookMetadataRepository,
   private val readProgressRepository: ReadProgressRepository,
@@ -110,7 +112,10 @@ class BookLifecycle(
     }
 
     eventPublisher.publishEvent(DomainEvent.BookUpdated(book))
-    if (becameReady) historicalEventRepository.insert(HistoricalEvent.BookAnalyzed(book))
+    if (becameReady) {
+      val seriesName = seriesRepository.findByIdOrNull(book.seriesId)?.name.orEmpty()
+      historicalEventRepository.insert(HistoricalEvent.BookAnalyzed(book, seriesName))
+    }
 
     return if (media.status == Media.Status.READY) setOf(BookAction.GENERATE_THUMBNAIL, BookAction.REFRESH_METADATA) else emptySet()
   }
@@ -580,7 +585,8 @@ class BookLifecycle(
             .map { it.path },
       )
       logger.info { "Deleted book storage: ${book.path}" }
-      historicalEventRepository.insert(HistoricalEvent.BookFileDeleted(book, "File was deleted by user request"))
+      val seriesName = seriesRepository.findByIdOrNull(book.seriesId)?.name.orEmpty()
+      historicalEventRepository.insert(HistoricalEvent.BookFileDeleted(book, "File was deleted by user request", seriesName))
     }
     thumbnails.forEach {
       if (it.deleteIfExists()) logger.info { "Deleted file: $it" }

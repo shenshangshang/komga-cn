@@ -16,7 +16,10 @@
       }"
     >
       <template v-slot:item.type="{ item }">
-        <v-icon :title="$t(`enums.historical_event_type.${item.type}`)">{{ getIcon(item.type) }}</v-icon>
+        <div class="d-flex align-center">
+          <v-icon class="mr-2">{{ getIcon(item.type) }}</v-icon>
+          <span>{{ $t(`enums.historical_event_type.${item.type}`) }}</span>
+        </div>
       </template>
 
       <template v-slot:item.seriesId="{ item }">
@@ -170,14 +173,12 @@ export default Vue.extend({
     displayBookName(item: HistoricalEventDto): string {
       return item.properties.bookName ||
         this.readablePathName(item.properties.name) ||
-        item.bookId ||
-        '—'
+        this.$t('history.deleted_book').toString()
     },
     displaySeriesName(item: HistoricalEventDto): string {
       return item.properties.seriesName ||
         (item.type === 'SeriesFolderDeleted' ? this.readablePathName(item.properties.name) : undefined) ||
-        item.seriesId ||
-        '—'
+        this.$t('history.deleted_series').toString()
     },
     showDetails(item: HistoricalEventDto) {
       this.dialogDetailsItem = item

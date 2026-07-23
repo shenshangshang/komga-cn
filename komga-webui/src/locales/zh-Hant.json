@@ -885,6 +885,8 @@
       "series": "系列",
       "type": "類型"
     },
+    "deleted_book": "已刪除書籍（舊記錄未儲存名稱）",
+    "deleted_series": "已刪除系列（舊記錄未儲存名稱）",
     "title": "歷史紀錄"
   },
   "horizontal_scroller": {

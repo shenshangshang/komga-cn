@@ -15,16 +15,18 @@ sealed class HistoricalEvent(
   class BookFileDeleted(
     book: Book,
     reason: String,
+    seriesName: String = "",
   ) : HistoricalEvent(
       type = "BookFileDeleted",
       bookId = book.id,
       seriesId = book.seriesId,
       properties =
-        mapOf(
-          "reason" to reason,
-          "name" to book.path.toString(),
-          "bookName" to book.name,
-        ),
+        buildMap {
+          put("reason", reason)
+          put("name", book.path.toString())
+          put("bookName", book.name)
+          if (seriesName.isNotBlank()) put("seriesName", seriesName)
+        },
     )
 
   class SeriesFolderDeleted(
@@ -78,15 +80,17 @@ sealed class HistoricalEvent(
 
   class BookAnalyzed(
     book: Book,
+    seriesName: String = "",
   ) : HistoricalEvent(
       type = "BookAnalyzed",
       bookId = book.id,
       seriesId = book.seriesId,
       properties =
-        mapOf(
-          "name" to book.path.toString(),
-          "bookName" to book.name,
-        ),
+        buildMap {
+          put("name", book.path.toString())
+          put("bookName", book.name)
+          if (seriesName.isNotBlank()) put("seriesName", seriesName)
+        },
     )
 
   class DuplicatePageDeleted(

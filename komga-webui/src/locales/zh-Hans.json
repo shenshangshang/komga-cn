@@ -963,6 +963,8 @@
       "series": "系列",
       "type": "类型"
     },
+    "deleted_book": "已删除书籍（旧记录未保存名称）",
+    "deleted_series": "已删除系列（旧记录未保存名称）",
     "title": "历史记录"
   },
   "horizontal_scroller": {

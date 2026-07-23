@@ -963,6 +963,8 @@
       "series": "Series",
       "type": "Type"
     },
+    "deleted_book": "Deleted book (name unavailable in old record)",
+    "deleted_series": "Deleted series (name unavailable in old record)",
     "title": "History"
   },
   "horizontal_scroller": {

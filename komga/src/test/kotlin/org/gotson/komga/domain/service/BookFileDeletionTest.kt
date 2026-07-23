@@ -3,10 +3,69 @@ package org.gotson.komga.domain.service
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 
 class BookFileDeletionTest {
+  @Test
+  fun `shared directory deletion removes only analyzed pages and preserves nested sibling storage`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val series = fs.getPath("/series")
+      Files.createDirectories(series.resolve("sibling"))
+      Files.createFile(series.resolve("loose-page.jpg"))
+      Files.createFile(series.resolve("sibling/page.jpg"))
+
+      series.deleteBookStorage(
+        pageFileNames = listOf("loose-page.jpg"),
+        protectedDescendantPaths = listOf(series.resolve("sibling")),
+      )
+
+      assertThat(Files.notExists(series.resolve("loose-page.jpg"))).isTrue()
+      assertThat(Files.exists(series.resolve("sibling/page.jpg"))).isTrue()
+      assertThat(Files.exists(series)).isTrue()
+    }
+  }
+
+  @Test
+  fun `shared directory deletion refuses path traversal`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val series = fs.getPath("/series")
+      Files.createDirectories(series.resolve("sibling"))
+      Files.createFile(fs.getPath("/outside.jpg"))
+
+      assertThatThrownBy {
+        series.deleteBookStorage(
+          pageFileNames = listOf("../outside.jpg"),
+          protectedDescendantPaths = listOf(series.resolve("sibling")),
+        )
+      }.isInstanceOf(IllegalStateException::class.java)
+
+      assertThat(Files.exists(fs.getPath("/outside.jpg"))).isTrue()
+    }
+  }
+
+  @Test
+  fun `shared directory deletion validates every page before deleting and refuses sibling pages`() {
+    Jimfs.newFileSystem(Configuration.unix()).use { fs ->
+      val series = fs.getPath("/series")
+      val sibling = series.resolve("sibling")
+      Files.createDirectories(sibling)
+      Files.createFile(series.resolve("loose-page.jpg"))
+      Files.createFile(sibling.resolve("page.jpg"))
+
+      assertThatThrownBy {
+        series.deleteBookStorage(
+          pageFileNames = listOf("loose-page.jpg", "sibling/page.jpg"),
+          protectedDescendantPaths = listOf(sibling),
+        )
+      }.isInstanceOf(IllegalStateException::class.java)
+
+      assertThat(Files.exists(series.resolve("loose-page.jpg"))).isTrue()
+      assertThat(Files.exists(sibling.resolve("page.jpg"))).isTrue()
+    }
+  }
+
   @Test
   fun `deleteBookStorage deletes a regular book file`() {
     Jimfs.newFileSystem(Configuration.unix()).use { fs ->

@@ -25,7 +25,7 @@
                      class="link-underline"
         >{{ getSeries(item.seriesId).metadata.title }}
         </router-link>
-        <template v-else>{{ item.seriesId }}</template>
+        <template v-else>{{ displaySeriesName(item) }}</template>
       </template>
 
       <template v-slot:item.bookId="{ item }">
@@ -34,7 +34,7 @@
                      class="link-underline"
         >{{ getBook(item.bookId).metadata.title }}
         </router-link>
-        <template v-else>{{ item.bookId }}</template>
+        <template v-else>{{ displayBookName(item) }}</template>
       </template>
 
       <template v-slot:item.timestamp="{ item }">
@@ -157,6 +157,28 @@ export default Vue.extend({
     getBook(bookId: string): BookDto | undefined {
       return this.booksCache.find(x => x.id === bookId)
     },
+    readablePathName(value: string | undefined): string | undefined {
+      if (!value) return undefined
+      let decoded = value
+      try {
+        decoded = decodeURIComponent(value)
+      } catch (_) {
+        // Keep the original value if it is not valid URI-encoded text.
+      }
+      return decoded.replace(/\\/g, '/').split('/').filter(Boolean).pop()
+    },
+    displayBookName(item: HistoricalEventDto): string {
+      return item.properties.bookName ||
+        this.readablePathName(item.properties.name) ||
+        item.bookId ||
+        '—'
+    },
+    displaySeriesName(item: HistoricalEventDto): string {
+      return item.properties.seriesName ||
+        (item.type === 'SeriesFolderDeleted' ? this.readablePathName(item.properties.name) : undefined) ||
+        item.seriesId ||
+        '—'
+    },
     showDetails(item: HistoricalEventDto) {
       this.dialogDetailsItem = item
       this.dialogDetails = true
@@ -173,6 +195,8 @@ export default Vue.extend({
           return 'mdi-archive-refresh'
         case 'BookImported':
           return 'mdi-import'
+        case 'BookAnalyzed':
+          return 'mdi-book-check'
         default:
           return ''
       }

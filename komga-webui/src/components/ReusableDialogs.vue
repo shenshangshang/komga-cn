@@ -92,6 +92,7 @@
       :confirm-text="booksToDeleteSingle ? $t('dialog.delete_book.confirm_delete', {name: booksToDelete.name}) : $t('dialog.delete_book.confirm_delete_multiple', {count: booksToDelete.length})"
       :button-confirm="$t('dialog.delete_book.button_confirm')"
       button-confirm-color="error"
+      :loading="deletingBooks"
       @confirm="deleteBooks"
     />
 
@@ -130,6 +131,9 @@ export default Vue.extend({
     EditBooksDialog,
     EditSeriesDialog,
   },
+  data: () => ({
+    deletingBookIds: [] as string[],
+  }),
   computed: {
     // collections
     addToCollectionDialog: {
@@ -266,6 +270,9 @@ export default Vue.extend({
     booksToDeleteSingle(): boolean {
       return !Array.isArray(this.booksToDelete)
     },
+    deletingBooks(): boolean {
+      return this.deletingBookIds.length > 0
+    },
     // oneshots
     updateOneshotsDialog: {
       get(): boolean {
@@ -344,20 +351,28 @@ export default Vue.extend({
       }
     },
     async deleteBooks() {
-      const toUpdate = (this.booksToDeleteSingle ? [this.booksToDelete] : this.booksToDelete) as BookDto[]
+      const requested = (this.booksToDeleteSingle ? [this.booksToDelete] : this.booksToDelete) as BookDto[]
+      const toUpdate = Array.from(new Map(requested.map(book => [book.id, book])).values())
+      if (toUpdate.some(book => this.deletingBookIds.includes(book.id))) return
+
+      this.deletingBookIds = toUpdate.map(book => book.id)
       let submitted = 0
-      for (const b of toUpdate) {
-        try {
-          await this.$komgaBooks.deleteBook(b.id)
-          this.$eventHub.$emit(BOOK_DELETED, {
-            bookId: b.id,
-            seriesId: b.seriesId,
-            libraryId: b.libraryId,
-          })
-          submitted++
-        } catch (e) {
-          this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)
+      try {
+        for (const b of toUpdate) {
+          try {
+            await this.$komgaBooks.deleteBook(b.id)
+            this.$eventHub.$emit(BOOK_DELETED, {
+              bookId: b.id,
+              seriesId: b.seriesId,
+              libraryId: b.libraryId,
+            })
+            submitted++
+          } catch (e) {
+            this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)
+          }
         }
+      } finally {
+        this.deletingBookIds = []
       }
       if (submitted > 0) {
         this.$eventHub.$emit(NOTIFICATION, {

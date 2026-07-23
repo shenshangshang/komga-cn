@@ -756,6 +756,7 @@
     "historical_event_type": {
       "BookConverted": "Book converted",
       "BookFileDeleted": "Book file deleted",
+      "BookAnalyzed": "Book analyzed and added",
       "BookImported": "Book imported",
       "DuplicatePageDeleted": "Duplicate page deleted",
       "SeriesFolderDeleted": "Series folder deleted"

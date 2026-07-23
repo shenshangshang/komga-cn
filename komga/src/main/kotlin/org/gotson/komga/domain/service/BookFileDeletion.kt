@@ -69,3 +69,42 @@ internal class BookStorageDeleter(
 }
 
 internal fun Path.deleteBookStorage() = BookStorageDeleter().delete(this)
+
+internal fun Path.deleteBookStorage(
+  pageFileNames: Collection<String>,
+  protectedDescendantPaths: Collection<Path>,
+) {
+  val root = normalize()
+  val protectedPaths =
+    protectedDescendantPaths
+      .asSequence()
+      .map { it.normalize() }
+      .filter { it != root && it.startsWith(root) }
+      .toList()
+
+  if (protectedPaths.isEmpty()) {
+    deleteBookStorage()
+    return
+  }
+
+  check(pageFileNames.isNotEmpty()) {
+    "Refusing to delete a shared book directory without an analyzed page list: $root"
+  }
+
+  val pagePaths =
+    pageFileNames.map { fileName ->
+    val pagePath = root.resolve(fileName).normalize()
+    check(pagePath.startsWith(root)) {
+      "Refusing to delete a page outside the book directory: $pagePath"
+    }
+    check(!Files.isDirectory(pagePath)) {
+      "Refusing to recursively delete a nested directory from a shared book path: $pagePath"
+    }
+      check(protectedPaths.none { pagePath.startsWith(it) }) {
+        "Refusing to delete a page belonging to sibling book storage: $pagePath"
+      }
+      pagePath
+    }
+
+  pagePaths.forEach(Files::deleteIfExists)
+}

@@ -89,9 +89,11 @@ class BookLifecycle(
           libraryRepository.findById(book.libraryId).adPagesDetector
         )
 
+    var becameReady = false
     transactionTemplate.executeWithoutResult {
       // if the number of pages has changed, delete all read progress for that book
       mediaRepository.findById(book.id).let { previous ->
+        becameReady = previous.status != Media.Status.READY && media.status == Media.Status.READY
         if (previous.status == Media.Status.OUTDATED && previous.pageCount != media.pageCount) {
           val adjustedProgress =
             readProgressRepository
@@ -108,6 +110,7 @@ class BookLifecycle(
     }
 
     eventPublisher.publishEvent(DomainEvent.BookUpdated(book))
+    if (becameReady) historicalEventRepository.insert(HistoricalEvent.BookAnalyzed(book))
 
     return if (media.status == Media.Status.READY) setOf(BookAction.GENERATE_THUMBNAIL, BookAction.REFRESH_METADATA) else emptySet()
   }
@@ -568,7 +571,14 @@ class BookLifecycle(
         .filter { it.exists() && it.isWritable() }
 
     if (bookStorageExists) {
-      book.path.deleteBookStorage()
+      book.path.deleteBookStorage(
+        pageFileNames = mediaRepository.findById(book.id).pages.map { it.fileName },
+        protectedDescendantPaths =
+          bookRepository
+            .findAllBySeriesId(book.seriesId)
+            .filter { it.id != book.id }
+            .map { it.path },
+      )
       logger.info { "Deleted book storage: ${book.path}" }
       historicalEventRepository.insert(HistoricalEvent.BookFileDeleted(book, "File was deleted by user request"))
     }

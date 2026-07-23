@@ -756,6 +756,7 @@
     "historical_event_type": {
       "BookConverted": "书籍已转换",
       "BookFileDeleted": "书籍文件已删除",
+      "BookAnalyzed": "书籍分析完成并加入",
       "BookImported": "导入的书籍",
       "DuplicatePageDeleted": "重复页面已删除",
       "SeriesFolderDeleted": "系列文件夹已删除"

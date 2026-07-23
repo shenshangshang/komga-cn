@@ -723,6 +723,7 @@
     "historical_event_type": {
       "BookConverted": "書籍已轉換",
       "BookFileDeleted": "書籍檔案已删除",
+      "BookAnalyzed": "書籍分析完成並加入",
       "BookImported": "匯入的書籍",
       "DuplicatePageDeleted": "重複頁面已删除",
       "SeriesFolderDeleted": "系列資料夾已删除"

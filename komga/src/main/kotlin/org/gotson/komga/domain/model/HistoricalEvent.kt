@@ -23,6 +23,7 @@ sealed class HistoricalEvent(
         mapOf(
           "reason" to reason,
           "name" to book.path.toString(),
+          "bookName" to book.name,
         ),
     )
 
@@ -68,8 +69,23 @@ sealed class HistoricalEvent(
       properties =
         mapOf(
           "name" to book.path.toString(),
+          "bookName" to book.name,
+          "seriesName" to series.name,
           "source" to source.toString(),
           "upgrade" to if (upgrade) "Yes" else "No",
+        ),
+    )
+
+  class BookAnalyzed(
+    book: Book,
+  ) : HistoricalEvent(
+      type = "BookAnalyzed",
+      bookId = book.id,
+      seriesId = book.seriesId,
+      properties =
+        mapOf(
+          "name" to book.path.toString(),
+          "bookName" to book.name,
         ),
     )
 

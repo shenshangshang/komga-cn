@@ -109,8 +109,10 @@ There is no separate repository-wide formatter command documented. Respect
   `/config`.
 - Required database variables:
   `KOMGA_DATABASE_URL`, `KOMGA_DATABASE_USERNAME`,
-  `KOMGA_DATABASE_PASSWORD`, `KOMGA_TASKS_DB_URL`,
-  `KOMGA_TASKS_DB_USERNAME`, and `KOMGA_TASKS_DB_PASSWORD`.
+  and `KOMGA_DATABASE_PASSWORD`.
+- The task datasource inherits the main database URL, username, and password.
+  `KOMGA_TASKS_DB_URL`, `KOMGA_TASKS_DB_USERNAME`, and
+  `KOMGA_TASKS_DB_PASSWORD` remain optional for backward compatibility.
 - Pool controls:
   `KOMGA_DATABASE_POOL_SIZE`, `KOMGA_DATABASE_MAX_POOL_SIZE`,
   `KOMGA_TASKS_DB_POOL_SIZE`, and `KOMGA_TASKS_DB_MAX_POOL_SIZE`.
@@ -196,4 +198,3 @@ There is no separate repository-wide formatter command documented. Respect
 - Expected global MCP servers are Headroom, CodeGraph, and Skill Depot. If absent
   in a new Codex session, run the canonical global MCP repair script and restart
   Codex/new task to expose the repaired tools.
-

@@ -33,11 +33,12 @@ GRANT ALL PRIVILEGES ON komga.* TO 'komga'@'%';
 FLUSH PRIVILEGES;
 ```
 
-任务数据可以与主数据共用 `komga` 数据库，无需再创建单独的 `komga_tasks`。
+任务数据与主数据保存在同一个 `komga` 数据库中，无需创建单独的 `komga_tasks`。
 
 ### 2. Docker Compose
 
-创建 `.env`，不要把它提交到 Git：
+在 `compose.yaml` 所在目录创建 `.env`，把示例值替换成实际的 MySQL 密码。
+该文件只供本机的 Docker Compose 读取，不要上传到 GitHub 或公开分享：
 
 ```dotenv
 KOMGA_DATABASE_PASSWORD=请替换为数据库密码
@@ -61,9 +62,6 @@ services:
       KOMGA_DATABASE_USERNAME: komga
       KOMGA_DATABASE_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
       KOMGA_DATABASE_POOL_SIZE: "16"
-      KOMGA_TASKS_DB_URL: jdbc:mysql://mysql.example.com:3306/komga
-      KOMGA_TASKS_DB_USERNAME: komga
-      KOMGA_TASKS_DB_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
       KOMGA_TASKS_DB_POOL_SIZE: "4"
     volumes:
       - ./config:/config
@@ -93,15 +91,12 @@ docker compose logs -f komga
 docker run -d \
   --name shenshang-manga \
   --restart unless-stopped \
+  --env-file .env \
   -p 25600:25600 \
   -e TZ=Asia/Shanghai \
   -e CHS=TRUE \
   -e KOMGA_DATABASE_URL=jdbc:mysql://mysql.example.com:3306/komga \
   -e KOMGA_DATABASE_USERNAME=komga \
-  -e KOMGA_DATABASE_PASSWORD='请替换为数据库密码' \
-  -e KOMGA_TASKS_DB_URL=jdbc:mysql://mysql.example.com:3306/komga \
-  -e KOMGA_TASKS_DB_USERNAME=komga \
-  -e KOMGA_TASKS_DB_PASSWORD='请替换为数据库密码' \
   -v "$PWD/config:/config" \
   -v "$PWD/data:/data" \
   -v "/path/to/comics:/data/Comic" \
@@ -123,14 +118,17 @@ docker run -d \
 | `KOMGA_DATABASE_PASSWORD` | 是 | 无 | 主数据库密码。 |
 | `KOMGA_DATABASE_POOL_SIZE` | 否 | CPU 数量与 8 的较小值 | 主数据库 Hikari 连接池大小。 |
 | `KOMGA_DATABASE_MAX_POOL_SIZE` | 否 | `8` | 未显式设置连接池大小时的上限。 |
-| `KOMGA_TASKS_DB_URL` | 是 | 无 | 任务数据库 JDBC URL，可与主数据库相同。 |
-| `KOMGA_TASKS_DB_USERNAME` | 是 | 无 | 任务数据库用户名。 |
-| `KOMGA_TASKS_DB_PASSWORD` | 是 | 无 | 任务数据库密码。 |
-| `KOMGA_TASKS_DB_POOL_SIZE` | 否 | CPU 数量与 8 的较小值 | 任务数据库连接池大小。 |
+| `KOMGA_TASKS_DB_POOL_SIZE` | 否 | CPU 数量与 8 的较小值 | 后台任务使用的独立连接池大小。任务数据仍保存在主数据库。 |
 | `KOMGA_TASKS_DB_MAX_POOL_SIZE` | 否 | `8` | 未显式设置任务池大小时的上限。 |
 | `KOMGA_PREFETCH_PAGES` | 否 | `3` | 阅读器预取页数，允许 `0` 到 `10`。 |
 
-Spring Boot 支持宽松绑定，因此表中的大写下划线变量会映射到对应的 `komga.*` 配置项。
+程序内部为网页请求和后台任务保留两个连接池，以避免扫描、分析任务阻塞正常访问；
+两者默认连接同一个 MySQL 数据库。普通安装只需配置一组
+`KOMGA_DATABASE_URL`、`KOMGA_DATABASE_USERNAME` 和 `KOMGA_DATABASE_PASSWORD`。
+
+为兼容旧部署，仍支持 `KOMGA_TASKS_DB_URL`、`KOMGA_TASKS_DB_USERNAME` 和
+`KOMGA_TASKS_DB_PASSWORD`。只有明确需要把任务表放到其他数据库时才设置它们；
+未设置时会自动继承主数据库配置。
 
 ## 数据目录与备份
 

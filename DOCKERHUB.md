@@ -34,9 +34,6 @@ services:
       KOMGA_DATABASE_USERNAME: komga
       KOMGA_DATABASE_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
       KOMGA_DATABASE_POOL_SIZE: "16"
-      KOMGA_TASKS_DB_URL: jdbc:mysql://mysql.example.com:3306/komga
-      KOMGA_TASKS_DB_USERNAME: komga
-      KOMGA_TASKS_DB_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
       KOMGA_TASKS_DB_POOL_SIZE: "4"
     volumes:
       - ./config:/config
@@ -45,7 +42,8 @@ services:
     mem_limit: 2g
 ```
 
-在同目录创建 `.env`：
+在 `compose.yaml` 同目录创建 `.env`，把示例值替换成实际的 MySQL 密码。
+该文件仅供本机 Docker Compose 读取，请勿上传或公开分享：
 
 ```dotenv
 KOMGA_DATABASE_PASSWORD=请替换为数据库密码
@@ -68,14 +66,15 @@ docker compose up -d
 | `KOMGA_DATABASE_USERNAME` | 主数据库用户名。 |
 | `KOMGA_DATABASE_PASSWORD` | 主数据库密码。 |
 | `KOMGA_DATABASE_POOL_SIZE` | 主数据库连接池大小。 |
-| `KOMGA_TASKS_DB_URL` | 任务数据库 JDBC URL，可与主数据库相同。 |
-| `KOMGA_TASKS_DB_USERNAME` | 任务数据库用户名。 |
-| `KOMGA_TASKS_DB_PASSWORD` | 任务数据库密码。 |
-| `KOMGA_TASKS_DB_POOL_SIZE` | 任务数据库连接池大小。 |
+| `KOMGA_TASKS_DB_POOL_SIZE` | 后台任务独立连接池大小；任务数据仍保存在主数据库。 |
 | `KOMGA_PREFETCH_PAGES` | 阅读器预取页数，范围 `0` 到 `10`。 |
 | `JAVA_TOOL_OPTIONS` | JVM 内存等运行参数。 |
 
 完整变量、MySQL 初始化、权限、备份、升级、回滚和源码构建说明请查看 GitHub README。
+
+普通安装只需配置一组 `KOMGA_DATABASE_URL`、`KOMGA_DATABASE_USERNAME` 和
+`KOMGA_DATABASE_PASSWORD`。网页请求与后台任务虽然使用两个连接池，但默认连接同一个
+MySQL 数据库，不需要重复填写数据库地址和账户。
 
 ## 数据与权限
 

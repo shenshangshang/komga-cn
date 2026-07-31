@@ -26,12 +26,3 @@ updates:
     #      include: "scope"
     schedule:
       interval: "weekly"
-
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    commit-message:
-      prefix: "deps(ci)"
-    #      include: "scope"
-    schedule:
-      interval: "weekly"

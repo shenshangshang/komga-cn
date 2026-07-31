@@ -1,16 +1,91 @@
-[![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/komga?label=OpenCollective%20Sponsors&color=success)](https://opencollective.com/komga) ![GitHub Sponsors](https://img.shields.io/github/sponsors/gotson?label=Github%20Sponsors&color=success)
-[![Discord](https://img.shields.io/discord/678794935368941569?label=Discord&color=blue)](https://discord.gg/TdRpkDu)
+# 神殇漫画（Komga 中文增强版）
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/gotson/komga/ci.yml?branch=master)](https://github.com/gotson/komga/actions?query=workflow%3ACI+branch%3Amaster)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/gotson/komga?color=blue&label=download&sort=semver)](https://github.com/gotson/komga/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/gotson/komga)](https://hub.docker.com/r/gotson/komga)
+神殇漫画是面向中文漫画库的 Komga 增强镜像，提供 AURORA 现代化界面、目录型漫画、
+多层目录分类、系列/目录打包下载、定时扫描与清理、MySQL 存储和中文历史记录。
 
-[![Translation status](https://hosted.weblate.org/widgets/komga/-/webui/svg-badge.svg)](https://hosted.weblate.org/engage/komga/)
+源码与完整说明：
+[github.com/shenshangshang/komga-cn](https://github.com/shenshangshang/komga-cn)
 
-# ![app icon](https://github.com/gotson/komga/raw/master/.github/readme-images/app-icon.png) Komga
+## 支持内容
 
-[Komga](https://github.com/gotson/komga) is a media server for your comics, mangas, BDs, magazines and eBooks.
+- CBZ、ZIP、PDF、EPUB、MOBI
+- 图片文件夹直接识别为漫画，无需预先压缩
+- 多层目录浏览与嵌套分类
+- 系列和目录流式打包下载
+- 删除源文件、数据库清理与兄弟目录保护
+- 可配置的定时扫描、分析和清理
+- MySQL 主数据与任务数据共库
 
-## Usage
+## Docker Compose
 
-Please refer to the [official documentation](https://komga.org/docs/installation/docker).
+```yaml
+services:
+  komga:
+    image: shenshangshang/komga-cn:latest
+    container_name: shenshang-manga
+    restart: unless-stopped
+    ports:
+      - "25600:25600"
+    environment:
+      TZ: Asia/Shanghai
+      CHS: "TRUE"
+      JAVA_TOOL_OPTIONS: -Xmx1536m
+      KOMGA_DATABASE_URL: jdbc:mysql://mysql.example.com:3306/komga
+      KOMGA_DATABASE_USERNAME: komga
+      KOMGA_DATABASE_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
+      KOMGA_DATABASE_POOL_SIZE: "16"
+      KOMGA_TASKS_DB_URL: jdbc:mysql://mysql.example.com:3306/komga
+      KOMGA_TASKS_DB_USERNAME: komga
+      KOMGA_TASKS_DB_PASSWORD: ${KOMGA_DATABASE_PASSWORD}
+      KOMGA_TASKS_DB_POOL_SIZE: "4"
+    volumes:
+      - ./config:/config
+      - ./data:/data
+      - /path/to/comics:/data/Comic
+    mem_limit: 2g
+```
+
+在同目录创建 `.env`：
+
+```dotenv
+KOMGA_DATABASE_PASSWORD=请替换为数据库密码
+```
+
+启动：
+
+```bash
+docker compose up -d
+```
+
+访问 `http://服务器地址:25600`，将 `/data/Comic` 添加为媒体库。
+
+## 主要环境变量
+
+| 变量 | 说明 |
+| --- | --- |
+| `CHS` | `TRUE` 时启用部分内容的繁体转简体处理。 |
+| `KOMGA_DATABASE_URL` | 主数据库 JDBC URL。 |
+| `KOMGA_DATABASE_USERNAME` | 主数据库用户名。 |
+| `KOMGA_DATABASE_PASSWORD` | 主数据库密码。 |
+| `KOMGA_DATABASE_POOL_SIZE` | 主数据库连接池大小。 |
+| `KOMGA_TASKS_DB_URL` | 任务数据库 JDBC URL，可与主数据库相同。 |
+| `KOMGA_TASKS_DB_USERNAME` | 任务数据库用户名。 |
+| `KOMGA_TASKS_DB_PASSWORD` | 任务数据库密码。 |
+| `KOMGA_TASKS_DB_POOL_SIZE` | 任务数据库连接池大小。 |
+| `KOMGA_PREFETCH_PAGES` | 阅读器预取页数，范围 `0` 到 `10`。 |
+| `JAVA_TOOL_OPTIONS` | JVM 内存等运行参数。 |
+
+完整变量、MySQL 初始化、权限、备份、升级、回滚和源码构建说明请查看 GitHub README。
+
+## 数据与权限
+
+- `/config`：配置、日志和索引。
+- `/data`：应用数据。
+- 漫画目录需至少可读；若要在网页中删除源文件，容器还需要写入和删除权限。
+- 生产环境请备份 MySQL、`/config` 和漫画源文件。
+
+健康检查：
+
+```bash
+curl http://127.0.0.1:25600/actuator/health
+```

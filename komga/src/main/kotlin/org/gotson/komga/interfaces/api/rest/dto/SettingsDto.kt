@@ -1,6 +1,9 @@
 package org.gotson.komga.interfaces.api.rest.dto
 
+import org.gotson.komga.infrastructure.configuration.RegistrationMode
+
 data class SettingsDto(
+  val registrationMode: RegistrationMode,
   val deleteEmptyCollections: Boolean,
   val deleteEmptyReadLists: Boolean,
   val rememberMeDurationDays: Long,

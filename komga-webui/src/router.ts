@@ -15,6 +15,11 @@ const adminGuard = (to: any, from: any, next: any) => {
   else next()
 }
 
+const uploadBookGuard = (to: any, from: any, next: any) => {
+  if (!lStore.getters.meUploadBook) next({name: 'home'})
+  else next()
+}
+
 const noLibraryGuard = (to: any, from: any, next: any) => {
   if (lStore.state.komgaLibraries.libraries.length === 0) {
     next({name: 'welcome'})
@@ -259,6 +264,12 @@ const router = new Router({
           component: () => import(/* webpackChunkName: "import-books" */ './views/ImportBooks.vue'),
         },
         {
+          path: '/upload/books',
+          name: 'upload-books',
+          beforeEnter: uploadBookGuard,
+          component: () => import(/* webpackChunkName: "upload-books" */ './views/UploadBooks.vue'),
+        },
+        {
           path: '/import/readlist',
           name: 'import-readlist',
           beforeEnter: adminGuard,
@@ -275,6 +286,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: () => import(/* webpackChunkName: "login" */ './views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import(/* webpackChunkName: "register" */ './views/RegisterView.vue'),
     },
     {
       path: '/book/:bookId/read',

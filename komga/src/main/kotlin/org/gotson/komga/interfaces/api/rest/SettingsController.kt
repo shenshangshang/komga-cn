@@ -40,6 +40,7 @@ class SettingsController(
   @Operation(summary = "Retrieve server settings")
   fun getServerSettings(): SettingsDto =
     SettingsDto(
+      komgaSettingsProvider.registrationMode,
       komgaSettingsProvider.deleteEmptyCollections,
       komgaSettingsProvider.deleteEmptyReadLists,
       komgaSettingsProvider.rememberMeDuration.inWholeDays,
@@ -61,6 +62,7 @@ class SettingsController(
     @Parameter(description = "Fields to update. You can omit fields you don't want to update.")
     newSettings: SettingsUpdateDto,
   ) {
+    newSettings.registrationMode?.let { komgaSettingsProvider.registrationMode = it }
     newSettings.deleteEmptyCollections?.let { komgaSettingsProvider.deleteEmptyCollections = it }
     newSettings.deleteEmptyReadLists?.let { komgaSettingsProvider.deleteEmptyReadLists = it }
     newSettings.rememberMeDurationDays?.let { komgaSettingsProvider.rememberMeDuration = it.days }

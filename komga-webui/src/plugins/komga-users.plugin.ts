@@ -16,6 +16,8 @@ const vuexModule: Module<any, any> = {
     meAdmin: state => state.me.hasOwnProperty('roles') && state.me.roles.includes(UserRoles.ADMIN),
     meFileDownload: state => state.me.hasOwnProperty('roles') && state.me.roles.includes(UserRoles.FILE_DOWNLOAD),
     mePageStreaming: state => state.me.hasOwnProperty('roles') && state.me.roles.includes(UserRoles.PAGE_STREAMING),
+    meCreateLibrary: state => state.me.hasOwnProperty('roles') && (state.me.roles.includes(UserRoles.ADMIN) || state.me.roles.includes(UserRoles.CREATE_LIBRARY)),
+    meUploadBook: state => state.me.hasOwnProperty('roles') && (state.me.roles.includes(UserRoles.ADMIN) || state.me.roles.includes(UserRoles.UPLOAD_BOOK)),
     authenticated: state => state.me.hasOwnProperty('id'),
   },
   mutations: {

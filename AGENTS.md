@@ -41,6 +41,13 @@
 - Public routes, DTO shapes, Vuex state, permissions, readers' navigation,
   prefetch, gestures, shortcuts, and progress persistence are compatibility
   boundaries unless the task explicitly changes them.
+- Registration defaults to `DISABLED`. Publicly registered users receive
+  `FILE_DOWNLOAD` and `PAGE_STREAMING`, no administrator role, and no library
+  visibility until an administrator assigns libraries. Invitation tokens are
+  stored only as SHA-256 hashes, expire, and are single-use.
+- `CREATE_LIBRARY` and `UPLOAD_BOOK` are independent least-privilege roles.
+  Upload authorization must also verify access to the destination series'
+  library and validate filename, extension, emptiness, and size.
 
 ## Important design decisions
 
@@ -118,6 +125,8 @@ There is no separate repository-wide formatter command documented. Respect
   `KOMGA_TASKS_DB_POOL_SIZE`, and `KOMGA_TASKS_DB_MAX_POOL_SIZE`.
 - Other documented controls include `TZ`, `CHS`, `JAVA_TOOL_OPTIONS`,
   `KOMGA_CONFIGDIR`, and `KOMGA_PREFETCH_PAGES`.
+- Registration mode is persisted in `SERVER_SETTINGS` under
+  `REGISTRATION_MODE`; supported values are `DISABLED`, `OPEN`, and `INVITE`.
 - Never commit passwords, tokens, private hostnames/IPs, `.env` files, Docker
   auth JSON, Git credentials, or production Compose overrides.
 - Do not place credentials in this file or any Agent/Skill/MCP configuration.
@@ -193,8 +202,10 @@ There is no separate repository-wide formatter command documented. Respect
 - Run `codegraph explore "<focused symbols or question>"` before grep/find/source
   reads for architecture, call-flow, or impact discovery.
 - Run `codegraph sync "<repository-root>"` after material source changes.
-- CodeGraph status: initialized on 2026-07-31 with CodeGraph 1.5.0; initial index
-  contained 913 files, 14,147 nodes, and 34,122 edges.
+- CodeGraph status: tracked `.codegraph/.gitignore` is present, but the disposable
+  local index is absent in a fresh clone. On the local workstation use Serena;
+  initialize/sync CodeGraph only on the policy-managed `docker`, `mc`, or `nginx`
+  hosts.
 - Expected global MCP servers are Headroom, CodeGraph, and Skill Depot. If absent
   in a new Codex session, run the canonical global MCP repair script and restart
   Codex/new task to expose the repaired tools.

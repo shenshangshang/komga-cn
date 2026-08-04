@@ -81,7 +81,7 @@ class LibraryController(
     } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
   @PostMapping
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasAnyRole('ADMIN', 'CREATE_LIBRARY')")
   @Operation(summary = "Create a library")
   fun addLibrary(
     @AuthenticationPrincipal principal: KomgaPrincipal,

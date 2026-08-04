@@ -240,6 +240,13 @@ export default class KomgaBooksService {
     }
   }
 
+  async uploadBook(seriesId: string, file: File) {
+    const data = new FormData()
+    data.append('seriesId', seriesId)
+    data.append('file', file)
+    await this.http.post(`${API_BOOKS}/upload`, data)
+  }
+
   async deleteBook(bookId: string) {
     try {
       await this.http.delete(`${API_BOOKS}/${bookId}/file`)

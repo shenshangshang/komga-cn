@@ -6,6 +6,8 @@ enum class UserRoles {
   PAGE_STREAMING,
   KOBO_SYNC,
   KOREADER_SYNC,
+  CREATE_LIBRARY,
+  UPLOAD_BOOK,
   ;
 
   companion object {

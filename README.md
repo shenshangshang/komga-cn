@@ -3,6 +3,14 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/shenshangshang/komga-cn)](https://hub.docker.com/r/shenshangshang/komga-cn)
 [![Docker Image](https://img.shields.io/badge/docker-shenshangshang%2Fkomga--cn-blue)](https://hub.docker.com/r/shenshangshang/komga-cn)
 
+## 多用户与注册
+
+- 管理员可在“服务器设置”中关闭注册、开放注册或启用仅邀请注册。
+- 邀请模式支持生成 1–30 天有效的一次性邀请链接，并可查看、撤销邀请。
+- 新注册用户默认不能看到任何媒体库；管理员可在用户限制中分配可见媒体库。
+- 普通用户权限新增“创建媒体库”和“上传漫画压缩包”，与下载、页面浏览、Kobo/KOReader 同步权限独立配置。
+- 具备上传权限的用户可上传 CBZ、CBR、ZIP、RAR 或 7Z 文件到其可见的非单本系列；单文件最大 1 GiB。
+
 神殇漫画是基于 [Komga](https://github.com/gotson/komga) 与
 [komga-cn](https://github.com/dyphire/komga-cn) 持续开发的中文漫画与电子书媒体服务器。
 项目保留 Komga 的用户、权限、阅读进度、OPDS、Kobo/Koreader 同步等能力，并针对中文漫画库、

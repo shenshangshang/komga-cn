@@ -6,6 +6,31 @@
     <v-row>
       <v-col cols="12" md="9" lg="7" class="k-settings-surface server-settings-panel">
         <v-select
+          v-model="form.registrationMode"
+          @change="$v.form.registrationMode.$touch()"
+          :items="registrationModes"
+          label="用户注册模式"
+          hint="关闭、开放注册或仅邀请注册"
+          persistent-hint
+        />
+        <div v-if="form.registrationMode === 'INVITE'" class="mt-4 pa-4">
+          <div class="text-subtitle-1 mb-2">邀请链接</div>
+          <v-text-field v-model.number="invitationExpiresInDays" label="有效天数" type="number" min="1" max="30" />
+          <v-btn color="primary" @click="createInvitation">生成邀请链接</v-btn>
+          <v-text-field v-if="createdInvitationUrl" v-model="createdInvitationUrl" readonly class="mt-3" label="仅显示一次，请立即复制" />
+          <v-list dense v-if="invitations.length">
+            <v-list-item v-for="invitation in invitations" :key="invitation.id">
+              <v-list-item-content>
+                <v-list-item-title>{{ invitation.id }}</v-list-item-title>
+                <v-list-item-subtitle>到期：{{ invitation.expiresDate }} · {{ invitation.usedDate ? '已使用' : invitation.revokedDate ? '已撤销' : '可用' }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action v-if="!invitation.usedDate && !invitation.revokedDate">
+                <v-btn icon @click="revokeInvitation(invitation.id)"><v-icon>mdi-delete</v-icon></v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </div>
+        <v-select
           v-model="form.thumbnailSize"
           @change="$v.form.thumbnailSize.$touch()"
           :items="thumbnailSizes"
@@ -208,7 +233,7 @@
 </template>
 
 <script lang="ts">
-import {SettingsDto, ThumbnailSizeDto} from '@/types/komga-settings'
+import {RegistrationMode, SettingsDto, ThumbnailSizeDto} from '@/types/komga-settings'
 import Vue from 'vue'
 import {helpers, integer, maxValue, minValue, required} from 'vuelidate/lib/validators'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
@@ -221,6 +246,7 @@ export default Vue.extend({
   components: {FileBrowserDialog, ConfirmationDialog},
   data: () => ({
     form: {
+      registrationMode: RegistrationMode.DISABLED,
       deleteEmptyCollections: false,
       deleteEmptyReadLists: false,
       rememberMeDurationDays: 365,
@@ -235,11 +261,15 @@ export default Vue.extend({
       kepubifyPath: undefined,
     },
     existingSettings: {} as SettingsDto,
+    invitations: [] as any[],
+    invitationExpiresInDays: 7,
+    createdInvitationUrl: '',
     dialogRegenerateThumbnails: false,
     modalFileBrowserKepubify: false,
   }),
   validations: {
     form: {
+      registrationMode: {},
       deleteEmptyCollections: {},
       deleteEmptyReadLists: {},
       rememberMeDurationDays: {
@@ -275,6 +305,13 @@ export default Vue.extend({
     this.refreshSettings()
   },
   computed: {
+    registrationModes(): any[] {
+      return [
+        {text: '关闭注册', value: RegistrationMode.DISABLED},
+        {text: '开放注册', value: RegistrationMode.OPEN},
+        {text: '仅邀请注册', value: RegistrationMode.INVITE},
+      ]
+    },
     thumbnailSizes(): any[] {
       return Object.keys(ThumbnailSizeDto).map(x => ({
         text: this.$t(`enums.thumbnail_size.${x}`),
@@ -328,6 +365,19 @@ export default Vue.extend({
     },
   },
   methods: {
+    async refreshInvitations() {
+      this.invitations = (await this.$http.get('/api/v1/invitations')).data
+    },
+    async createInvitation() {
+      const invitation = (await this.$http.post('/api/v1/invitations', {expiresInDays: this.invitationExpiresInDays})).data
+      const href = this.$router.resolve({name: 'register', query: {token: invitation.token}}).href
+      this.createdInvitationUrl = `${window.location.origin}${href}`
+      await this.refreshInvitations()
+    },
+    async revokeInvitation(id: string) {
+      await this.$http.delete(`/api/v1/invitations/${id}`)
+      await this.refreshInvitations()
+    },
     async refreshSettings() {
       const settings = await (this.$komgaSettings.getSettings())
       this.$_.merge(this.form, settings)
@@ -336,9 +386,12 @@ export default Vue.extend({
       this.form.kepubifyPath = settings.kepubifyPath.databaseSource
       this.$_.merge(this.existingSettings, settings)
       this.$v.form.$reset()
+      if (settings.registrationMode === RegistrationMode.INVITE) await this.refreshInvitations()
     },
     async saveSettings() {
       const newSettings = {}
+      if (this.$v.form?.registrationMode?.$dirty)
+        this.$_.merge(newSettings, {registrationMode: this.form.registrationMode})
       let thumbnailSizeHasChanged = false
       if (this.$v.form?.deleteEmptyCollections?.$dirty)
         this.$_.merge(newSettings, {deleteEmptyCollections: this.form.deleteEmptyCollections})

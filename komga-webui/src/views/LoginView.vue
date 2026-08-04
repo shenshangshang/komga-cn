@@ -76,6 +76,7 @@
                      @click="claim"
               >{{ $t('login.create_user_account') }}
               </v-btn>
+              <v-btn text :to="{name: 'register'}">注册账号</v-btn>
             </div>
           </div>
 

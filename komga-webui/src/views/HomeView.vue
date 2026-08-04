@@ -129,7 +129,7 @@
             <v-list-item-content>
               <v-list-item-title>{{ $t('navigation.libraries') }}</v-list-item-title>
             </v-list-item-content>
-            <v-list-item-action v-if="isAdmin" class="ma-0">
+            <v-list-item-action v-if="$store.getters.meCreateLibrary" class="ma-0">
               <v-btn
                 icon
                 class="k-touch-target"
@@ -204,7 +204,7 @@
           </div>
 
           <!--   IMPORT     -->
-          <v-list-group v-if="isAdmin"
+          <v-list-group v-if="isAdmin || $store.getters.meUploadBook"
                         prepend-icon="mdi-import"
                         no-action
                         v-model="expandImport"
@@ -213,12 +213,15 @@
               <v-list-item-title>{{ $t('book_import.title') }}</v-list-item-title>
             </template>
 
-            <v-list-item :to="{name: 'import-books'}">
+            <v-list-item v-if="isAdmin" :to="{name: 'import-books'}">
               <v-list-item-title>{{ $t('common.books') }}</v-list-item-title>
             </v-list-item>
 
-            <v-list-item :to="{name: 'import-readlist'}">
+            <v-list-item v-if="isAdmin" :to="{name: 'import-readlist'}">
               <v-list-item-title>{{ $t('common.readlist') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item v-if="$store.getters.meUploadBook" :to="{name: 'upload-books'}">
+              <v-list-item-title>上传漫画压缩包</v-list-item-title>
             </v-list-item>
           </v-list-group>
 

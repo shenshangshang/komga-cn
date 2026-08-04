@@ -1,3 +1,20 @@
+# 1.27.0 (2026-08-04)
+
+## Features
+
+- add administrator-controlled open registration and invitation-only registration
+- add hashed, expiring, single-use invitation links with revoke support
+- add per-user library creation and archive upload permissions
+- add browser upload of CBZ, CBR, ZIP, RAR, and 7Z archives into authorized series
+- preserve existing per-user media-library visibility restrictions for new accounts
+
+## Security
+
+- keep new accounts least-privileged and without implicit access to all libraries
+- validate library access, archive type, file name, size, and series target for uploads
+- consume invitation tokens atomically and store only SHA-256 token hashes
+- update Axios and retain tested Vue/Vuetify security backports
+
 # [1.25.0](https://github.com/gotson/komga/compare/1.24.4...1.25.0) (2026-06-30)
 ## 🚀 Features
 **komga**

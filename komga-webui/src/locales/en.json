@@ -1191,6 +1191,8 @@
     "FILE_DOWNLOAD": "File download",
     "KOBO_SYNC": "Kobo Sync",
     "KOREADER_SYNC": "KOReader Sync",
+    "CREATE_LIBRARY": "Create libraries",
+    "UPLOAD_BOOK": "Upload comic archives",
     "PAGE_STREAMING": "Page streaming",
     "USER": "User"
   },

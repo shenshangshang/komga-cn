@@ -6,6 +6,12 @@
 源码与完整说明：
 [github.com/shenshangshang/komga-cn](https://github.com/shenshangshang/komga-cn)
 
+## 多用户能力
+
+- 支持关闭、开放或仅邀请注册；邀请链接一次性使用并可设置有效期。
+- 管理员可为每个用户分配可见媒体库。
+- 可独立授予普通用户创建媒体库、上传漫画压缩包、下载文件和页面浏览等权限。
+
 ## 支持内容
 
 - CBZ、ZIP、PDF、EPUB、MOBI

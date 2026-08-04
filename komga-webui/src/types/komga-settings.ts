@@ -1,4 +1,5 @@
 export interface SettingsDto {
+  registrationMode: RegistrationMode,
   deleteEmptyCollections: boolean,
   deleteEmptyReadLists: boolean,
   rememberMeDurationDays: number,
@@ -19,6 +20,7 @@ export interface SettingMultiSource<T> {
 }
 
 export interface SettingsUpdateDto {
+  registrationMode?: RegistrationMode,
   deleteEmptyCollections?: boolean,
   deleteEmptyReadLists?: boolean,
   rememberMeDurationDays?: number,
@@ -31,6 +33,12 @@ export interface SettingsUpdateDto {
   koboPort?: number,
   kepubifyPath?: string,
   prefetchPages?: number,
+}
+
+export enum RegistrationMode {
+  DISABLED = 'DISABLED',
+  OPEN = 'OPEN',
+  INVITE = 'INVITE',
 }
 
 export enum ThumbnailSizeDto {

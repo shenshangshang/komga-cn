@@ -13,6 +13,15 @@ class KomgaSettingsProvider(
   private val serverSettingsDao: ServerSettingsDao,
   private val eventPublisher: ApplicationEventPublisher,
 ) {
+  var registrationMode: RegistrationMode =
+    serverSettingsDao
+      .getSettingByKey(Settings.REGISTRATION_MODE.name, String::class.java)
+      ?.let { runCatching { RegistrationMode.valueOf(it) }.getOrNull() }
+      ?: RegistrationMode.DISABLED
+    set(value) {
+      serverSettingsDao.saveSetting(Settings.REGISTRATION_MODE.name, value.name)
+      field = value
+    }
   var deleteEmptyCollections: Boolean =
     serverSettingsDao.getSettingByKey(Settings.DELETE_EMPTY_COLLECTIONS.name, Boolean::class.java) ?: false
     set(value) {
@@ -122,6 +131,7 @@ class KomgaSettingsProvider(
 }
 
 private enum class Settings {
+  REGISTRATION_MODE,
   DELETE_EMPTY_COLLECTIONS,
   DELETE_EMPTY_READLISTS,
   REMEMBER_ME_KEY,
@@ -134,4 +144,10 @@ private enum class Settings {
   KOBO_PORT,
   KEPUBIFY_PATH,
   PREFETCH_PAGES,
+}
+
+enum class RegistrationMode {
+  DISABLED,
+  OPEN,
+  INVITE,
 }

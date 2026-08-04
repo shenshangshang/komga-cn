@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
+import org.gotson.komga.infrastructure.configuration.RegistrationMode
 import kotlin.properties.Delegates
 
 class SettingsUpdateDto {
+  var registrationMode: RegistrationMode? = null
   private val isSet = mutableMapOf<String, Boolean>()
 
   fun isSet(prop: String) = isSet.getOrDefault(prop, false)

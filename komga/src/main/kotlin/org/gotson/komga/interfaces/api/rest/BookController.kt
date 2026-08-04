@@ -726,7 +726,7 @@ class BookController(
 
   @Operation(summary = "Import books", tags = [OpenApiConfiguration.TagNames.BOOK_IMPORT])
   @PostMapping("api/v1/books/import")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasAnyRole('ADMIN', 'UPLOAD_BOOK')")
   @ResponseStatus(HttpStatus.ACCEPTED)
   fun importBooks(
     @RequestBody bookImportBatch: BookImportBatchDto,

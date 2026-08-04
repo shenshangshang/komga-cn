@@ -57,3 +57,11 @@ application-oauth2.yml
 ### Conveyor
 output/
 secret/
+
+### Codex planning & temp scripts
+.serena/
+task_plan.md
+findings.md
+progress.md
+fix-frontend.sh
+rebuild-komga.sh

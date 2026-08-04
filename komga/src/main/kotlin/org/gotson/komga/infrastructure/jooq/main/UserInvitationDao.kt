@@ -66,6 +66,12 @@ class UserInvitationDao(
       id,
     ) == 1
 
+  fun delete(id: String): Boolean =
+    dsl.execute(
+      "delete from USER_INVITATION where ID = ?",
+      id,
+    ) == 1
+
   fun isValid(token: String): Boolean =
     dsl.fetchExists(
       dsl

@@ -1,10 +1,13 @@
 package org.gotson.komga.interfaces.api.rest
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.gotson.komga.domain.model.ThumbnailSize
 import org.gotson.komga.infrastructure.configuration.KomgaSettingsProvider
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +18,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.patch
+import java.nio.file.Path
 import kotlin.time.Duration.Companion.days
 
 @SpringBootTest
@@ -22,7 +26,13 @@ import kotlin.time.Duration.Companion.days
 class SettingsControllerTest(
   @Autowired private val mockMvc: MockMvc,
   @Autowired private val komgaSettingsProvider: KomgaSettingsProvider,
+  @Autowired private val objectMapper: ObjectMapper,
 ) {
+  @AfterEach
+  fun cleanup() {
+    komgaSettingsProvider.libraryCreationAllowedRoots = emptyList()
+  }
+
   @Nested
   inner class NonAdminUser {
     @Test
@@ -122,6 +132,26 @@ class SettingsControllerTest(
 
   @Test
   @WithMockCustomUser(roles = ["ADMIN"])
+  fun `given admin user when updating library creation roots then canonical roots are returned`(
+    @TempDir allowedRoot: Path,
+  ) {
+    mockMvc
+      .patch("/api/v1/settings") {
+        contentType = MediaType.APPLICATION_JSON
+        content = objectMapper.writeValueAsString(mapOf("libraryCreationAllowedRoots" to listOf(allowedRoot.toString())))
+      }.andExpect { status { isNoContent() } }
+
+    assertThat(komgaSettingsProvider.libraryCreationAllowedRoots).containsExactly(allowedRoot.toRealPath().toString())
+    mockMvc
+      .get("/api/v1/settings")
+      .andExpect {
+        status { isOk() }
+        jsonPath("libraryCreationAllowedRoots[0]") { value(allowedRoot.toRealPath().toString()) }
+      }
+  }
+
+  @Test
+  @WithMockCustomUser(roles = ["ADMIN"])
   fun `given admin user when deleting settings then deletable settings are deleted`() {
     komgaSettingsProvider.deleteEmptyCollections = true
     komgaSettingsProvider.deleteEmptyReadLists = true
@@ -183,6 +213,7 @@ class SettingsControllerTest(
       """{"serverContextPath": "/invalid/end-"}""",
       """{"serverContextPath": "/invalid/end_"}""",
       """{"serverContextPath": "/日本語"}""",
+      """{"libraryCreationAllowedRoots": ["relative/path"]}""",
     ],
   )
   fun `given admin user when updating with invalid settings then returns bad request`(jsonString: String) {

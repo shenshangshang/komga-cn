@@ -344,7 +344,7 @@ router.beforeEach((to, from, next) => {
     window.close()
   }
 
-  if (to.name !== 'startup' && to.name !== 'login' && !lStore.getters.authenticated) {
+  if (!['startup', 'login', 'register'].includes(<string>to.name) && !lStore.getters.authenticated) {
     const query = Object.assign({}, to.query, {redirect: to.fullPath})
     next({name: 'startup', query: query})
   } else next()

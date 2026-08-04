@@ -8,7 +8,7 @@
           <v-form v-else @submit.prevent="register">
             <v-text-field v-model="email" label="邮箱" type="email" autocomplete="email" required />
             <v-text-field v-model="password" label="密码（至少 8 位）" type="password" autocomplete="new-password" required />
-            <v-text-field v-if="mode === 'INVITE'" v-model="token" label="邀请码" required />
+            <v-text-field v-if="mode === 'INVITE'" v-model.trim="token" label="邀请码" required @blur="validateInvitation" />
             <v-alert v-if="error" type="error" text>{{ error }}</v-alert>
             <v-btn color="primary" type="submit" :loading="submitting" block>注册</v-btn>
           </v-form>
@@ -36,16 +36,31 @@ export default Vue.extend({
     this.token = this.$route.query.token?.toString() || ''
     try {
       this.mode = (await this.$http.get('/api/v1/registration')).data.mode
+      if (this.mode === 'INVITE' && this.token) await this.validateInvitation()
     } catch (e) {
       this.error = '无法读取注册状态'
     }
   },
   methods: {
+    async validateInvitation(): Promise<boolean> {
+      this.token = this.token.trim()
+      if (this.mode !== 'INVITE' || !this.token) return this.mode !== 'INVITE'
+      try {
+        const response = await this.$http.get('/api/v1/registration/invitation', {params: {token: this.token}})
+        if (!response.data.valid) this.error = '邀请码无效或已过期'
+        else if (this.error === '邀请码无效或已过期') this.error = ''
+        return response.data.valid
+      } catch (e) {
+        this.error = '无法验证邀请码'
+        return false
+      }
+    },
     async register() {
       if (!this.email || this.password.length < 8 || (this.mode === 'INVITE' && !this.token)) {
         this.error = '请完整填写注册信息'
         return
       }
+      if (!(await this.validateInvitation())) return
       this.submitting = true
       this.error = ''
       try {

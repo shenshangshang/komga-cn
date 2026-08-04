@@ -13,6 +13,41 @@
           hint="关闭、开放注册或仅邀请注册"
           persistent-hint
         />
+        <v-text-field
+          v-model.trim="form.siteUrl"
+          @input="$v.form.siteUrl.$touch()"
+          @blur="$v.form.siteUrl.$touch()"
+          :error-messages="$v.form.siteUrl.$error ? ['请输入以 http:// 或 https:// 开头的网站地址'] : []"
+          label="网站地址"
+          hint="邀请链接使用的公网域名或 IP，例如 https://komga.example.com；留空时使用当前访问地址"
+          persistent-hint
+          class="mt-4"
+        />
+        <file-browser-dialog
+          v-model="modalLibraryRootBrowser"
+          :path.sync="selectedLibraryRoot"
+          dialog-title="选择普通用户建库根目录"
+          confirm-text="添加根目录"
+          @confirm="addLibraryCreationRoot"
+        />
+        <v-combobox
+          v-model="form.libraryCreationAllowedRoots"
+          :items="form.libraryCreationAllowedRoots"
+          label="普通用户建库允许根目录"
+          hint="拥有“创建媒体库”权限的普通用户只能浏览这些目录，并在其子目录中创建媒体库；留空表示不允许"
+          persistent-hint
+          multiple
+          chips
+          small-chips
+          deletable-chips
+          clearable
+          class="mt-4"
+          @change="$v.form.libraryCreationAllowedRoots.$touch()"
+        >
+          <template v-slot:append-outer>
+            <v-btn small @click="openLibraryRootBrowser">浏览添加</v-btn>
+          </template>
+        </v-combobox>
         <div v-if="form.registrationMode === 'INVITE'" class="mt-4 pa-4">
           <div class="text-subtitle-1 mb-2">邀请链接</div>
           <v-text-field v-model.number="invitationExpiresInDays" label="有效天数" type="number" min="1" max="30" />
@@ -22,10 +57,11 @@
             <v-list-item v-for="invitation in invitations" :key="invitation.id">
               <v-list-item-content>
                 <v-list-item-title>{{ invitation.id }}</v-list-item-title>
-                <v-list-item-subtitle>到期：{{ invitation.expiresDate }} · {{ invitation.usedDate ? '已使用' : invitation.revokedDate ? '已撤销' : '可用' }}</v-list-item-subtitle>
+              <v-list-item-subtitle>到期：{{ invitation.expiresDate }} · {{ invitation.usedDate ? '已使用' : invitation.revokedDate ? '已撤销' : '可用' }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action v-if="!invitation.usedDate && !invitation.revokedDate">
-                <v-btn icon @click="revokeInvitation(invitation.id)"><v-icon>mdi-delete</v-icon></v-btn>
+              <v-list-item-action>
+                <v-btn v-if="!invitation.usedDate && !invitation.revokedDate" icon small @click="confirmRevokeInvitation(invitation.id)"><v-icon>mdi-cancel</v-icon></v-btn>
+                <v-btn icon @click="confirmDeleteInvitation(invitation.id)"><v-icon>mdi-delete</v-icon></v-btn>
               </v-list-item-action>
             </v-list-item>
           </v-list>
@@ -229,6 +265,22 @@
       @confirm="regenerateThumbnails(true)"
       @alternate="regenerateThumbnails(false)"
     />
+
+    <confirmation-dialog
+      v-model="dialogDeleteInvitation"
+      title="删除邀请链接"
+      body="确定要删除此邀请链接吗？删除后该链接将立即失效且无法恢复。"
+      button-confirm="删除"
+      @confirm="deleteInvitation"
+    />
+
+    <confirmation-dialog
+      v-model="dialogRevokeInvitation"
+      title="撤销邀请链接"
+      body="确定要撤销此邀请链接吗？撤销后该链接将立即失效，但记录会保留。"
+      button-confirm="撤销"
+      @confirm="revokeInvitation"
+    />
   </v-container>
 </template>
 
@@ -238,8 +290,10 @@ import Vue from 'vue'
 import {helpers, integer, maxValue, minValue, required} from 'vuelidate/lib/validators'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import FileBrowserDialog from '@/components/dialogs/FileBrowserDialog.vue'
+import {addLibraryCreationRoot} from '@/functions/library-creation-roots'
 
 const contextPath = helpers.regex('contextPath', /^\/[-a-zA-Z0-9_\/]*[a-zA-Z0-9]$/)
+const siteUrl = helpers.regex('siteUrl', /^https?:\/\/\S+$/)
 
 export default Vue.extend({
   name: 'ServerSettings',
@@ -247,6 +301,8 @@ export default Vue.extend({
   data: () => ({
     form: {
       registrationMode: RegistrationMode.DISABLED,
+      siteUrl: '',
+      libraryCreationAllowedRoots: [] as string[],
       deleteEmptyCollections: false,
       deleteEmptyReadLists: false,
       rememberMeDurationDays: 365,
@@ -265,11 +321,19 @@ export default Vue.extend({
     invitationExpiresInDays: 7,
     createdInvitationUrl: '',
     dialogRegenerateThumbnails: false,
+    dialogDeleteInvitation: false,
+    pendingDeleteInvitationId: '',
+    dialogRevokeInvitation: false,
+    pendingRevokeInvitationId: '',
     modalFileBrowserKepubify: false,
+    modalLibraryRootBrowser: false,
+    selectedLibraryRoot: '',
   }),
   validations: {
     form: {
       registrationMode: {},
+      siteUrl: {siteUrl},
+      libraryCreationAllowedRoots: {},
       deleteEmptyCollections: {},
       deleteEmptyReadLists: {},
       rememberMeDurationDays: {
@@ -370,17 +434,33 @@ export default Vue.extend({
     },
     async createInvitation() {
       const invitation = (await this.$http.post('/api/v1/invitations', {expiresInDays: this.invitationExpiresInDays})).data
-      const href = this.$router.resolve({name: 'register', query: {token: invitation.token}}).href
-      this.createdInvitationUrl = `${window.location.origin}${href}`
+      const resolved = this.$router.resolve({name: 'register', query: {token: invitation.token}})
+      const configuredBase = this.form.siteUrl?.trim().replace(/\/+$/, '')
+      this.createdInvitationUrl = configuredBase
+        ? `${configuredBase}${resolved.route.fullPath}`
+        : `${window.location.origin}${resolved.href}`
       await this.refreshInvitations()
     },
-    async revokeInvitation(id: string) {
-      await this.$http.delete(`/api/v1/invitations/${id}`)
+    confirmDeleteInvitation(id: string) {
+      this.pendingDeleteInvitationId = id
+      this.dialogDeleteInvitation = true
+    },
+    confirmRevokeInvitation(id: string) {
+      this.pendingRevokeInvitationId = id
+      this.dialogRevokeInvitation = true
+    },
+    async revokeInvitation() {
+      await this.$http.put(`/api/v1/invitations/${this.pendingRevokeInvitationId}/revoke`)
+      await this.refreshInvitations()
+    },
+    async deleteInvitation() {
+      await this.$http.delete(`/api/v1/invitations/${this.pendingDeleteInvitationId}`)
       await this.refreshInvitations()
     },
     async refreshSettings() {
       const settings = await (this.$komgaSettings.getSettings())
       this.$_.merge(this.form, settings)
+      this.form.libraryCreationAllowedRoots = [...settings.libraryCreationAllowedRoots]
       this.form.serverPort = settings.serverPort.databaseSource
       this.form.serverContextPath = settings.serverContextPath.databaseSource
       this.form.kepubifyPath = settings.kepubifyPath.databaseSource
@@ -392,6 +472,10 @@ export default Vue.extend({
       const newSettings = {}
       if (this.$v.form?.registrationMode?.$dirty)
         this.$_.merge(newSettings, {registrationMode: this.form.registrationMode})
+      if (this.$v.form?.siteUrl?.$dirty)
+        this.$_.merge(newSettings, {siteUrl: this.form.siteUrl || null})
+      if (this.$v.form?.libraryCreationAllowedRoots?.$dirty)
+        this.$_.merge(newSettings, {libraryCreationAllowedRoots: this.form.libraryCreationAllowedRoots})
       let thumbnailSizeHasChanged = false
       if (this.$v.form?.deleteEmptyCollections?.$dirty)
         this.$_.merge(newSettings, {deleteEmptyCollections: this.form.deleteEmptyCollections})
@@ -432,6 +516,17 @@ export default Vue.extend({
     },
     regenerateThumbnails(forBiggerResultOnly: boolean) {
       this.$komgaBooks.regenerateThumbnails(forBiggerResultOnly)
+    },
+    openLibraryRootBrowser() {
+      this.selectedLibraryRoot = ''
+      this.modalLibraryRootBrowser = true
+    },
+    addLibraryCreationRoot() {
+      const updated = addLibraryCreationRoot(this.form.libraryCreationAllowedRoots, this.selectedLibraryRoot)
+      if (updated !== this.form.libraryCreationAllowedRoots) {
+        this.form.libraryCreationAllowedRoots = updated
+        this.$v.form.libraryCreationAllowedRoots.$touch()
+      }
     },
   },
 })

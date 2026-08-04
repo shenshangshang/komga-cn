@@ -1,10 +1,13 @@
 package org.gotson.komga.infrastructure.configuration
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.lang3.RandomStringUtils
 import org.gotson.komga.domain.model.ThumbnailSize
 import org.gotson.komga.infrastructure.jooq.main.ServerSettingsDao
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import java.nio.file.Files
+import java.nio.file.Paths
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -12,6 +15,7 @@ import kotlin.time.Duration.Companion.days
 class KomgaSettingsProvider(
   private val serverSettingsDao: ServerSettingsDao,
   private val eventPublisher: ApplicationEventPublisher,
+  private val objectMapper: ObjectMapper,
 ) {
   var registrationMode: RegistrationMode =
     serverSettingsDao
@@ -21,6 +25,40 @@ class KomgaSettingsProvider(
     set(value) {
       serverSettingsDao.saveSetting(Settings.REGISTRATION_MODE.name, value.name)
       field = value
+    }
+  var siteUrl: String? =
+    serverSettingsDao.getSettingByKey(Settings.SITE_URL.name, String::class.java)?.ifBlank { null }
+    set(value) {
+      val normalized = value?.trim()?.trimEnd('/')?.ifBlank { null }
+      if (normalized != null)
+        serverSettingsDao.saveSetting(Settings.SITE_URL.name, normalized)
+      else
+        serverSettingsDao.deleteSetting(Settings.SITE_URL.name)
+      field = normalized
+    }
+  var libraryCreationAllowedRoots: List<String> =
+    serverSettingsDao
+      .getSettingByKey(Settings.LIBRARY_CREATION_ALLOWED_ROOTS.name, String::class.java)
+      ?.let { encoded -> runCatching { objectMapper.readValue(encoded, Array<String>::class.java).toList() }.getOrNull() }
+      ?: emptyList()
+    set(value) {
+      val normalized =
+        value
+          .map { rawPath ->
+            val path = Paths.get(rawPath.trim())
+            require(path.isAbsolute) { "Allowed library root must be an absolute path: $rawPath" }
+            val realPath =
+              runCatching { path.toRealPath() }
+                .getOrElse { throw IllegalArgumentException("Allowed library root does not exist: $rawPath") }
+            require(Files.isDirectory(realPath)) { "Allowed library root is not a directory: $rawPath" }
+            realPath.toString()
+          }.distinct()
+          .sortedWith(String.CASE_INSENSITIVE_ORDER)
+      if (normalized.isNotEmpty())
+        serverSettingsDao.saveSetting(Settings.LIBRARY_CREATION_ALLOWED_ROOTS.name, objectMapper.writeValueAsString(normalized))
+      else
+        serverSettingsDao.deleteSetting(Settings.LIBRARY_CREATION_ALLOWED_ROOTS.name)
+      field = normalized
     }
   var deleteEmptyCollections: Boolean =
     serverSettingsDao.getSettingByKey(Settings.DELETE_EMPTY_COLLECTIONS.name, Boolean::class.java) ?: false
@@ -132,6 +170,8 @@ class KomgaSettingsProvider(
 
 private enum class Settings {
   REGISTRATION_MODE,
+  SITE_URL,
+  LIBRARY_CREATION_ALLOWED_ROOTS,
   DELETE_EMPTY_COLLECTIONS,
   DELETE_EMPTY_READLISTS,
   REMEMBER_ME_KEY,

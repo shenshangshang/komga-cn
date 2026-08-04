@@ -11,6 +11,7 @@ import org.gotson.komga.infrastructure.jooq.main.UserInvitationDao
 import org.gotson.komga.infrastructure.security.KomgaPrincipal
 import org.gotson.komga.interfaces.api.rest.dto.InvitationCreationDto
 import org.gotson.komga.interfaces.api.rest.dto.InvitationDto
+import org.gotson.komga.interfaces.api.rest.dto.InvitationValidationDto
 import org.gotson.komga.interfaces.api.rest.dto.RegistrationRequestDto
 import org.gotson.komga.interfaces.api.rest.dto.RegistrationStatusDto
 import org.springframework.http.HttpStatus
@@ -21,8 +22,10 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
@@ -37,19 +40,23 @@ class RegistrationController(
   @GetMapping("api/v1/registration")
   fun status() = RegistrationStatusDto(settings.registrationMode)
 
+  @GetMapping("api/v1/registration/invitation")
+  fun invitationStatus(
+    @RequestParam token: String,
+  ) = InvitationValidationDto(token.trim().takeIf { it.isNotEmpty() }?.let(invitations::isValid) == true)
+
   @PostMapping("api/v1/registration")
   @ResponseStatus(HttpStatus.CREATED)
   @Transactional
   fun register(
     @Valid @RequestBody request: RegistrationRequestDto,
   ) {
+    val invitationToken = request.invitationToken?.trim()?.takeIf { it.isNotEmpty() }
     when (settings.registrationMode) {
       RegistrationMode.DISABLED -> throw ResponseStatusException(HttpStatus.FORBIDDEN, "Registration is disabled")
       RegistrationMode.OPEN -> Unit
       RegistrationMode.INVITE -> {
-        val token =
-          request.invitationToken?.takeIf { it.isNotBlank() }
-            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid invitation is required")
+        val token = invitationToken ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid invitation is required")
         if (!invitations.isValid(token)) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invitation is invalid or expired")
       }
     }
@@ -63,7 +70,7 @@ class RegistrationController(
           sharedAllLibraries = false,
         ),
       )
-      if (settings.registrationMode == RegistrationMode.INVITE && !invitations.consume(request.invitationToken!!)) {
+      if (settings.registrationMode == RegistrationMode.INVITE && !invitations.consume(invitationToken!!)) {
         throw ResponseStatusException(HttpStatus.CONFLICT, "Invitation has already been used")
       }
     } catch (_: UserEmailAlreadyExistsException) {
@@ -91,6 +98,14 @@ class RegistrationController(
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(
+      @PathVariable id: String,
+    ) {
+      if (!invitations.delete(id)) throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
+    @PutMapping("{id}/revoke")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun revoke(
       @PathVariable id: String,

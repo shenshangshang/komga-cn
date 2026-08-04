@@ -13,6 +13,14 @@ class SettingsUpdateDto {
 
   fun isSet(prop: String) = isSet.getOrDefault(prop, false)
 
+  @get:Pattern(regexp = "^https?://[^\\s]+$")
+  var siteUrl: String?
+    by Delegates.observable(null) { prop, _, _ ->
+      isSet[prop.name] = true
+    }
+
+  var libraryCreationAllowedRoots: List<String>? = null
+
   var deleteEmptyCollections: Boolean? = null
 
   var deleteEmptyReadLists: Boolean? = null

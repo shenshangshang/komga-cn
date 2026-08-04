@@ -16,6 +16,12 @@ const qs = require('qs')
 
 const API_BOOKS = '/api/v1/books'
 
+export interface BookUploadTarget {
+  libraryId: string,
+  seriesId?: string,
+  seriesName?: string,
+}
+
 export default class KomgaBooksService {
   private http: AxiosInstance
 
@@ -240,9 +246,11 @@ export default class KomgaBooksService {
     }
   }
 
-  async uploadBook(seriesId: string, file: File) {
+  async uploadBook(target: BookUploadTarget, file: File) {
     const data = new FormData()
-    data.append('seriesId', seriesId)
+    data.append('libraryId', target.libraryId)
+    if (target.seriesId) data.append('seriesId', target.seriesId)
+    if (target.seriesName) data.append('seriesName', target.seriesName)
     data.append('file', file)
     await this.http.post(`${API_BOOKS}/upload`, data)
   }

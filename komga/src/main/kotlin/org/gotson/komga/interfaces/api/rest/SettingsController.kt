@@ -41,6 +41,8 @@ class SettingsController(
   fun getServerSettings(): SettingsDto =
     SettingsDto(
       komgaSettingsProvider.registrationMode,
+      komgaSettingsProvider.siteUrl,
+      komgaSettingsProvider.libraryCreationAllowedRoots,
       komgaSettingsProvider.deleteEmptyCollections,
       komgaSettingsProvider.deleteEmptyReadLists,
       komgaSettingsProvider.rememberMeDuration.inWholeDays,
@@ -63,6 +65,14 @@ class SettingsController(
     newSettings: SettingsUpdateDto,
   ) {
     newSettings.registrationMode?.let { komgaSettingsProvider.registrationMode = it }
+    if (newSettings.isSet("siteUrl")) komgaSettingsProvider.siteUrl = newSettings.siteUrl
+    newSettings.libraryCreationAllowedRoots?.let {
+      try {
+        komgaSettingsProvider.libraryCreationAllowedRoots = it
+      } catch (e: IllegalArgumentException) {
+        throw org.springframework.web.server.ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+      }
+    }
     newSettings.deleteEmptyCollections?.let { komgaSettingsProvider.deleteEmptyCollections = it }
     newSettings.deleteEmptyReadLists?.let { komgaSettingsProvider.deleteEmptyReadLists = it }
     newSettings.rememberMeDurationDays?.let { komgaSettingsProvider.rememberMeDuration = it.days }

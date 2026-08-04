@@ -48,6 +48,10 @@
 - `CREATE_LIBRARY` and `UPLOAD_BOOK` are independent least-privilege roles.
   Upload authorization must also verify access to the destination series'
   library and validate filename, extension, emptiness, and size.
+- Non-admin `CREATE_LIBRARY` users may browse only administrator-configured
+  library creation roots and may create libraries only in their real child
+  directories. Enforce lexical and real-path boundaries server-side; the UI is
+  not an authorization boundary.
 
 ## Important design decisions
 
@@ -127,6 +131,9 @@ There is no separate repository-wide formatter command documented. Respect
   `KOMGA_CONFIGDIR`, and `KOMGA_PREFETCH_PAGES`.
 - Registration mode is persisted in `SERVER_SETTINGS` under
   `REGISTRATION_MODE`; supported values are `DISABLED`, `OPEN`, and `INVITE`.
+- Non-admin library creation roots are stored as a JSON path list in
+  `SERVER_SETTINGS` under `LIBRARY_CREATION_ALLOWED_ROOTS`; an absent or empty
+  list denies non-admin filesystem browsing and library creation.
 - Never commit passwords, tokens, private hostnames/IPs, `.env` files, Docker
   auth JSON, Git credentials, or production Compose overrides.
 - Do not place credentials in this file or any Agent/Skill/MCP configuration.

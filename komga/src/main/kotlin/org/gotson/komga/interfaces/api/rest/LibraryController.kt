@@ -20,6 +20,7 @@ import org.gotson.komga.domain.persistence.SeriesRepository
 import org.gotson.komga.domain.service.LibraryLifecycle
 import org.gotson.komga.infrastructure.openapi.OpenApiConfiguration
 import org.gotson.komga.infrastructure.security.KomgaPrincipal
+import org.gotson.komga.infrastructure.security.LibraryCreationPathPolicy
 import org.gotson.komga.infrastructure.web.filePathToUrl
 import org.gotson.komga.interfaces.api.rest.dto.LibraryCreationDto
 import org.gotson.komga.interfaces.api.rest.dto.LibraryDto
@@ -54,6 +55,7 @@ class LibraryController(
   private val libraryRepository: LibraryRepository,
   private val bookRepository: BookRepository,
   private val seriesRepository: SeriesRepository,
+  private val libraryCreationPathPolicy: LibraryCreationPathPolicy,
 ) {
   @GetMapping
   @Operation(
@@ -89,43 +91,45 @@ class LibraryController(
     library: LibraryCreationDto,
   ): LibraryDto =
     try {
-      libraryLifecycle
-        .addLibrary(
-          Library(
-            name = library.name,
-            root = filePathToUrl(library.root),
-            importComicInfoBook = library.importComicInfoBook,
-            importComicInfoSeries = library.importComicInfoSeries,
-            importComicInfoCollection = library.importComicInfoCollection,
-            importComicInfoReadList = library.importComicInfoReadList,
-            importComicInfoSeriesAppendVolume = library.importComicInfoSeriesAppendVolume,
-            importEpubBook = library.importEpubBook,
-            importEpubSeries = library.importEpubSeries,
-            importMylarSeries = library.importMylarSeries,
-            importLocalArtwork = library.importLocalArtwork,
-            importBarcodeIsbn = library.importBarcodeIsbn,
-            scanForceModifiedTime = library.scanForceModifiedTime,
-            scanInterval = library.scanInterval.toDomain(),
-            scanOnStartup = library.scanOnStartup,
-            scanCbx = library.scanCbx,
-            scanPdf = library.scanPdf,
-            scanEpub = library.scanEpub,
-            scanDirectoryExclusions = library.scanDirectoryExclusions,
-            repairExtensions = library.repairExtensions,
-            convertToCbz = library.convertToCbz,
-            emptyTrashAfterScan = library.emptyTrashAfterScan,
-            seriesCover = library.seriesCover.toDomain(),
-            hashFiles = library.hashFiles,
-            hashPages = library.hashPages,
-            hashKoreader = library.hashKoreader,
-            analyzeDimensions = library.analyzeDimensions,
-            adPagesDetector = library.adPagesDetector,
-            oneshotsDirectory = library.oneshotsDirectory?.ifBlank { null },
-            seriesGroupingMode = library.seriesGroupingMode,
-          ),
-        ).toDto(includeRoot = principal.user.isAdmin)
+      val requestedLibrary =
+        Library(
+          name = library.name,
+          root = filePathToUrl(library.root),
+          importComicInfoBook = library.importComicInfoBook,
+          importComicInfoSeries = library.importComicInfoSeries,
+          importComicInfoCollection = library.importComicInfoCollection,
+          importComicInfoReadList = library.importComicInfoReadList,
+          importComicInfoSeriesAppendVolume = library.importComicInfoSeriesAppendVolume,
+          importEpubBook = library.importEpubBook,
+          importEpubSeries = library.importEpubSeries,
+          importMylarSeries = library.importMylarSeries,
+          importLocalArtwork = library.importLocalArtwork,
+          importBarcodeIsbn = library.importBarcodeIsbn,
+          scanForceModifiedTime = library.scanForceModifiedTime,
+          scanInterval = library.scanInterval.toDomain(),
+          scanOnStartup = library.scanOnStartup,
+          scanCbx = library.scanCbx,
+          scanPdf = library.scanPdf,
+          scanEpub = library.scanEpub,
+          scanDirectoryExclusions = library.scanDirectoryExclusions,
+          repairExtensions = library.repairExtensions,
+          convertToCbz = library.convertToCbz,
+          emptyTrashAfterScan = library.emptyTrashAfterScan,
+          seriesCover = library.seriesCover.toDomain(),
+          hashFiles = library.hashFiles,
+          hashPages = library.hashPages,
+          hashKoreader = library.hashKoreader,
+          analyzeDimensions = library.analyzeDimensions,
+          adPagesDetector = library.adPagesDetector,
+          oneshotsDirectory = library.oneshotsDirectory?.ifBlank { null },
+          seriesGroupingMode = library.seriesGroupingMode,
+        )
+      val authorizedRoot = libraryCreationPathPolicy.requireLibraryRootAllowed(principal.user, requestedLibrary.path)
+      val domainLibrary = if (principal.user.isAdmin) requestedLibrary else requestedLibrary.copy(root = authorizedRoot.toUri().toURL())
+      libraryLifecycle.addLibrary(domainLibrary).toDto(includeRoot = principal.user.isAdmin)
     } catch (e: Exception) {
       when (e) {
+        is ResponseStatusException -> throw e
         is FileNotFoundException,
         is DirectoryNotFoundException,
         is DuplicateNameException,

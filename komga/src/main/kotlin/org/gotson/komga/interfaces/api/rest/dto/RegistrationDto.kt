@@ -12,6 +12,10 @@ data class RegistrationStatusDto(
   val mode: RegistrationMode,
 )
 
+data class InvitationValidationDto(
+  val valid: Boolean,
+)
+
 data class RegistrationRequestDto(
   @get:Email(regexp = ".+@.+\\..+") val email: String,
   @get:NotBlank @get:Size(min = 8, max = 255) val password: String,

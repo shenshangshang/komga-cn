@@ -1,5 +1,7 @@
 export interface SettingsDto {
   registrationMode: RegistrationMode,
+  siteUrl?: string | null,
+  libraryCreationAllowedRoots: string[],
   deleteEmptyCollections: boolean,
   deleteEmptyReadLists: boolean,
   rememberMeDurationDays: number,
@@ -21,6 +23,8 @@ export interface SettingMultiSource<T> {
 
 export interface SettingsUpdateDto {
   registrationMode?: RegistrationMode,
+  siteUrl?: string | null,
+  libraryCreationAllowedRoots?: string[],
   deleteEmptyCollections?: boolean,
   deleteEmptyReadLists?: boolean,
   rememberMeDurationDays?: number,

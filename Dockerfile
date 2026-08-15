@@ -8,7 +8,8 @@ RUN addgroup -S komga && adduser -S -G komga -h /app komga \
     && mkdir -p /config /data /app \
     && chown -R komga:komga /config /data /app
 
-COPY komga/build/libs/komga-1.27.1.jar /app/komga.jar
+ARG JAR_FILE=komga/build/libs/komga-1.27.1.jar
+COPY ${JAR_FILE} /app/komga.jar
 
 WORKDIR /app
 EXPOSE 25600

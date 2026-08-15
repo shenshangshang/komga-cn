@@ -1,0 +1,144 @@
+name: Sync Upstream
+
+# 自动同步上游 dyphire/komga-cn 的更新到 main 分支。
+# - 每天定时（北京时间 08:00）检查上游是否有新提交
+# - 无冲突：自动开 PR 供 review 合并
+# - 有冲突：开 issue 列出冲突文件，通知人工解决
+# - 也支持手动触发（Actions 页面 → Run workflow）
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTC 00:00 = 北京时间 08:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0  # merge 需要完整历史
+
+      - name: Configure git bot identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Ensure labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create sync-upstream --color 2EA44F --if-not-exists || true
+          gh label create sync-conflict --color D73A4A --if-not-exists || true
+
+      - name: Add upstream remote and fetch
+        run: |
+          git remote add upstream https://github.com/dyphire/komga-cn.git
+          git fetch upstream master
+
+      - name: Check for new upstream commits
+        id: check
+        run: |
+          COUNT=$(git rev-list main..upstream/master --count)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -gt 0 ]; then
+            echo "sha=$(git rev-parse upstream/master)" >> "$GITHUB_OUTPUT"
+            echo "msg=$(git log -1 --pretty=format:'%s' upstream/master)" >> "$GITHUB_OUTPUT"
+            echo "::notice::Found $COUNT new upstream commit(s)."
+          else
+            echo "::notice::Upstream already merged, nothing to do."
+          fi
+
+      - name: Attempt merge
+        id: merge
+        if: steps.check.outputs.count != '0'
+        run: |
+          set +e
+          git merge upstream/master --no-edit
+          STATUS=$?
+          set -e
+          if [ $STATUS -eq 0 ]; then
+            echo "result=clean" >> "$GITHUB_OUTPUT"
+            echo "::notice::Merge succeeded without conflicts."
+          else
+            echo "=== Conflict files ==="
+            git diff --name-only --diff-filter=U
+            {
+              echo "conflicts<<EOF"
+              git diff --name-only --diff-filter=U
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            git merge --abort
+            echo "result=conflict" >> "$GITHUB_OUTPUT"
+            echo "::warning::Merge has conflicts, requires manual resolution."
+          fi
+
+      - name: Create or update sync PR
+        if: steps.merge.outputs.result == 'clean'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ steps.check.outputs.sha }}
+          MSG: ${{ steps.check.outputs.msg }}
+          COUNT: ${{ steps.check.outputs.count }}
+        run: |
+          git push origin HEAD:refs/heads/sync-upstream --force
+          PR_NUMBER=$(gh pr list --head sync-upstream --base main --state open --json number --jq '.[0].number // empty')
+          cat > /tmp/body.md <<EOF
+          自动同步上游 [dyphire/komga-cn](https://github.com/dyphire/komga-cn) 的更新。
+
+          - 上游最新提交: $SHA
+          - 提交标题: $MSG
+          - 新提交数: $COUNT
+
+          本次合并无冲突，请 review 变更后合并到 main。
+          EOF
+          TITLE="sync: 上游 dyphire/komga-cn 更新 ($MSG)"
+          if [ -z "$PR_NUMBER" ]; then
+            gh pr create --base main --head sync-upstream \
+              --title "$TITLE" --body-file /tmp/body.md --label sync-upstream
+            echo "::notice::Created sync PR."
+          else
+            gh pr edit "$PR_NUMBER" --title "$TITLE" --body-file /tmp/body.md
+            echo "::notice::Updated existing sync PR #$PR_NUMBER."
+          fi
+
+      - name: Create or comment conflict issue
+        if: steps.merge.outputs.result == 'conflict'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ steps.check.outputs.sha }}
+          MSG: ${{ steps.check.outputs.msg }}
+          CONFLICTS: ${{ steps.merge.outputs.conflicts }}
+        run: |
+          ISSUE_NUMBER=$(gh issue list --label sync-conflict --state open --json number --jq '.[0].number // empty')
+          cat > /tmp/issue.md <<EOF
+          自动同步上游 [dyphire/komga-cn](https://github.com/dyphire/komga-cn) 时发生合并冲突，无法自动完成。
+
+          - 上游最新提交: $SHA
+          - 提交标题: $MSG
+
+          冲突文件（每行一个）：
+          $CONFLICTS
+
+          请在本地解决后推送：
+
+              git fetch upstream master
+              git merge upstream/master
+              # 解决冲突后
+              git commit && git push
+          EOF
+          if [ -z "$ISSUE_NUMBER" ]; then
+            gh issue create --title "上游同步冲突，需人工解决" \
+              --body-file /tmp/issue.md --label sync-conflict
+            echo "::notice::Created conflict issue."
+          else
+            gh issue comment "$ISSUE_NUMBER" --body-file /tmp/issue.md
+            echo "::notice::Commented on existing conflict issue #$ISSUE_NUMBER."
+          fi

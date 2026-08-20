@@ -14,6 +14,8 @@ const val PROFILE_DIVINA = "https://readium.org/webpub-manifest/profiles/divina"
 const val PROFILE_EPUB = "https://readium.org/webpub-manifest/profiles/epub"
 const val PROFILE_PDF = "https://readium.org/webpub-manifest/profiles/pdf"
 const val PROFILE_MOBI = "https://readium.org/webpub-manifest/profiles/mobi"
+const val PROFILE_VIDEO = "https://readium.org/webpub-manifest/profiles/video"
+const val PROFILE_AUDIO = "https://readium.org/webpub-manifest/profiles/audiobook"
 
 const val REL_PROGRESSION_API = "http://www.cantook.com/api/progression"
 

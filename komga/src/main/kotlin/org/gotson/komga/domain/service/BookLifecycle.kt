@@ -13,10 +13,12 @@ import org.gotson.komga.domain.model.Media
 import org.gotson.komga.domain.model.MediaExtensionEpub
 import org.gotson.komga.domain.model.MediaNotReadyException
 import org.gotson.komga.domain.model.MediaProfile
+import org.gotson.komga.domain.model.MediaProfile.AUDIO
 import org.gotson.komga.domain.model.MediaProfile.DIVINA
 import org.gotson.komga.domain.model.MediaProfile.EPUB
 import org.gotson.komga.domain.model.MediaProfile.MOBI
 import org.gotson.komga.domain.model.MediaProfile.PDF
+import org.gotson.komga.domain.model.MediaProfile.VIDEO
 import org.gotson.komga.domain.model.NoThumbnailFoundException
 import org.gotson.komga.domain.model.R2Progression
 import org.gotson.komga.domain.model.ReadProgress
@@ -558,6 +560,8 @@ class BookLifecycle(
             ),
           )
         }
+
+        VIDEO, AUDIO -> throw IllegalArgumentException("Progression API is not supported for video/audio media")
       }
 
     readProgressRepository.save(progress)

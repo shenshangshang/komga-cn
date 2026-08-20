@@ -553,6 +553,18 @@ class BookController(
       .body(manifest)
   }
 
+  @Operation(summary = "Stream book file", description = "Stream the book file with HTTP Range support for video/audio playback.", tags = [OpenApiConfiguration.TagNames.BOOKS])
+  @GetMapping(
+    value = ["api/v1/books/{bookId}/stream"],
+    produces = [MediaType.ALL_VALUE],
+  )
+  @PreAuthorize("hasRole('PAGE_STREAMING')")
+  fun streamBookFile(
+    @AuthenticationPrincipal principal: KomgaPrincipal,
+    @RequestHeader(value = "Range", required = false) rangeHeaders: List<String> = emptyList(),
+    @PathVariable bookId: String,
+  ): ResponseEntity<*> = commonBookController.getBookStreamInternal(principal, bookId, rangeHeaders)
+
   @Operation(summary = "List book's positions", description = "The Positions API is a proposed standard for OPDS 2 and Readium. It is used by the Epub Reader.", tags = [OpenApiConfiguration.TagNames.BOOK_WEBPUB])
   @GetMapping(
     value = ["api/v1/books/{bookId}/positions"],

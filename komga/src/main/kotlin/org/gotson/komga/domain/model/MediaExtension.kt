@@ -31,3 +31,9 @@ data class MediaExtensionEpub(
   val isFixedLayout: Boolean = false,
   val positions: List<R2Locator> = emptyList(),
 ) : MediaExtension
+
+data class MediaExtensionAudioVideo(
+  val duration: Double? = null,
+  val width: Int? = null,
+  val height: Int? = null,
+) : MediaExtension

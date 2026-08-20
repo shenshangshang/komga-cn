@@ -562,6 +562,12 @@ export default Vue.extend({
       }, {
         text: 'Mobi',
         value: 'mobi',
+      }, {
+        text: this.$t('common.video').toString(),
+        value: 'video',
+      }, {
+        text: this.$t('common.audio').toString(),
+        value: 'audio',
       }]
     },
 
@@ -678,6 +684,8 @@ export default Vue.extend({
       if (library?.scanPdf == true) this.form.scanTypes.splice(0, 0, 'pdf')
       if (library?.scanCbx == true) this.form.scanTypes.splice(0, 0, 'cbx')
       if (library?.scanMobi == true) this.form.scanTypes.splice(0, 0, 'mobi')
+      if (library?.scanVideo == true) this.form.scanTypes.splice(0, 0, 'video')
+      if (library?.scanAudio == true) this.form.scanTypes.splice(0, 0, 'audio')
       this.form.scanDirectoryExclusions = library ? library.scanDirectoryExclusions : ['#recycle', '@eaDir', '@Recycle']
       this.form.repairExtensions = library ? library.repairExtensions : false
       this.form.convertToCbz = library ? library.convertToCbz : false
@@ -716,6 +724,8 @@ export default Vue.extend({
           scanPdf: this.form.scanTypes.includes('pdf'),
           scanEpub: this.form.scanTypes.includes('epub'),
           scanMobi: this.form.scanTypes.includes('mobi'),
+          scanVideo: this.form.scanTypes.includes('video'),
+          scanAudio: this.form.scanTypes.includes('audio'),
           scanDirectoryExclusions: this.form.scanDirectoryExclusions,
           repairExtensions: this.form.repairExtensions,
           convertToCbz: this.form.convertToCbz,

@@ -305,6 +305,18 @@ const router = new Router({
       props: (route) => ({bookId: route.params.bookId}),
     },
     {
+      path: '/book/:bookId/read-video',
+      name: 'read-video',
+      component: () => import(/* webpackChunkName: "read-video" */ './views/VideoReader.vue'),
+      props: (route) => ({bookId: route.params.bookId}),
+    },
+    {
+      path: '/book/:bookId/read-audio',
+      name: 'read-audio',
+      component: () => import(/* webpackChunkName: "read-audio" */ './views/AudioReader.vue'),
+      props: (route) => ({bookId: route.params.bookId}),
+    },
+    {
       path: '*',
       name: 'notfound',
       component: () => import(/* webpackChunkName: "notfound" */ './views/PageNotFound.vue'),
@@ -323,7 +335,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // avoid document.title flickering when changing route
-  if (!['read-book', 'read-epub', 'browse-book', 'browse-oneshot', 'browse-series', 'browse-libraries', 'browse-books',
+  if (!['read-book', 'read-epub', 'read-video', 'read-audio', 'browse-book', 'browse-oneshot', 'browse-series', 'browse-libraries', 'browse-books',
     'recommended-libraries', 'browse-collection', 'browse-collections', 'browse-readlist', 'browse-readlists'].includes(<string>to.name)
   ) {
     document.title = '神殇漫画'

@@ -22,10 +22,12 @@ import org.gotson.komga.domain.model.Media
 import org.gotson.komga.domain.model.MediaType as KomgaMediaType
 import org.gotson.komga.domain.model.MediaNotReadyException
 import org.gotson.komga.domain.model.MediaProfile
+import org.gotson.komga.domain.model.MediaProfile.AUDIO
 import org.gotson.komga.domain.model.MediaProfile.DIVINA
 import org.gotson.komga.domain.model.MediaProfile.EPUB
 import org.gotson.komga.domain.model.MediaProfile.MOBI
 import org.gotson.komga.domain.model.MediaProfile.PDF
+import org.gotson.komga.domain.model.MediaProfile.VIDEO
 import org.gotson.komga.domain.model.MediaUnsupportedException
 import org.gotson.komga.domain.model.R2Progression
 import org.gotson.komga.domain.model.toR2Progression
@@ -43,8 +45,11 @@ import org.gotson.komga.infrastructure.web.getMediaTypeOrDefault
 import org.gotson.komga.interfaces.api.dto.MEDIATYPE_PROGRESSION_JSON_VALUE
 import org.gotson.komga.interfaces.api.persistence.BookDtoRepository
 import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.Resource
+import org.springframework.core.io.support.ResourceRegion
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpRange
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -100,6 +105,8 @@ class CommonBookController(
       PDF -> getWebPubManifestPdfInternal(principal, bookId, webPubGenerator)
       EPUB -> getWebPubManifestEpubInternal(principal, bookId, webPubGenerator)
       MOBI -> getWebPubManifestMobiInternal(principal, bookId, webPubGenerator)
+      VIDEO -> getWebPubManifestVideoInternal(principal, bookId, webPubGenerator)
+      AUDIO -> getWebPubManifestAudioInternal(principal, bookId, webPubGenerator)
       null -> throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book analysis failed")
     }
   } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -154,6 +161,34 @@ class CommonBookController(
   ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
     contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
     webPubGenerator.toManifestDivina(
+      bookDto,
+      mediaRepository.findById(bookDto.id),
+      seriesMetadataRepository.findById(bookDto.seriesId),
+    )
+  } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getWebPubManifestVideoInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    webPubGenerator: WebPubGenerator,
+  ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
+    if (bookDto.media.mediaProfile != VIDEO.name) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${bookDto.media.mediaType}' not compatible with requested profile")
+    contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
+    webPubGenerator.toManifestVideo(
+      bookDto,
+      mediaRepository.findById(bookDto.id),
+      seriesMetadataRepository.findById(bookDto.seriesId),
+    )
+  } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getWebPubManifestAudioInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    webPubGenerator: WebPubGenerator,
+  ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
+    if (bookDto.media.mediaProfile != AUDIO.name) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${bookDto.media.mediaType}' not compatible with requested profile")
+    contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
+    webPubGenerator.toManifestAudio(
       bookDto,
       mediaRepository.findById(bookDto.id),
       seriesMetadataRepository.findById(bookDto.seriesId),
@@ -411,6 +446,59 @@ class CommonBookController(
             ).contentType(getMediaTypeOrDefault(media.mediaType))
             .contentLength(this.contentLength())
             .body(stream)
+        }
+      } catch (ex: FileNotFoundException) {
+        logger.warn(ex) { "File not found: $book" }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "File not found, it may have moved")
+      }
+    } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getBookStreamInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    rangeHeaders: List<String>,
+  ): ResponseEntity<*> =
+    bookRepository.findByIdOrNull(bookId)?.let { book ->
+      contentRestrictionChecker.checkContentRestriction(principal.user, book)
+      try {
+        val media = mediaRepository.findById(book.id)
+        val resource = FileSystemResource(book.path)
+        if (!resource.exists()) throw FileNotFoundException(book.path.toString())
+
+        val contentLength = resource.contentLength()
+
+        // Parse Range header for seeking support
+        val range = rangeHeaders.firstOrNull()?.let { HttpRange.parseRanges(it).firstOrNull() }
+
+        val headers = HttpHeaders().apply {
+          add(HttpHeaders.ACCEPT_RANGES, "bytes")
+          contentDisposition =
+            ContentDisposition
+              .builder("inline")
+              .filename(book.path.fileName.toString(), StandardCharsets.UTF_8)
+              .build()
+        }
+
+        if (range != null) {
+          val region = range.toResourceRegion(resource)
+          val start = region.position
+          val length = region.count
+          ResponseEntity
+            .status(HttpStatus.PARTIAL_CONTENT)
+            .headers(headers)
+            .contentType(getMediaTypeOrDefault(media.mediaType))
+            .header(HttpHeaders.CONTENT_RANGE, "bytes $start-${start + length - 1}/$contentLength")
+            .contentLength(length)
+            .body(region)
+        } else {
+          // Full file (no Range header)
+          val region = ResourceRegion(resource, 0, contentLength)
+          ResponseEntity
+            .ok()
+            .headers(headers)
+            .contentType(getMediaTypeOrDefault(media.mediaType))
+            .contentLength(contentLength)
+            .body(region)
         }
       } catch (ex: FileNotFoundException) {
         logger.warn(ex) { "File not found: $book" }

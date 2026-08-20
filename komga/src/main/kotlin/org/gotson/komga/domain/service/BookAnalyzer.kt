@@ -6,6 +6,7 @@ import org.gotson.komga.domain.model.BookPage
 import org.gotson.komga.domain.model.BookWithMedia
 import org.gotson.komga.domain.model.Dimension
 import org.gotson.komga.domain.model.Media
+import org.gotson.komga.domain.model.MediaExtensionAudioVideo
 import org.gotson.komga.domain.model.MediaExtensionEpub
 import org.gotson.komga.domain.model.MediaFile
 import org.gotson.komga.domain.model.MediaNotReadyException
@@ -23,6 +24,7 @@ import org.gotson.komga.infrastructure.image.ImageConverter
 import org.gotson.komga.infrastructure.image.ImageType
 import org.gotson.komga.infrastructure.image.QrCodeDetector
 import org.gotson.komga.infrastructure.mediacontainer.ContentDetector
+import org.gotson.komga.infrastructure.mediacontainer.av.VideoMediaAnalyzer
 import org.gotson.komga.infrastructure.mediacontainer.divina.DivinaExtractor
 import org.gotson.komga.infrastructure.mediacontainer.epub.EpubExtractor
 import org.gotson.komga.infrastructure.mediacontainer.epub.epub
@@ -50,6 +52,7 @@ class BookAnalyzer(
   private val imageConverter: ImageConverter,
   private val imageAnalyzer: ImageAnalyzer,
   private val qrCodeDetector: QrCodeDetector,
+  private val videoMediaAnalyzer: VideoMediaAnalyzer,
   private val hasher: Hasher,
   @param:Value("#{@komgaProperties.pageHashing}") private val pageHashing: Int,
   private val komgaSettingsProvider: KomgaSettingsProvider,
@@ -91,6 +94,8 @@ class BookAnalyzer(
         PDF -> analyzePdf(book, analyzeDimensions)
         EPUB -> analyzeEpub(book, analyzeDimensions, adPagesDetector)
         MOBI -> analyzeMobi(book, analyzeDimensions)
+        VIDEO -> analyzeVideo(book)
+        AUDIO -> analyzeAudio(book)
       }.copy(mediaType = mediaType.type)
     } catch (ade: AccessDeniedException) {
       logger.error(ade) { "Error while analyzing book: $book" }
@@ -322,6 +327,26 @@ class BookAnalyzer(
     return Media(status = Media.Status.READY, pages = pages)
   }
 
+  private fun analyzeVideo(book: Book): Media {
+    val extension = videoMediaAnalyzer.toExtension(book.path)
+    return Media(
+      status = Media.Status.READY,
+      pages = listOf(BookPage(fileName = book.path.fileName.toString(), mediaType = "video/" + book.path.extension.lowercase())),
+      pageCount = 1,
+      extension = extension,
+    )
+  }
+
+  private fun analyzeAudio(book: Book): Media {
+    val extension = videoMediaAnalyzer.toExtension(book.path)
+    return Media(
+      status = Media.Status.READY,
+      pages = listOf(BookPage(fileName = book.path.fileName.toString(), mediaType = "audio/" + book.path.extension.lowercase())),
+      pageCount = 1,
+      extension = extension,
+    )
+  }
+
   @Throws(
     MediaNotReadyException::class,
     NoThumbnailFoundException::class,
@@ -355,6 +380,8 @@ class BookAnalyzer(
       PDF -> pdfExtractor.getPageContentAsImage(book.book.path, 1)
       EPUB -> epubExtractor.getCover(book.book.path) ?: if (book.media.epubDivinaCompatible) divinaExtractors[MediaType.ZIP.type]?.getPoster(book) else null
       MOBI -> mobiExtractor.getCover(book.book.path)
+      VIDEO -> videoMediaAnalyzer.extractFrame(book.book.path, 1.0)?.let { TypedBytes(it, "image/jpeg") }
+      AUDIO -> videoMediaAnalyzer.extractEmbeddedCover(book.book.path)?.let { TypedBytes(it, "image/jpeg") }
       null -> null
     }
 
@@ -510,6 +537,7 @@ class BookAnalyzer(
           throw MediaUnsupportedException("Epub profile does not support getting page content")
 
       MOBI -> mobiExtractor.getPageContentAsImage(book.book.path, number).bytes
+      VIDEO, AUDIO -> throw MediaUnsupportedException("Video/Audio does not support page content, use the stream endpoint")
       null -> throw MediaNotReadyException()
     }
   }
@@ -560,7 +588,7 @@ class BookAnalyzer(
     return when (book.media.profile) {
       DIVINA -> divinaExtractors.getValue(book.media.mediaType!!).getEntryStream(book.book.path, fileName)
       EPUB -> epubExtractor.getEntryStream(book.book.path, fileName)
-      PDF, MOBI, null -> throw MediaUnsupportedException("Extractor does not support extraction of files")
+      PDF, MOBI, VIDEO, AUDIO, null -> throw MediaUnsupportedException("Extractor does not support extraction of files")
     }
   }
 

@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jre-alpine
 LABEL maintainer="shenshangshang"
 LABEL description="Komga-CN with MySQL 8.4 support and page prefetch feature"
 
-RUN apk add --no-cache ttf-dejavu wget
+RUN apk add --no-cache ttf-dejavu wget ffmpeg
 RUN addgroup -S komga && adduser -S -G komga -h /app komga \
     && mkdir -p /config /data /app \
     && chown -R komga:komga /config /data /app

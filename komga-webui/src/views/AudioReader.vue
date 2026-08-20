@@ -86,6 +86,7 @@ export default Vue.extend({
   methods: {
     async setup(bookId: string) {
       this.book = await this.$komgaBooks.getBook(bookId)
+      this.series = await this.$komgaSeries.getOneSeries(this.book.seriesId)
 
       this.incognito = !!(this.$route.query.incognito && this.$route.query.incognito.toString().toLowerCase() === 'true')
 
@@ -195,6 +196,10 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.full-width {
+  width: 100%;
+}
+
 .audio-container {
   display: flex;
   flex-direction: column;

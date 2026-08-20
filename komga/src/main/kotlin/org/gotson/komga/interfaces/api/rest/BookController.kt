@@ -556,6 +556,7 @@ class BookController(
   @Operation(summary = "Stream book file", description = "Stream the book file with HTTP Range support for video/audio playback.", tags = [OpenApiConfiguration.TagNames.BOOKS])
   @GetMapping(
     value = ["api/v1/books/{bookId}/stream"],
+    produces = [MediaType.ALL_VALUE],
   )
   @PreAuthorize("hasRole('PAGE_STREAMING')")
   fun streamBookFile(

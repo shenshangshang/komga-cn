@@ -45,11 +45,8 @@ import org.gotson.komga.infrastructure.web.getMediaTypeOrDefault
 import org.gotson.komga.interfaces.api.dto.MEDIATYPE_PROGRESSION_JSON_VALUE
 import org.gotson.komga.interfaces.api.persistence.BookDtoRepository
 import org.springframework.core.io.FileSystemResource
-import org.springframework.core.io.Resource
-import org.springframework.core.io.support.ResourceRegion
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpRange
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -457,7 +454,7 @@ class CommonBookController(
     principal: KomgaPrincipal,
     bookId: String,
     rangeHeaders: List<String>,
-  ): ResponseEntity<*> =
+  ): ResponseEntity<StreamingResponseBody> =
     bookRepository.findByIdOrNull(bookId)?.let { book ->
       contentRestrictionChecker.checkContentRestriction(principal.user, book)
       try {
@@ -467,8 +464,32 @@ class CommonBookController(
 
         val contentLength = resource.contentLength()
 
-        // Parse Range header for seeking support
-        val range = rangeHeaders.firstOrNull()?.let { HttpRange.parseRanges(it).firstOrNull() }
+        // Parse Range header manually for seeking support: "bytes=0-1023" or "bytes=0-"
+        val rangeSpec = rangeHeaders.firstOrNull()?.removePrefix("bytes=")?.trim()
+        val (start, end) = if (!rangeSpec.isNullOrEmpty() && rangeSpec.contains("-")) {
+          val parts = rangeSpec.split("-")
+          val s = parts[0].toLongOrNull() ?: 0L
+          val e = parts.getOrNull(1)?.toLongOrNull() ?: (contentLength - 1)
+          minOf(s, contentLength - 1) to minOf(e, contentLength - 1)
+        } else {
+          0L to (contentLength - 1)
+        }
+
+        val stream = StreamingResponseBody { os: OutputStream ->
+          resource.inputStream.use { input ->
+            val skip = if (start > 0) input.skip(start) else 0L
+            val buffer = ByteArray(8192)
+            var remaining = end - start + 1
+            while (remaining > 0) {
+              val toRead = minOf(buffer.size.toLong(), remaining).toInt()
+              val read = input.read(buffer, 0, toRead)
+              if (read == -1) break
+              os.write(buffer, 0, read)
+              remaining -= read
+            }
+            os.flush()
+          }
+        }
 
         val headers = HttpHeaders().apply {
           add(HttpHeaders.ACCEPT_RANGES, "bytes")
@@ -479,26 +500,21 @@ class CommonBookController(
               .build()
         }
 
-        if (range != null) {
-          val region = range.toResourceRegion(resource)
-          val start = region.position
-          val length = region.count
+        if (!rangeSpec.isNullOrEmpty() && rangeSpec.contains("-")) {
           ResponseEntity
             .status(HttpStatus.PARTIAL_CONTENT)
             .headers(headers)
             .contentType(getMediaTypeOrDefault(media.mediaType))
-            .header(HttpHeaders.CONTENT_RANGE, "bytes $start-${start + length - 1}/$contentLength")
-            .contentLength(length)
-            .body(region)
+            .header(HttpHeaders.CONTENT_RANGE, "bytes $start-$end/$contentLength")
+            .contentLength(end - start + 1)
+            .body(stream)
         } else {
-          // Full file (no Range header)
-          val region = ResourceRegion(resource, 0, contentLength)
           ResponseEntity
             .ok()
             .headers(headers)
             .contentType(getMediaTypeOrDefault(media.mediaType))
             .contentLength(contentLength)
-            .body(region)
+            .body(stream)
         }
       } catch (ex: FileNotFoundException) {
         logger.warn(ex) { "File not found: $book" }

@@ -59,6 +59,8 @@ class FileSystemScanner(
     scanPdf: Boolean = true,
     scanEpub: Boolean = true,
     scanMobi: Boolean = true,
+    scanVideo: Boolean = false,
+    scanAudio: Boolean = false,
     directoryExclusions: Set<String> = emptySet(),
     seriesGroupingMode: Library.SeriesGroupingMode = Library.SeriesGroupingMode.DIRECT_PARENT,
   ): ScanResult {
@@ -68,6 +70,8 @@ class FileSystemScanner(
         if (scanPdf) add("pdf")
         if (scanEpub) add("epub")
         if (scanMobi) add("mobi")
+        if (scanVideo) addAll(listOf("mp4", "mkv", "webm", "mov", "avi"))
+        if (scanAudio) addAll(listOf("mp3", "flac", "m4a", "ogg", "wav"))
       }
     logger.info { "Scanning folder: $root" }
     logger.info { "Scan for extensions: $scanForExtensions" }

@@ -17,10 +17,12 @@ import org.gotson.komga.interfaces.api.dto.MEDIATYPE_DIVINA_JSON_VALUE
 import org.gotson.komga.interfaces.api.dto.MEDIATYPE_WEBPUB_JSON
 import org.gotson.komga.interfaces.api.dto.MEDIATYPE_WEBPUB_JSON_VALUE
 import org.gotson.komga.interfaces.api.dto.OpdsLinkRel
+import org.gotson.komga.interfaces.api.dto.PROFILE_AUDIO
 import org.gotson.komga.interfaces.api.dto.PROFILE_DIVINA
 import org.gotson.komga.interfaces.api.dto.PROFILE_EPUB
 import org.gotson.komga.interfaces.api.dto.PROFILE_MOBI
 import org.gotson.komga.interfaces.api.dto.PROFILE_PDF
+import org.gotson.komga.interfaces.api.dto.PROFILE_VIDEO
 import org.gotson.komga.interfaces.api.dto.WPBelongsToDto
 import org.gotson.komga.interfaces.api.dto.WPContributorDto
 import org.gotson.komga.interfaces.api.dto.WPLinkDto
@@ -233,6 +235,50 @@ class WebPubGenerator(
       children = children.map { it.toWPLinkDto(uriBuilder) },
     )
 
+  fun toManifestVideo(
+    bookDto: BookDto,
+    media: Media,
+    seriesMetadata: SeriesMetadata,
+  ): WPPublicationDto {
+    val uriBuilder = ServletUriComponentsBuilder.fromCurrentContextPath().pathSegment(*pathSegments.toTypedArray())
+    return toBasePublicationDto(bookDto).let {
+      it.copy(
+        mediaType = MEDIATYPE_WEBPUB_JSON,
+        metadata = it.metadata.withSeriesMetadata(seriesMetadata).copy(conformsTo = PROFILE_VIDEO),
+        readingOrder =
+          listOf(
+            WPLinkDto(
+              href = uriBuilder.cloneBuilder().path("books/${bookDto.id}/stream").toUriString(),
+              type = media.mediaType ?: "video/mp4",
+            ),
+          ),
+        resources = buildThumbnailLinkDtos(bookDto.id),
+      )
+    }
+  }
+
+  fun toManifestAudio(
+    bookDto: BookDto,
+    media: Media,
+    seriesMetadata: SeriesMetadata,
+  ): WPPublicationDto {
+    val uriBuilder = ServletUriComponentsBuilder.fromCurrentContextPath().pathSegment(*pathSegments.toTypedArray())
+    return toBasePublicationDto(bookDto).let {
+      it.copy(
+        mediaType = MEDIATYPE_WEBPUB_JSON,
+        metadata = it.metadata.withSeriesMetadata(seriesMetadata).copy(conformsTo = PROFILE_AUDIO),
+        readingOrder =
+          listOf(
+            WPLinkDto(
+              href = uriBuilder.cloneBuilder().path("books/${bookDto.id}/stream").toUriString(),
+              type = media.mediaType ?: "audio/mpeg",
+            ),
+          ),
+        resources = buildThumbnailLinkDtos(bookDto.id),
+      )
+    }
+  }
+
   protected fun toWPMetadataDto(bookDto: BookDto) =
     WPMetadataDto(
       title = bookDto.metadata.title,
@@ -312,6 +358,8 @@ class WebPubGenerator(
       MediaProfile.PDF -> MEDIATYPE_WEBPUB_JSON_VALUE
       MediaProfile.EPUB -> MEDIATYPE_WEBPUB_JSON_VALUE
       MediaProfile.MOBI -> MEDIATYPE_WEBPUB_JSON_VALUE
+      MediaProfile.VIDEO -> MEDIATYPE_WEBPUB_JSON_VALUE
+      MediaProfile.AUDIO -> MEDIATYPE_WEBPUB_JSON_VALUE
       null -> MEDIATYPE_WEBPUB_JSON_VALUE
     }
 

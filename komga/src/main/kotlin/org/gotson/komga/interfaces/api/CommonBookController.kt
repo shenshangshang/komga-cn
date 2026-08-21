@@ -22,10 +22,12 @@ import org.gotson.komga.domain.model.Media
 import org.gotson.komga.domain.model.MediaType as KomgaMediaType
 import org.gotson.komga.domain.model.MediaNotReadyException
 import org.gotson.komga.domain.model.MediaProfile
+import org.gotson.komga.domain.model.MediaProfile.AUDIO
 import org.gotson.komga.domain.model.MediaProfile.DIVINA
 import org.gotson.komga.domain.model.MediaProfile.EPUB
 import org.gotson.komga.domain.model.MediaProfile.MOBI
 import org.gotson.komga.domain.model.MediaProfile.PDF
+import org.gotson.komga.domain.model.MediaProfile.VIDEO
 import org.gotson.komga.domain.model.MediaUnsupportedException
 import org.gotson.komga.domain.model.R2Progression
 import org.gotson.komga.domain.model.toR2Progression
@@ -100,6 +102,8 @@ class CommonBookController(
       PDF -> getWebPubManifestPdfInternal(principal, bookId, webPubGenerator)
       EPUB -> getWebPubManifestEpubInternal(principal, bookId, webPubGenerator)
       MOBI -> getWebPubManifestMobiInternal(principal, bookId, webPubGenerator)
+      VIDEO -> getWebPubManifestVideoInternal(principal, bookId, webPubGenerator)
+      AUDIO -> getWebPubManifestAudioInternal(principal, bookId, webPubGenerator)
       null -> throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book analysis failed")
     }
   } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -154,6 +158,34 @@ class CommonBookController(
   ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
     contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
     webPubGenerator.toManifestDivina(
+      bookDto,
+      mediaRepository.findById(bookDto.id),
+      seriesMetadataRepository.findById(bookDto.seriesId),
+    )
+  } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getWebPubManifestVideoInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    webPubGenerator: WebPubGenerator,
+  ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
+    if (bookDto.media.mediaProfile != VIDEO.name) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${bookDto.media.mediaType}' not compatible with requested profile")
+    contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
+    webPubGenerator.toManifestVideo(
+      bookDto,
+      mediaRepository.findById(bookDto.id),
+      seriesMetadataRepository.findById(bookDto.seriesId),
+    )
+  } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getWebPubManifestAudioInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    webPubGenerator: WebPubGenerator,
+  ) = bookDtoRepository.findByIdOrNull(bookId, principal.user.id)?.let { bookDto ->
+    if (bookDto.media.mediaProfile != AUDIO.name) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Book media type '${bookDto.media.mediaType}' not compatible with requested profile")
+    contentRestrictionChecker.checkContentRestriction(principal.user, bookDto)
+    webPubGenerator.toManifestAudio(
       bookDto,
       mediaRepository.findById(bookDto.id),
       seriesMetadataRepository.findById(bookDto.seriesId),
@@ -410,6 +442,78 @@ class CommonBookController(
               },
             ).contentType(getMediaTypeOrDefault(media.mediaType))
             .contentLength(this.contentLength())
+            .body(stream)
+        }
+      } catch (ex: FileNotFoundException) {
+        logger.warn(ex) { "File not found: $book" }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "File not found, it may have moved")
+      }
+    } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+  fun getBookStreamInternal(
+    principal: KomgaPrincipal,
+    bookId: String,
+    rangeHeaders: List<String>,
+  ): ResponseEntity<StreamingResponseBody> =
+    bookRepository.findByIdOrNull(bookId)?.let { book ->
+      contentRestrictionChecker.checkContentRestriction(principal.user, book)
+      try {
+        val media = mediaRepository.findById(book.id)
+        val resource = FileSystemResource(book.path)
+        if (!resource.exists()) throw FileNotFoundException(book.path.toString())
+
+        val contentLength = resource.contentLength()
+
+        // Parse Range header manually for seeking support: "bytes=0-1023" or "bytes=0-"
+        val rangeSpec = rangeHeaders.firstOrNull()?.removePrefix("bytes=")?.trim()
+        val (start, end) = if (!rangeSpec.isNullOrEmpty() && rangeSpec.contains("-")) {
+          val parts = rangeSpec.split("-")
+          val s = parts[0].toLongOrNull() ?: 0L
+          val e = parts.getOrNull(1)?.toLongOrNull() ?: (contentLength - 1)
+          minOf(s, contentLength - 1) to minOf(e, contentLength - 1)
+        } else {
+          0L to (contentLength - 1)
+        }
+
+        val stream = StreamingResponseBody { os: OutputStream ->
+          resource.inputStream.use { input ->
+            val skip = if (start > 0) input.skip(start) else 0L
+            val buffer = ByteArray(8192)
+            var remaining = end - start + 1
+            while (remaining > 0) {
+              val toRead = minOf(buffer.size.toLong(), remaining).toInt()
+              val read = input.read(buffer, 0, toRead)
+              if (read == -1) break
+              os.write(buffer, 0, read)
+              remaining -= read
+            }
+            os.flush()
+          }
+        }
+
+        val headers = HttpHeaders().apply {
+          add(HttpHeaders.ACCEPT_RANGES, "bytes")
+          contentDisposition =
+            ContentDisposition
+              .builder("inline")
+              .filename(book.path.fileName.toString(), StandardCharsets.UTF_8)
+              .build()
+        }
+
+        if (!rangeSpec.isNullOrEmpty() && rangeSpec.contains("-")) {
+          ResponseEntity
+            .status(HttpStatus.PARTIAL_CONTENT)
+            .headers(headers)
+            .contentType(getMediaTypeOrDefault(media.mediaType))
+            .header(HttpHeaders.CONTENT_RANGE, "bytes $start-$end/$contentLength")
+            .contentLength(end - start + 1)
+            .body(stream)
+        } else {
+          ResponseEntity
+            .ok()
+            .headers(headers)
+            .contentType(getMediaTypeOrDefault(media.mediaType))
+            .contentLength(contentLength)
             .body(stream)
         }
       } catch (ex: FileNotFoundException) {

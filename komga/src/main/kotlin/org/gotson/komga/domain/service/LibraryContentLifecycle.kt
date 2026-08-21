@@ -105,6 +105,8 @@ class LibraryContentLifecycle(
               library.scanPdf,
               library.scanEpub,
               library.scanMobi,
+              library.scanVideo,
+              library.scanAudio,
               library.scanDirectoryExclusions,
             )
           } else {
@@ -116,6 +118,8 @@ class LibraryContentLifecycle(
               scanPdf = library.scanPdf,
               scanEpub = library.scanEpub,
               scanMobi = library.scanMobi,
+              scanVideo = library.scanVideo,
+              scanAudio = library.scanAudio,
               directoryExclusions = library.scanDirectoryExclusions,
               seriesGroupingMode = library.seriesGroupingMode,
             )

@@ -26,6 +26,10 @@ export function bookFileUrl(bookId: string): string {
   return `${urls.originNoSlash}/api/v1/books/${bookId}/file`
 }
 
+export function bookStreamUrl(bookId: string): string {
+  return `${urls.originNoSlash}/api/v1/books/${bookId}/stream`
+}
+
 export function bookPageUrl(bookId: string, page: number, convertTo?: string): string {
   let url = `${urls.originNoSlash}/api/v1/books/${bookId}/pages/${page}`
   if (convertTo) {

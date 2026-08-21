@@ -2,10 +2,12 @@ package org.gotson.komga.interfaces.api.kosync
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.gotson.komga.domain.model.MediaExtensionEpub
+import org.gotson.komga.domain.model.MediaProfile.AUDIO
 import org.gotson.komga.domain.model.MediaProfile.DIVINA
 import org.gotson.komga.domain.model.MediaProfile.EPUB
 import org.gotson.komga.domain.model.MediaProfile.MOBI
 import org.gotson.komga.domain.model.MediaProfile.PDF
+import org.gotson.komga.domain.model.MediaProfile.VIDEO
 import org.gotson.komga.domain.model.R2Device
 import org.gotson.komga.domain.model.R2Locator
 import org.gotson.komga.domain.model.R2Progression
@@ -193,6 +195,7 @@ class KoreaderSyncController(
         }
 
         null -> throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book has no media profile")
+        VIDEO, AUDIO -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "KOReader sync is not supported for video/audio media")
       }
 
     val r2Progression =

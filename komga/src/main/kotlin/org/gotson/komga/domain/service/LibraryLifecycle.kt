@@ -92,6 +92,8 @@ class LibraryLifecycle(
     if (existing.scanPdf != updated.scanPdf) return true
     if (existing.scanEpub != updated.scanEpub) return true
     if (existing.scanMobi != updated.scanMobi) return true
+    if (existing.scanVideo != updated.scanVideo) return true
+    if (existing.scanAudio != updated.scanAudio) return true
     if (existing.scanForceModifiedTime != updated.scanForceModifiedTime) return true
     if (existing.scanDirectoryExclusions != updated.scanDirectoryExclusions) return true
     if (existing.seriesGroupingMode != updated.seriesGroupingMode) return true

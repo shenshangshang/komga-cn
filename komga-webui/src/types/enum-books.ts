@@ -29,4 +29,6 @@ export enum MediaProfile {
   DIVINA = 'DIVINA',
   PDF = 'PDF',
   EPUB = 'EPUB',
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
 }

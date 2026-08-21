@@ -164,6 +164,10 @@ tasks {
     targetCompatibility = "17"
   }
 
+  named("bootJar") {
+    dependsOn("prepareThymeLeaf")
+  }
+
   withType<Test> {
     useJUnitPlatform()
     systemProperty("spring.profiles.active", "test")

@@ -29,8 +29,8 @@ group = "org.gotson"
 
 allprojects {
   repositories {
-    maven { url = uri("https://maven.aliyun.com/repository/public/") }
     mavenCentral()
+    maven { url = uri("https://maven.aliyun.com/repository/public/") }
   }
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
   apply(plugin = "com.github.ben-manes.versions")

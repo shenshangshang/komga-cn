@@ -32,9 +32,10 @@ class DirectoryExtractor(
     return path
       .listDirectoryEntries()
       .filter { it.isRegularFile() && !it.name.startsWith(".") }
+      .parallelStream()
       .map { entry ->
         try {
-          val mediaType = Files.newInputStream(entry).buffered().use(contentDetector::detectMediaType)
+          val mediaType = contentDetector.detectMediaTypeFast(entry)
           val dimension =
             if (analyzeDimensions && contentDetector.isImage(mediaType)) {
               Files.newInputStream(entry).buffered().use(imageAnalyzer::getDimension)
@@ -51,7 +52,9 @@ class DirectoryExtractor(
           logger.warn(e) { "Could not analyze directory entry: $entry" }
           MediaContainerEntry(name = entry.name, comment = e.message)
         }
-      }.sortedWith(compareBy(NaturalSortComparator) { it.name })
+      }
+      .toList()
+      .sortedWith(compareBy(NaturalSortComparator) { it.name })
   }
 
   override fun getEntryStream(

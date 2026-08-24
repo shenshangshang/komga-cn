@@ -6,7 +6,21 @@ import org.apache.tika.metadata.Metadata
 import org.springframework.stereotype.Service
 import java.io.InputStream
 import java.nio.file.Path
+import kotlin.io.path.extension
 import kotlin.io.path.name
+
+private val extensionToMediaType = mapOf(
+  "jpg" to "image/jpeg",
+  "jpeg" to "image/jpeg",
+  "png" to "image/png",
+  "gif" to "image/gif",
+  "bmp" to "image/bmp",
+  "webp" to "image/webp",
+  "tiff" to "image/tiff",
+  "tif" to "image/tiff",
+  "avif" to "image/avif",
+  "jxl" to "image/jxl",
+)
 
 @Service
 class ContentDetector(
@@ -23,6 +37,16 @@ class ContentDetector(
       mediaType.toString()
     }
   }
+
+  /**
+   * Fast media type detection: uses file extension for common image formats
+   * to avoid expensive Tika content sniffing (which reads file content over
+   * network filesystems). Falls back to full Tika detection for unknown
+   * extensions.
+   */
+  fun detectMediaTypeFast(path: Path): String =
+    extensionToMediaType[path.extension.lowercase()]
+      ?: detectMediaType(path)
 
   /**
    * Detects the media type of the content of the stream.

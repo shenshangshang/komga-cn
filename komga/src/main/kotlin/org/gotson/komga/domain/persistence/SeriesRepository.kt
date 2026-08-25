@@ -15,6 +15,11 @@ interface SeriesRepository {
     url: URL,
   ): Series?
 
+  fun findByLibraryIdAndUrlOrNull(
+    libraryId: String,
+    url: URL,
+  ): Series?
+
   fun findAll(): Collection<Series>
 
   fun findAllByLibraryId(libraryId: String): Collection<Series>

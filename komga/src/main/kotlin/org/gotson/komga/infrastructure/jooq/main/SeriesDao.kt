@@ -88,6 +88,18 @@ class SeriesDao(
       .firstOrNull()
       ?.toDomain()
 
+  override fun findByLibraryIdAndUrlOrNull(
+    libraryId: String,
+    url: URL,
+  ): Series? =
+    dslRO
+      .selectFrom(s)
+      .where(s.LIBRARY_ID.eq(libraryId).and(s.URL.eq(url.toString())))
+      .orderBy(s.LAST_MODIFIED_DATE.desc())
+      .fetchInto(s)
+      .firstOrNull()
+      ?.toDomain()
+
   override fun findAllByTitleContaining(title: String): Collection<Series> =
     dslRO
       .selectDistinct(*s.fields())

@@ -143,15 +143,33 @@ class LibraryContentLifecycle(
 
       scannedSeries.forEach { (newSeries, newBooks) ->
         val existingSeries = seriesRepository.findNotDeletedByLibraryIdAndUrlOrNull(library.id, newSeries.url)
+        val softDeletedSeries = if (existingSeries == null) {
+          seriesRepository.findByLibraryIdAndUrlOrNull(library.id, newSeries.url)
+        } else {
+          null
+        }
 
         // if series does not exist, save it
-        if (existingSeries == null) {
+        if (existingSeries == null && softDeletedSeries == null) {
           logger.info { "Adding new series: $newSeries" }
           val createdSeries = seriesLifecycle.createSeries(newSeries)
           seriesLifecycle.addBooks(createdSeries, newBooks)
           tryRestoreSeries(createdSeries, newBooks)
           tryRestoreBooks(newBooks)
           seriesToSortAndRefresh.add(createdSeries)
+        } else if (softDeletedSeries != null) {
+          // series exists but was soft-deleted, restore it instead of inserting a duplicate
+          logger.info { "Restoring soft-deleted series: $softDeletedSeries" }
+          val restoredSeries = softDeletedSeries.copy(fileLastModified = newSeries.fileLastModified, deletedDate = null)
+          seriesRepository.update(restoredSeries)
+          // physically delete any soft-deleted books with same URLs to avoid unique key conflicts
+          val existingDeletedBooks = bookRepository.findAllBySeriesId(restoredSeries.id).filter { it.deletedDate != null }
+          val newBookUrls = newBooks.map { it.url }.toSet()
+          existingDeletedBooks.filter { it.url in newBookUrls }.forEach { bookLifecycle.deleteMany(listOf(it)) }
+          seriesLifecycle.addBooks(restoredSeries, newBooks)
+          tryRestoreSeries(restoredSeries, newBooks)
+          tryRestoreBooks(newBooks)
+          seriesToSortAndRefresh.add(restoredSeries)
         } else {
           // if series already exists, update it
           logger.debug { "Scanned series already exists. Scanned: $newSeries, Existing: $existingSeries" }

@@ -286,6 +286,11 @@ class LibraryContentLifecycle(
             // add new books
             val existingBooksUrls = existingBooks.filterNot { it.deletedDate != null }.map { it.url }
             val booksToAdd = newBooks.filterNot { newBook -> existingBooksUrls.contains(newBook.url) }
+            // physically delete any soft-deleted books with same URLs to avoid unique key conflicts
+            if (booksToAdd.isNotEmpty()) {
+              val newBookUrls = booksToAdd.map { it.url }.toSet()
+              existingBooks.filter { it.deletedDate != null && it.url in newBookUrls }.forEach { bookLifecycle.deleteMany(listOf(it)) }
+            }
             logger.info { "Adding new books: $booksToAdd" }
             seriesLifecycle.addBooks(existingSeries, booksToAdd)
             tryRestoreBooks(booksToAdd)

@@ -172,15 +172,16 @@ class LibraryContentLifecycle(
           seriesToSortAndRefresh.add(restoredSeries)
         } else {
           // if series already exists, update it
-          logger.debug { "Scanned series already exists. Scanned: $newSeries, Existing: $existingSeries" }
-          val seriesChanged = newSeries.fileLastModified.notEquals(existingSeries.fileLastModified) || existingSeries.deletedDate != null || seriesUrlWithDeletedBooks.contains(newSeries.url)
+          val existing = existingSeries!!
+          logger.debug { "Scanned series already exists. Scanned: $newSeries, Existing: $existing" }
+          val seriesChanged = newSeries.fileLastModified.notEquals(existing.fileLastModified) || existing.deletedDate != null || seriesUrlWithDeletedBooks.contains(newSeries.url)
           if (seriesChanged) {
-            logger.info { "Series changed on disk, updating: $existingSeries" }
-            seriesRepository.update(existingSeries.copy(fileLastModified = newSeries.fileLastModified, deletedDate = null))
+            logger.info { "Series changed on disk, updating: $existing" }
+            seriesRepository.update(existing.copy(fileLastModified = newSeries.fileLastModified, deletedDate = null))
           }
           if (scanDeep || seriesChanged) {
             // update list of books with existing entities if they exist
-            val existingBooks = bookRepository.findAllBySeriesId(existingSeries.id)
+            val existingBooks = bookRepository.findAllBySeriesId(existing.id)
             logger.debug { "Existing books: $existingBooks" }
 
             // update existing books
@@ -227,9 +228,9 @@ class LibraryContentLifecycle(
             val existingBooksUrls = existingBooks.filterNot { it.deletedDate != null }.map { it.url }
             val booksToAdd = newBooks.filterNot { newBook -> existingBooksUrls.contains(newBook.url) }
             logger.info { "Adding new books: $booksToAdd" }
-            seriesLifecycle.addBooks(existingSeries, booksToAdd)
+            seriesLifecycle.addBooks(existing, booksToAdd)
             tryRestoreBooks(booksToAdd)
-            seriesToSortAndRefresh.add(existingSeries)
+            seriesToSortAndRefresh.add(existing)
           }
         }
       }

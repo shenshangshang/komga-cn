@@ -578,6 +578,22 @@ export default Vue.extend({
       this.$store.commit('setWebreaderBackground', 'black')
     }
 
+    // Redirect to video/audio reader if the book media is not DIVINA
+    try {
+      const book = await this.$komgaBooks.getBook(this.bookId)
+      const route = getBookReadRouteFromMedia(book.media)
+      if (route !== 'read-book') {
+        this.$router.replace({
+          name: route,
+          params: {bookId: this.bookId},
+          query: this.$route.query,
+        })
+        return
+      }
+    } catch (e) {
+      // continue with normal setup if book fetch fails
+    }
+
     this.setup(this.bookId, Number(this.$route.query.page))
   },
   destroyed() {

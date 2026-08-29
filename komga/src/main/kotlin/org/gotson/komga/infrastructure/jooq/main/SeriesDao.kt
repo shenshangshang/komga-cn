@@ -38,6 +38,7 @@ class SeriesDao(
   private val d = Tables.SERIES_METADATA
   private val rs = Tables.READ_PROGRESS_SERIES
   private val bma = Tables.BOOK_METADATA_AGGREGATION
+  private val b = Tables.BOOK
 
   override fun findAll(): Collection<Series> =
     dslRO
@@ -194,7 +195,8 @@ class SeriesDao(
       .set(s.URL, series.url.toString())
       .set(s.FILE_LAST_MODIFIED, series.fileLastModified)
       .set(s.LIBRARY_ID, series.libraryId)
-      .set(s.BOOK_COUNT, series.bookCount)
+      // keep the denormalized count always in sync with the BOOK table
+      .set(s.BOOK_COUNT, DSL.select(DSL.count()).from(b).where(b.SERIES_ID.eq(s.ID)))
       .set(s.DELETED_DATE, series.deletedDate)
       .set(s.ONESHOT, series.oneshot)
       .apply { if (updateModifiedTime) set(s.LAST_MODIFIED_DATE, LocalDateTime.now(ZoneId.of("Z"))) }

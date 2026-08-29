@@ -147,6 +147,11 @@ class SeriesLifecycle(
     }
 
     toAdd.forEach { eventPublisher.publishEvent(DomainEvent.BookAdded(it)) }
+
+    // refresh the denormalized book count after adding books
+    seriesRepository.findByIdOrNull(series.id)?.let {
+      seriesRepository.update(it, false)
+    }
   }
 
   fun createSeries(series: Series): Series {
@@ -196,16 +201,21 @@ class SeriesLifecycle(
     val seriesIds = series.map { it.id }
     logger.info { "Delete series ids: $seriesIds" }
 
-    transactionTemplate.executeWithoutResult {
-      bookLifecycle.deleteMany(bookRepository.findAllBySeriesIds(seriesIds))
+    // delete in bounded chunks: one huge transaction can exceed the MySQL
+    // container memory limit and get OOM-killed mid-delete
+    series.chunked(10).forEach { chunk ->
+      val chunkIds = chunk.map { it.id }
+      transactionTemplate.executeWithoutResult {
+        bookLifecycle.deleteMany(bookRepository.findAllBySeriesIds(chunkIds))
 
-      readProgressRepository.deleteBySeriesIds(seriesIds)
-      collectionRepository.removeSeriesFromAll(seriesIds)
-      thumbnailsSeriesRepository.deleteBySeriesIds(seriesIds)
-      seriesMetadataRepository.delete(seriesIds)
-      bookMetadataAggregationRepository.delete(seriesIds)
+        readProgressRepository.deleteBySeriesIds(chunkIds)
+        collectionRepository.removeSeriesFromAll(chunkIds)
+        thumbnailsSeriesRepository.deleteBySeriesIds(chunkIds)
+        seriesMetadataRepository.delete(chunkIds)
+        bookMetadataAggregationRepository.delete(chunkIds)
 
-      seriesRepository.delete(seriesIds)
+        seriesRepository.delete(chunkIds)
+      }
     }
 
     series.forEach { eventPublisher.publishEvent(DomainEvent.SeriesDeleted(it)) }

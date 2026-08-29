@@ -78,6 +78,8 @@ class BookAnalyzer(
       logger.info { "Detected media type: $detectedMediaType" }
       var mediaType =
         MediaType.fromMediaType(detectedMediaType)
+          // Fallback: if Tika detection failed, try matching by file extension.
+          ?: MediaType.fromFileExtension(book.path.extension.lowercase())
           ?: return Media(mediaType = detectedMediaType, status = Media.Status.UNSUPPORTED, comment = "ERR_1001", bookId = book.id)
 
       if (book.path.extension.lowercase() == "epub" && mediaType != MediaType.EPUB) {

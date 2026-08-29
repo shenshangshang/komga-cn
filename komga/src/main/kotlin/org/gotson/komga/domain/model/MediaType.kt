@@ -37,6 +37,9 @@ enum class MediaType(
       // Tika returns variant MIME strings for some video/audio containers
       // (e.g. audio/x-flac, audio/x-wav, video/x-matroska-3d). Fall back to
       // prefix matching so these are still recognized.
+      // Tika sometimes reports Matroska-container MIME for webm files
+      // because webm is based on Matroska. Map it to MKV (VIDEO profile).
+      if (mediaType == "application/x-matroska") return MKV
       return when {
         mediaType.startsWith("video/") -> matchingMediaProfile(MediaProfile.VIDEO).firstOrNull()
         mediaType.startsWith("audio/") -> matchingMediaProfile(MediaProfile.AUDIO).firstOrNull()
@@ -45,5 +48,8 @@ enum class MediaType(
     }
 
     fun matchingMediaProfile(mediaProfile: MediaProfile): Collection<MediaType> = entries.filter { it.profile == mediaProfile }
+
+    fun fromFileExtension(ext: String): MediaType? =
+      entries.firstOrNull { it.fileExtension == ext }
   }
 }

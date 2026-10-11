@@ -135,6 +135,9 @@ dependencies {
   testImplementation("com.google.jimfs:jimfs:1.3.1")
 
   testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
+  testImplementation("org.testcontainers:mysql")
+  testImplementation("org.testcontainers:junit-jupiter")
+  testImplementation("org.junit.platform:junit-platform-launcher")
 
   benchmarkImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
   benchmarkImplementation("org.openjdk.jmh:jmh-core:1.37")

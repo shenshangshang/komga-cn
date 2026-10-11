@@ -153,14 +153,13 @@ class LibraryContentLifecycle(
       // Bulk-load existing books and series once instead of running one query per scanned
       // book (plus one series lookup per existing book), which dominated large scans.
       val scannedBookUrls = scannedSeries.values.flatten().map { it.url }
-      val existingBooksByUrl: Map<String, Book> =
+      val existingBooksByUrl: Map<String, List<Book>> =
         if (scannedBookUrls.isEmpty()) {
           emptyMap()
         } else {
           bookRepository
             .findAllNotDeletedByLibraryIdAndUrlIn(library.id, scannedBookUrls)
             .groupBy { it.url.toString() }
-            .mapValues { (_, books) -> books.maxByOrNull { it.lastModifiedDate } ?: books.first() }
         }
       val seriesUrlById = seriesRepository.findAllByLibraryId(library.id).associate { it.id to it.url }
 
@@ -168,9 +167,18 @@ class LibraryContentLifecycle(
       scannedSeries.forEach { (scanned, scannedBooks) ->
         val booksToMove =
           scannedBooks.mapNotNull { scannedBook ->
-            existingBooksByUrl[scannedBook.url.toString()]
+            val candidates = existingBooksByUrl[scannedBook.url.toString()].orEmpty()
+            // A book already owned by this series is not a move, even when another series has a
+            // book with the same URL.
+            if (candidates.any { seriesUrlById[it.seriesId] == scanned.url }) return@mapNotNull null
+            candidates
+              .maxByOrNull { it.lastModifiedDate }
+              // Only a grouping-mode migration changes a book's path relative to its series while
+              // keeping the same file. A plain series rename keeps the same relative path and is
+              // left to the normal restore path, which matches (by size/hash) and hard-deletes the
+              // obsolete series; pre-moving the books here would drain it and defeat that match.
               ?.takeIf { existingBook ->
-                existingBook.directoryPath != scannedBook.directoryPath ||
+                existingBook.directoryPath != scannedBook.directoryPath &&
                   seriesUrlById[existingBook.seriesId] != scanned.url
               }?.let { it to scannedBook }
           }

@@ -17,13 +17,20 @@ import org.gotson.komga.domain.model.MetadataPatchTarget
 import org.gotson.komga.domain.service.BookAnalyzer
 import org.gotson.komga.infrastructure.metadata.BookMetadataProvider
 import org.springframework.stereotype.Service
+import java.awt.RenderingHints
+import java.awt.image.BufferedImage
 import java.util.EnumSet
 import javax.imageio.ImageIO
+import kotlin.math.max
 
 private val logger = KotlinLogging.logger {}
 
 private const val PAGES_LAST = 3
 private const val PAGES_FIRST = 3
+
+// Barcodes stay readable when downscaled; cap the scanned page so the width*height
+// pixel array cannot exhaust the heap on very large pages.
+private const val BARCODE_MAX_EDGE = 2000
 
 @Service
 class IsbnBarcodeProvider(
@@ -51,27 +58,33 @@ class IsbnBarcodeProvider(
       try {
         val imageBytes = bookAnalyzer.getPageContent(book, p)
         image = ImageIO.read(imageBytes.inputStream())
-        image?.let {
-          val pixels = it.getRGB(0, 0, it.width, it.height, null, 0, it.width)
-          val source = RGBLuminanceSource(it.width, it.height, pixels)
-          val bitmap = BinaryBitmap(HybridBinarizer(source))
+        val full = image
+        if (full != null) {
+          val scan = full.downscaleForBarcode()
+          try {
+            val pixels = scan.getRGB(0, 0, scan.width, scan.height, null, 0, scan.width)
+            val source = RGBLuminanceSource(scan.width, scan.height, pixels)
+            val bitmap = BinaryBitmap(HybridBinarizer(source))
 
-          val result =
-            try {
-              MultiFormatReader().decode(bitmap, hints)
-            } catch (e: Exception) {
-              null
-            }
+            val result =
+              try {
+                MultiFormatReader().decode(bitmap, hints)
+              } catch (e: Exception) {
+                null
+              }
 
-          if (result == null || result.text == null) {
-            logger.debug { "Book page $p does not contain a barcode: $book" }
-          } else {
-            if (validator.isValid(result.text)) {
-              logger.debug { "Book page $p contains barcode which is valid ISBN: '${result.text}'. $book" }
-              return BookMetadataPatch(isbn = validator.validate(result.text))
+            if (result == null || result.text == null) {
+              logger.debug { "Book page $p does not contain a barcode: $book" }
             } else {
-              logger.debug { "Book page $p contains barcode which is invalid ISBN: '${result.text}'. $book" }
+              if (validator.isValid(result.text)) {
+                logger.debug { "Book page $p contains barcode which is valid ISBN: '${result.text}'. $book" }
+                return BookMetadataPatch(isbn = validator.validate(result.text))
+              } else {
+                logger.debug { "Book page $p contains barcode which is invalid ISBN: '${result.text}'. $book" }
+              }
             }
+          } finally {
+            if (scan !== full) scan.flush()
           }
         }
       } catch (e: Exception) {
@@ -84,6 +97,24 @@ class IsbnBarcodeProvider(
     }
 
     return null
+  }
+
+  /** Return this image, downscaled to at most [BARCODE_MAX_EDGE] on its longest edge. */
+  private fun BufferedImage.downscaleForBarcode(): BufferedImage {
+    val longestEdge = max(width, height)
+    if (longestEdge <= BARCODE_MAX_EDGE) return this
+    val scale = BARCODE_MAX_EDGE.toDouble() / longestEdge
+    val targetWidth = max(1, (width * scale).toInt())
+    val targetHeight = max(1, (height * scale).toInt())
+    val scaled = BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB)
+    val graphics = scaled.createGraphics()
+    try {
+      graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+      graphics.drawImage(this, 0, 0, targetWidth, targetHeight, null)
+    } finally {
+      graphics.dispose()
+    }
+    return scaled
   }
 
   override fun shouldLibraryHandlePatch(

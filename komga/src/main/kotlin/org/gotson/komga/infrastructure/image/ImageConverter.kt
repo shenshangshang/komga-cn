@@ -18,6 +18,9 @@ private val logger = KotlinLogging.logger {}
 
 private const val WEBP_NIGHT_MONKEYS = "com.github.gotson.nightmonkeys.webp.imageio.plugins.WebpImageReaderSpi"
 
+// Only bother subsampling when the source is at least this many times larger than the target.
+private const val SUBSAMPLE_MIN_FACTOR = 4
+
 @Service
 class ImageConverter(
   private val imageAnalyzer: ImageAnalyzer,
@@ -140,7 +143,7 @@ class ImageConverter(
     imageBytes: ByteArray,
     format: ImageType,
     size: Int,
-  ): Thumbnails.Builder<out InputStream>? {
+  ): Thumbnails.Builder<*>? {
     val longestEdge =
       imageAnalyzer.getDimension(imageBytes.inputStream())?.let {
         val mediaType = contentDetector.detectMediaType(imageBytes.inputStream())
@@ -153,11 +156,55 @@ class ImageConverter(
     // prevent upscaling
     val resizeTo = if (longestEdge != null) min(longestEdge, size) else size
 
-    return Thumbnails
-      .of(imageBytes.inputStream())
+    // Reading a very large page fully into memory can exhaust the heap and abort book analysis.
+    // When the source is much bigger than the target, decode it subsampled (down to ~2x the
+    // target) so peak memory stays bounded; otherwise decode as before.
+    val subsampled = longestEdge?.let { decodeSubsampled(imageBytes, it, resizeTo) }
+    val builder: Thumbnails.Builder<*> =
+      if (subsampled != null) {
+        Thumbnails.of(subsampled)
+      } else {
+        Thumbnails.of(imageBytes.inputStream())
+      }
+
+    return builder
       .size(resizeTo, resizeTo)
       .imageType(BufferedImage.TYPE_INT_ARGB)
       .outputFormat(format.imageIOFormat)
+  }
+
+  /**
+   * Decode [imageBytes] with source subsampling when its longest edge exceeds a safe multiple of
+   * [target]. Returns null when the image is small enough to decode as-is, or when the reader does
+   * not support subsampling.
+   */
+  private fun decodeSubsampled(
+    imageBytes: ByteArray,
+    sourceLongestEdge: Int,
+    target: Int,
+  ): BufferedImage? {
+    if (sourceLongestEdge <= target * SUBSAMPLE_MIN_FACTOR) return null
+    val subsample = max(1, sourceLongestEdge / (target * 2))
+    if (subsample <= 1) return null
+
+    return try {
+      ImageIO.createImageInputStream(imageBytes.inputStream()).use { iis ->
+        val readers = ImageIO.getImageReaders(iis)
+        if (!readers.hasNext()) return null
+        val reader = readers.next()
+        try {
+          reader.setInput(iis, true, true)
+          val param = reader.defaultReadParam
+          param.setSourceSubsampling(subsample, subsample, 0, 0)
+          reader.read(0, param)
+        } finally {
+          reader.dispose()
+        }
+      }
+    } catch (e: Exception) {
+      logger.warn(e) { "Subsampled decode failed, falling back to full decode" }
+      null
+    }
   }
 
   private fun containsAlphaChannel(image: BufferedImage): Boolean = image.colorModel.hasAlpha()

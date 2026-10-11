@@ -27,6 +27,11 @@ interface BookRepository {
     urls: Collection<URL>,
   ): Collection<Book>
 
+  fun findAllNotDeletedByLibraryIdAndUrlIn(
+    libraryId: String,
+    urls: Collection<URL>,
+  ): Collection<Book>
+
   fun findAll(
     searchCondition: SearchCondition.Book?,
     searchContext: SearchContext,

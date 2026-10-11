@@ -104,6 +104,25 @@ class BookDao(
     }
   }
 
+  @Transactional
+  override fun findAllNotDeletedByLibraryIdAndUrlIn(
+    libraryId: String,
+    urls: Collection<URL>,
+  ): Collection<Book> {
+    if (urls.isEmpty()) return emptyList()
+
+    dslRO.withTempTable(batchSize, urls.map { it.toString() }).use { tempTable ->
+
+      return tempTable.dsl
+        .selectFrom(b)
+        .where(b.LIBRARY_ID.eq(libraryId))
+        .and(b.DELETED_DATE.isNull)
+        .and(b.URL.`in`(tempTable.selectTempStrings()))
+        .fetchInto(b)
+        .map { it.toDomain() }
+    }
+  }
+
   override fun findAllDeletedByFileSize(fileSize: Long): Collection<Book> =
     dslRO
       .selectFrom(b)

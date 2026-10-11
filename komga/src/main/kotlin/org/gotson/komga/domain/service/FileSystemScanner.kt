@@ -51,6 +51,10 @@ class FileSystemScanner(
 
   private val sidecarBookPrefilter = sidecarBookConsumers.flatMap { it.getSidecarBookPrefilter() }
 
+  // Precomputed so the filename list is not rebuilt for every scanned file.
+  private val sidecarSeriesFilenames =
+    sidecarSeriesConsumers.flatMap { consumer -> consumer.getSidecarSeriesFilenames().map { it to consumer } }
+
   fun scanRootFolder(
     root: Path,
     forceDirectoryModifiedTime: Boolean = false,
@@ -141,19 +145,16 @@ class FileSystemScanner(
                 !file.name.startsWith(".")
               ) {
                 val book = pathToBook(file, attrs)
-                file.parent.let { key ->
-                  pathToBooks.merge(key, mutableListOf(book)) { prev, one -> prev.union(one).toMutableList() }
-                }
+                pathToBooks.getOrPut(file.parent) { mutableListOf() }.add(book)
               }
 
               val seriesSidecarConsumer =
-                sidecarSeriesConsumers
-                  .firstOrNull { consumer ->
-                    consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) }
-                  }
+                sidecarSeriesFilenames
+                  .firstOrNull { (filename, _) -> file.name.equals(filename, ignoreCase = true) }
+                  ?.second
               seriesSidecarConsumer?.let {
                 val sidecar = Sidecar(file.toUri().toURL(), file.parent.toUri().toURL(), attrs.getUpdatedTime(), it.getSidecarSeriesType(), Sidecar.Source.SERIES)
-                pathToSeriesSidecars.merge(file.parent, mutableListOf(sidecar)) { prev, one -> prev.union(one).toMutableList() }
+                pathToSeriesSidecars.getOrPut(file.parent) { mutableListOf() }.add(sidecar)
               }
 
               if (scanCbx && file.isImageFile() && seriesSidecarConsumer == null) {
@@ -164,7 +165,7 @@ class FileSystemScanner(
               // this prefilters files to reduce the candidates
               if (sidecarBookPrefilter.any { it.matches(file.name) }) {
                 val sidecar = TempSidecar(file.name, file.toUri().toURL(), attrs.getUpdatedTime())
-                pathToBookSidecars.merge(file.parent, mutableListOf(sidecar)) { prev, one -> prev.union(one).toMutableList() }
+                pathToBookSidecars.getOrPut(file.parent) { mutableListOf() }.add(sidecar)
               }
             }
 
@@ -296,8 +297,9 @@ class FileSystemScanner(
 
             val seriesSidecarConsumer =
               if (file.parent == seriesPath) {
-                sidecarSeriesConsumers
-                  .firstOrNull { consumer -> consumer.getSidecarSeriesFilenames().any { file.name.equals(it, ignoreCase = true) } }
+                sidecarSeriesFilenames
+                  .firstOrNull { (filename, _) -> file.name.equals(filename, ignoreCase = true) }
+                  ?.second
               } else {
                 null
               }
@@ -443,13 +445,27 @@ class FileSystemScanner(
 
   private fun pathToDirectoryBook(path: Path): Book {
     val attrs = path.readAttributes<BasicFileAttributes>()
-    val files = path.listDirectoryEntries().filter { it.isRegularFile() && !it.name.startsWith(".") }
-    val updatedTime = files.map { it.readAttributes<BasicFileAttributes>().getUpdatedTime() }.maxOrNull()
+    // Read each entry's attributes once (size + updated time) instead of doing
+    // separate isRegularFile()/readAttributes()/Files.size() stats per entry.
+    var fileSize = 0L
+    var updatedTime: LocalDateTime? = null
+    path.listDirectoryEntries().forEach { entry ->
+      if (entry.name.startsWith(".")) return@forEach
+      val entryAttrs = entry.readAttributes<BasicFileAttributes>()
+      if (entryAttrs.isRegularFile) {
+        fileSize += entryAttrs.size()
+        val entryUpdatedTime = entryAttrs.getUpdatedTime()
+        val previous = updatedTime
+        if (previous == null || entryUpdatedTime.isAfter(previous)) {
+          updatedTime = entryUpdatedTime
+        }
+      }
+    }
     return Book(
       name = path.name.ifBlank { path.pathString },
       url = path.toUri().toURL(),
       fileLastModified = maxOf(attrs.getUpdatedTime(), updatedTime ?: attrs.getUpdatedTime()),
-      fileSize = files.sumOf { Files.size(it) },
+      fileSize = fileSize,
     )
   }
 }

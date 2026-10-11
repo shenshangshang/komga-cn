@@ -150,15 +150,28 @@ class LibraryContentLifecycle(
       // Move matching books by their stable library/url identity before obsolete leaf
       // series are soft-deleted so media, thumbnails, progress and read-list entries
       // remain attached to the same book id.
+      // Bulk-load existing books and series once instead of running one query per scanned
+      // book (plus one series lookup per existing book), which dominated large scans.
+      val scannedBookUrls = scannedSeries.values.flatten().map { it.url }
+      val existingBooksByUrl: Map<String, Book> =
+        if (scannedBookUrls.isEmpty()) {
+          emptyMap()
+        } else {
+          bookRepository
+            .findAllNotDeletedByLibraryIdAndUrlIn(library.id, scannedBookUrls)
+            .groupBy { it.url.toString() }
+            .mapValues { (_, books) -> books.maxByOrNull { it.lastModifiedDate } ?: books.first() }
+        }
+      val seriesUrlById = seriesRepository.findAllByLibraryId(library.id).associate { it.id to it.url }
+
       val regroupedSeries = mutableListOf<Series>()
       scannedSeries.forEach { (scanned, scannedBooks) ->
         val booksToMove =
           scannedBooks.mapNotNull { scannedBook ->
-            bookRepository
-              .findNotDeletedByLibraryIdAndUrlOrNull(library.id, scannedBook.url)
+            existingBooksByUrl[scannedBook.url.toString()]
               ?.takeIf { existingBook ->
                 existingBook.directoryPath != scannedBook.directoryPath ||
-                  seriesRepository.findByIdOrNull(existingBook.seriesId)?.url != scanned.url
+                  seriesUrlById[existingBook.seriesId] != scanned.url
               }?.let { it to scannedBook }
           }
         if (booksToMove.isNotEmpty()) {

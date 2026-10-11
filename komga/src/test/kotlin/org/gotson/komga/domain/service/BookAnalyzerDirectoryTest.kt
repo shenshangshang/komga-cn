@@ -14,6 +14,7 @@ import org.gotson.komga.infrastructure.image.ImageConverter
 import org.gotson.komga.infrastructure.image.ImageType
 import org.gotson.komga.infrastructure.image.QrCodeDetector
 import org.gotson.komga.infrastructure.mediacontainer.ContentDetector
+import org.gotson.komga.infrastructure.mediacontainer.av.VideoMediaAnalyzer
 import org.gotson.komga.infrastructure.mediacontainer.divina.DirectoryExtractor
 import org.gotson.komga.infrastructure.mediacontainer.epub.EpubExtractor
 import org.gotson.komga.infrastructure.mediacontainer.mobi.MobiExtractor
@@ -40,6 +41,7 @@ class BookAnalyzerDirectoryTest {
       imageConverter = mockk<ImageConverter>(),
       imageAnalyzer = imageAnalyzer,
       qrCodeDetector = mockk<QrCodeDetector>(),
+      videoMediaAnalyzer = mockk<VideoMediaAnalyzer>(),
       hasher = Hasher(),
       pageHashing = 0,
       komgaSettingsProvider = mockk<KomgaSettingsProvider>(),

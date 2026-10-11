@@ -31,7 +31,7 @@ class TempTable(
 
   fun create() {
     check(!closed) { "Temporary table is already closed" }
-    dsl.execute("CREATE TEMPORARY TABLE $name (STRING varchar(768) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL);")
+    dsl.execute("CREATE TEMPORARY TABLE $name (STRING varchar(3072) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL);")
     created = true
   }
 
